@@ -1,5 +1,5 @@
-#include "../../xrCore/_types.h"
-#include "../../xrCore/xrCore_platform.h"
+#include "xrCore/_types.h"
+#include "xrCore/Platform.h"
 
 #ifdef _WIN32
 #include <windows.h>

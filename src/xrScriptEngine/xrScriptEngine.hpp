@@ -13,12 +13,11 @@
 #pragma warning(disable:4267)
 #pragma warning(disable:4100) // unreferenced formal parameter
 
-
 extern "C"
 {
-#include <lua/lua.h>
-#include <lua/lualib.h>
-#include <lua/lauxlib.h>
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
 }
 
 #pragma warning(disable:4458) // declaration of 'x' hides class member
@@ -29,7 +28,7 @@ extern "C"
 #include <luabind/luabind.hpp>
 #include <luabind/class.hpp>
 #include <luabind/object.hpp>
-#include <luabind/functor.hpp>
+//#include <luabind/functor.hpp>
 #include <luabind/operator.hpp>
 #include <luabind/adopt_policy.hpp>
 #include <luabind/return_reference_to_policy.hpp>

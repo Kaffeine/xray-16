@@ -1,9 +1,18 @@
 #pragma once
 
+#ifdef _WIN32
+
 #pragma warning(push)
 #pragma warning(disable:4995)
 #include <io.h>
 #pragma warning(pop)
+typedef _finddata_t DirEntryType;
+
+#else
+#include <dirent.h>
+typedef dirent DirEntryType;
+#endif
+
 #include "Common/Util.hpp"
 #include "LocatorAPI_defs.h"
 
@@ -75,7 +84,7 @@ private:
 
     DEFINE_SET_PRED(file, files_set, files_it, file_pred);
 
-    DEFINE_VECTOR(_finddata_t, FFVec, FFIt);
+    DEFINE_VECTOR(DirEntryType, FFVec, FFIt);
     FFVec rec_files;
 
     int m_iLockRescan;
@@ -90,7 +99,7 @@ private:
     const file* RegisterExternal(const char* name);
     const file* Register(LPCSTR name, u32 vfs, u32 crc, u32 ptr, u32 size_real, u32 size_compressed, u32 modif);
     void ProcessArchive(LPCSTR path);
-    void ProcessOne(LPCSTR path, const _finddata_t& entry);
+    void ProcessOne(LPCSTR path, const DirEntryType& entry);
     bool Recurse(LPCSTR path);
 
     files_it file_find_it(LPCSTR n);

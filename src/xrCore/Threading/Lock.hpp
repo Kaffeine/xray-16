@@ -17,7 +17,7 @@ class XRCORE_API Lock
 {
 private:
     friend class AutoLock;
-    CRITICAL_SECTION cs;
+//    CRITICAL_SECTION cs;
 #ifdef PROFILE_CRITICAL_SECTIONS
     const char *id;
 #endif

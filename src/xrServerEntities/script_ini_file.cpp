@@ -9,7 +9,7 @@
 #include "stdafx.h"
 #include "script_ini_file.h"
 #include "xrScriptEngine/script_engine.hpp"
-#include "ai_space.h"
+#include "xrGame/ai_space.h"
 #include "object_factory.h"
 
 CScriptIniFile::CScriptIniFile		(IReader *F, LPCSTR path) :

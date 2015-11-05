@@ -1,6 +1,8 @@
 #ifndef logH
 #define logH
 
+#include "stddef.h"
+
 #define VPUSH(a) ((a).x), ((a).y), ((a).z)
 
 void XRCORE_API __cdecl Msg(LPCSTR format, ...);

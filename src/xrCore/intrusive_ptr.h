@@ -8,7 +8,7 @@
 
 #pragma once
 
-#include "Common/object_type_traits.h"
+#include "common/object_type_traits.h"
 
 #pragma pack(push,4)
 

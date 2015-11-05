@@ -7,11 +7,11 @@
 #include "character_info.h"
 
 #ifdef XRGAME_EXPORTS
-#	include "ui/xrUIXmlParser.h"
+#	include "xrGame/ui/xrUIXmlParser.h"
 #	include "PhraseDialog.h"
 #	include "xrServer_Objects_ALife_Monsters.h"
 #else // XRGAME_EXPORTS
-#	include "xrUIXmlParser.h"
+#	include "xrGame/ui/xrUIXmlParser.h"
 #endif // XRGAME_EXPORTS
 
 //////////////////////////////////////////////////////////////////////////

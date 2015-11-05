@@ -23,9 +23,9 @@
 # define D3D_DEBUG_INFO
 #endif
 
-#pragma warning(disable:4995)
-#include <d3d9.h>
-#pragma warning(default:4995)
+//#pragma warning(disable:4995)
+//#include <d3d9.h>
+//#pragma warning(default:4995)
 
 #define ECORE_API
 
@@ -36,11 +36,11 @@
 #include "xrCore/log.h"
 #endif
 #include "device.h"
-#include "xrCore/fs.h"
+#include "xrCore/FS.h"
 
 #include "xrCDB/xrXRC.h"
 
-#include "xrSound/sound.h"
+#include "xrSound/Sound.h"
 
 extern ENGINE_API CInifile* pGameIni;
 
@@ -54,8 +54,8 @@ extern ENGINE_API CInifile* pGameIni;
 #pragma comment( lib, "dinput8.lib" )
 #pragma comment( lib, "dxguid.lib" )
 
-#include "lua/library_linkage.h"
-#include "luabind/library_linkage.h"
+//#include "lua/library_linkage.h"
+//#include "luabind/library_linkage.h"
 
 #ifndef DEBUG
 # define LUABIND_NO_ERROR_CHECKING

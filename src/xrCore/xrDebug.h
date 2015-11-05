@@ -5,6 +5,8 @@
 typedef void crashhandler(void);
 typedef void on_dialog(bool before);
 
+#include "_types.h"
+
 class XRCORE_API xrDebug
 {
 private:

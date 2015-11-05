@@ -31,6 +31,16 @@
 #undef max
 #endif
 
+#include <cmath>
+
+#include <stdio.h>
+#include <string.h>
+
+#ifndef __WIN32
+#define stricmp strcasecmp
+#define strnicmp strncasecmp
+#endif
+
 #ifdef _EDITOR
 IC char* strncpy_s(char* strDestination, size_t sizeInBytes, const char* strSource, size_t count)
 {
@@ -169,14 +179,32 @@ IC u32 xr_strlen(const char* S)
     return (u32)strlen(S);
 }
 
-IC char* xr_strupr(char *S)
+IC char* xr_strupr(char* S)
 {
+#ifdef _WIN32
     return _strupr(S);
+#else
+    char *p = S;
+    for ( ; *S; ++S)
+    {
+        *S = toupper(*S);
+    }
+    return p;
+#endif
 }
 
 IC char* xr_strlwr(char* S)
 {
+#ifdef _WIN32
     return strlwr(S);
+#else
+    char *p = S;
+    for ( ; *S; ++S)
+    {
+        *S = tolower(*S);
+    }
+    return p;
+#endif
 }
 
 #ifdef BREAK_AT_STRCMP
@@ -219,7 +247,12 @@ inline int __cdecl xr_sprintf(char(&destination)[count], LPCSTR format_string, .
 
 inline int xr_strcpy(LPSTR destination, size_t const destination_size, LPCSTR source)
 {
+#ifdef _WIN32
     return strncpy_s(destination, destination_size, source, destination_size);
+#else
+    strncpy(destination, source, destination_size);
+    return 0;
+#endif
 }
 
 inline int xr_strcat(LPSTR destination, size_t const buffer_size, LPCSTR source)
@@ -241,7 +274,12 @@ inline int __cdecl xr_sprintf(LPSTR destination, size_t const buffer_size, LPCST
 {
     va_list args;
     va_start(args, format_string);
+#ifdef _WIN32
     return vsnprintf_s(destination, buffer_size, buffer_size - 1, format_string, args);
+#else
+//    return vsnprintf(destination, buffer_size, buffer_size - 1, format_string, args);
+return 0;
+#endif
 }
 
 template <int count>

@@ -11,8 +11,8 @@
 
 #include "pure.h"
 
-#include "xrCore/ftimer.h"
-#include "stats.h"
+#include "xrCore/FTimer.h"
+#include "Stats.h"
 #include "xrCore/Threading/Event.hpp"
 
 #define VIEWPORT_NEAR 0.2f
@@ -135,7 +135,7 @@ private:
     void _SetupStates();
 public:
     // HWND m_hWnd;
-    LRESULT MsgProc(HWND, UINT, WPARAM, LPARAM);
+//    LRESULT MsgProc(HWND, UINT, WPARAM, LPARAM);
 
     // u32 dwFrame;
     // u32 dwPrecacheFrame;
@@ -145,7 +145,7 @@ public:
     float fWidth_2, fHeight_2;
     // BOOL b_is_Ready;
     // BOOL b_is_Active;
-    void OnWM_Activate(WPARAM wParam, LPARAM lParam);
+//    void OnWM_Activate(WPARAM wParam, LPARAM lParam);
 public:
     //ref_shader m_WireShader;
     //ref_shader m_SelectionShader;
@@ -258,7 +258,7 @@ private:
     void CalcFrameStats();
 public:
     void xr_stdcall on_idle();
-    bool xr_stdcall on_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& result);
+//    bool xr_stdcall on_message(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT& result);
 
 private:
     void message_loop();

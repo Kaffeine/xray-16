@@ -1,6 +1,8 @@
 #ifndef STREAM_READER_INLINE_H
 #define STREAM_READER_INLINE_H
 
+#include "stream_reader.h"
+
 IC CStreamReader::CStreamReader()
 {
 }
@@ -27,7 +29,11 @@ IC const HANDLE& CStreamReader::file_mapping_handle() const
 
 IC void CStreamReader::unmap()
 {
+#ifdef _WIN32
     UnmapViewOfFile(m_current_map_view_of_file);
+#else
+#warning TODO: Port CStreamReader::unmap()
+#endif
 }
 
 IC void CStreamReader::remap(const u32& new_offset)

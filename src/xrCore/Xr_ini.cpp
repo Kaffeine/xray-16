@@ -1,6 +1,57 @@
 #include "stdafx.h"
 #pragma hdrstop
 
+#ifndef _WIN32
+#define _atoi64 atol
+
+void _splitpath (
+   const char *path,  // Path Input
+   char *drive,       // Drive     : Output
+   char *dir,         // Directory : Output
+   char *fname,       // Filename  : Output
+   char *ext          // Extension : Output
+);
+
+inline long _strtoui64(const char *c, char **endptr, int base)
+{
+    return atol(c);
+}
+
+int _ui64toa_s(u64 value, char *buffer, size_t sizeInCharacters, int base)
+{
+    if (base == 16)
+    {
+        return xr_sprintf(buffer, sizeInCharacters, "%x", value);
+    }
+    else
+    {
+        return xr_sprintf(buffer, sizeInCharacters, "%d", value);
+    }
+}
+
+int _ui64toa(u64 value, char *buffer, int base)
+{
+    return _ui64toa_s(value, buffer, sizeof(buffer), base);
+}
+
+int _i64toa_s(s64 value, char *buffer, size_t sizeInCharacters, int base)
+{
+    if (base == 16)
+    {
+        return xr_sprintf(buffer, sizeInCharacters, "%x", value);
+    }
+    else
+    {
+        return xr_sprintf(buffer, sizeInCharacters, "%u", value);
+    }
+}
+
+int _ui64toa(s64 value, char *buffer, int base)
+{
+    return _i64toa_s(value, buffer, sizeof(buffer), base);
+}
+#endif
+
 XRCORE_API CInifile const* pSettings = NULL;
 XRCORE_API CInifile const* pSettingsAuth = NULL;
 

@@ -82,7 +82,7 @@
 #include <stdarg.h>
 #include <math.h>
 #include <string.h>
-#include <typeinfo.h>
+//#include <typeinfo.h>
 
 #ifndef DEBUG
 #ifdef _DEBUG
@@ -133,8 +133,8 @@
 #include <map>
 
 #ifndef _EDITOR
-# include <hash_map>
-# include <hash_set>
+# include <unordered_map>
+# include <unordered_set>
 #endif
 
 #include <string>
@@ -203,7 +203,11 @@ DEFINE_VECTOR(shared_str, RStringVec, RStringVecIt);
 DEFINE_SET(shared_str, RStringSet, RStringSetIt);
 DEFINE_VECTOR(xr_rtoken, RTokenVec, RTokenVecIt);
 
+#ifdef _WIN32
 #define xr_pure_interface __interface
+#else
+#define xr_pure_interface class
+#endif
 
 #include "FS.h"
 #include "log.h"
@@ -217,9 +221,9 @@ DEFINE_VECTOR(xr_rtoken, RTokenVec, RTokenVecIt);
 #include "FileSystem.h"
 #include "FTimer.h"
 #include "fastdelegate.h"
-#include "intrusive_ptr.h"
+//#include "intrusive_ptr.h"
 
-#include "net_utils.h"
+//#include "net_utils.h"
 
 // destructor
 template <class T>

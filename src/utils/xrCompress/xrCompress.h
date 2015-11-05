@@ -1,6 +1,7 @@
-#pragma once
-#ifndef XR_COMPRESS_H_INCLUDED
-#define XR_COMPRESS_H_INCLUDED
+#ifndef XR_COMPRESS_H
+#define XR_COMPRESS_H
+
+#include "xrCore/xrCore.h"
 
 class xrCompressor
 {
@@ -68,4 +69,4 @@ public:
 	void	ProcessTargetFolder	();
 };
 
-#endif
+#endif // XR_COMPRESS_H

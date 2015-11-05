@@ -23,7 +23,7 @@ public:
     typedef T& reference;
     typedef std::reverse_iterator<iterator> reverse_iterator;
 
-    typedef ptrdiff_t difference_type;
+    typedef std::ptrdiff_t difference_type;
     typedef size_t size_type;
     typedef T value_type;
 

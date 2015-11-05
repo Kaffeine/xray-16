@@ -23,6 +23,10 @@
 #define M_BORLAND
 #endif
 
+#ifdef __linux__
+#define M_LINUX
+#endif
+
 // Constants
 #ifdef M_VISUAL
 const float EPS_S = 0.0000001f;
@@ -48,7 +52,7 @@ const float PI_DIV_8 = 0.3926990816987241548078304229099f;
 
 
 #endif
-#ifdef M_BORLAND
+#if defined(M_BORLAND) || defined (M_LINUX)
 #define EPS_S 0.0000001f
 #define EPS 0.0000100f
 #define EPS_L 0.0010000f
@@ -66,7 +70,6 @@ const float PI_DIV_8 = 0.3926990816987241548078304229099f;
 #define PI_DIV_6 0.5235987755982988730771072305466f
 #define PI_DIV_8 0.3926990816987241548078304229099f
 #endif
-
 
 // Define types and namespaces (CPU & FPU)
 #include "_types.h"

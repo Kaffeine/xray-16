@@ -2,7 +2,7 @@
 #define xr_collide_defsH
 //#pragma once
 
-#include "xrcdb.h"
+#include "xrCDB.h"
 
 class CObject;
 namespace collide 

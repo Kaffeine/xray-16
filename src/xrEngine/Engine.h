@@ -22,8 +22,8 @@
 #endif // !NO_ENGINE_API
 #endif // !ENGINE_API
 
-#include "engineAPI.h"
-#include "eventAPI.h"
+#include "EngineAPI.h"
+#include "EventAPI.h"
 #include "xrSheduler.h"
 
 class ENGINE_API CEngine

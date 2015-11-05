@@ -1,6 +1,10 @@
 #ifndef STREAM_READER_H
 #define STREAM_READER_H
 
+#ifndef _WIN32
+typedef FILE* HANDLE;
+#endif
+
 class XRCORE_API CStreamReader : public IReaderBase < CStreamReader >
 {
 private:

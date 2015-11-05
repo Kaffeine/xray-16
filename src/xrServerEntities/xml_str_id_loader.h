@@ -3,7 +3,7 @@
 #ifdef XRGAME_EXPORTS
 #	include "ui/xrUIXmlParser.h"
 #else // XRGAME_EXPORTS
-#	include "xrUIXmlParser.h"
+#	include "xrGame/ui/xrUIXmlParser.h"
 #	include "Common/object_broker.h"
 #endif // XRGAME_EXPORTS
 

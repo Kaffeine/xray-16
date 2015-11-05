@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "eventapi.h"
-#include "xr_ioconsole.h"
+#include "EventAPI.h"
+#include "XR_IOConsole.h"
 
 extern void msRead();
 extern void msCreate(LPCSTR name);
@@ -52,7 +52,7 @@ public:
 CEvent::CEvent(const char* S)
 {
     Name = xr_strdup(S);
-    _strupr(Name);
+    xr_strupr(Name);
     dwRefCount = 1;
 }
 CEvent::~CEvent()

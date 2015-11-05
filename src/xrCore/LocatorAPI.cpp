@@ -5,11 +5,15 @@
 #include "stdafx.h"
 #pragma hdrstop
 
+#ifdef _WIN32
 #pragma warning(disable:4995)
 #include <direct.h>
 #include <fcntl.h>
 #include <sys\stat.h>
 #pragma warning(default:4995)
+#else
+#include <sys/stat.h>
+#endif
 
 #include "FS_internal.h"
 #include "stream_reader.h"
@@ -526,8 +530,7 @@ bool CLocatorAPI::load_all_unloaded_archives()
     return res;
 }
 
-
-void CLocatorAPI::ProcessOne(LPCSTR path, const _finddata_t& entry)
+void CLocatorAPI::ProcessOne(LPCSTR path, const DirEntryType& entry)
 {
     string_path N;
     xr_strcpy(N, sizeof(N), path);
@@ -554,11 +557,10 @@ void CLocatorAPI::ProcessOne(LPCSTR path, const _finddata_t& entry)
     }
 }
 
-IC bool pred_str_ff(const _finddata_t& x, const _finddata_t& y)
+IC bool pred_str_ff(const DirEntryType& x, const DirEntryType& y)
 {
     return xr_strcmp(x.name, y.name) < 0;
 }
-
 
 bool ignore_name(const char* _name)
 {
@@ -594,10 +596,16 @@ bool CLocatorAPI::Recurse(const char* path)
         return true;
     xr_strcpy(scanPath, sizeof(scanPath), path);
     xr_strcat(scanPath, "*.*");
+#ifdef _WIN32
     _finddata_t findData;
     intptr_t handle = _findfirst(scanPath, &findData);
     if (handle == -1)
         return false;
+#else
+    DIR dir = opendir(scanPath);
+    if (dir == NULL)
+        return false;
+#endif
     rec_files.reserve(256);
     size_t oldSize = rec_files.size();
     intptr_t done = handle;

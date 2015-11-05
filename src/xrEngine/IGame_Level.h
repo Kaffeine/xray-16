@@ -2,8 +2,9 @@
 #define igame_level_h_defined
 
 #pragma once
+#define RGB(r,g,b) ( ((DWORD)(BYTE)r)|((DWORD)((BYTE)g)<<8)|((DWORD)((BYTE)b)<<16) )
 
-#include "iinputreceiver.h"
+#include "IInputReceiver.h"
 #include "xr_object_list.h"
 #include "xrCDB/xr_area.h"
 

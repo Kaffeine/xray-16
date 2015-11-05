@@ -1,6 +1,12 @@
 #ifndef TYPES_H
 #define TYPES_H
 
+#ifdef __linux__
+#include <linux/limits.h>
+
+#define _MAX_PATH PATH_MAX
+#endif
+
 // Type defs
 typedef signed char s8;
 typedef unsigned char u8;
@@ -11,8 +17,13 @@ typedef unsigned short u16;
 typedef signed int s32;
 typedef unsigned int u32;
 
+#if defined(_WIN32) && !defined(__GNUC__)
 typedef signed __int64 s64;
 typedef unsigned __int64 u64;
+#else
+typedef long long s64;
+typedef unsigned long long u64;
+#endif
 
 typedef float f32;
 typedef double f64;
@@ -25,6 +36,31 @@ typedef const char* pcstr;
 typedef int BOOL;
 typedef pstr LPSTR;
 typedef pcstr LPCSTR;
+typedef unsigned char BYTE;
+typedef unsigned int UINT;
+
+typedef unsigned short WORD;
+typedef unsigned long DWORD;
+
+typedef void* HMODULE;
+typedef void* LPVOID;
+
+typedef int HWND;
+typedef long HRESULT;
+typedef long _W64;
+
+typedef struct _RECT {
+  long left;
+  long top;
+  long right;
+  long bottom;
+} RECT, *PRECT;
+
+typedef struct tagPOINT {
+  long x;
+  long y;
+} POINT, *PPOINT;
+
 #define TRUE true
 #define FALSE false
 #endif

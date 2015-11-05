@@ -2,8 +2,7 @@
 #ifndef PropertiesListTypesH
 #define PropertiesListTypesH
 
-
-#include "WaveForm.H"
+#include "WaveForm.h"
 #include "gametype_chooser.h"
 
 #ifdef __BORLANDC__            

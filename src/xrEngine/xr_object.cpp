@@ -3,7 +3,7 @@
 
 #include "xr_object.h"
 #include "xrCDB/xr_area.h"
-#include "render.h"
+#include "Render.h"
 #include "Common/LevelStructure.hpp"
 #include "Include/xrRender/RenderVisual.h"
 #include "Include/xrRender/Kinematics.h"
@@ -16,7 +16,7 @@
 
 #pragma warning(push)
 #pragma warning(disable:4995)
-#include <intrin.h>
+//#include <intrin.h>
 #pragma warning(pop)
 
 #pragma intrinsic(_InterlockedCompareExchange)

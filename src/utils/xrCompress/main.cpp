@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "xrCompress.h"
 
 #ifndef MOD_COMPRESS

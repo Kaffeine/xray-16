@@ -443,6 +443,10 @@ bool motion_marks::is_mark_between(float const& t0, float const& t1) const
     return (false);
 }
 
+#ifndef FLT_MAX // Somewhy the definition didn't make it from stdafx.h -> xrCore.h -> vector.h -> _types.h:63
+#define FLT_MAX flt_max
+#endif
+
 float motion_marks::time_to_next_mark(float time) const
 {
     C_ITERATOR i = intervals.begin();

@@ -2,6 +2,10 @@
 #define XRCORE_PLATFORM_H
 #pragma once
 
+#include "_types.h"
+
+#ifdef _WIN32
+
 #define VC_EXTRALEAN // Exclude rarely-used stuff from Windows headers
 #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 #ifndef STRICT
@@ -33,14 +37,14 @@
 # define ICN __declspec (noinline)
 #endif
 
-#include <time.h>
 // work-around dumb borland compiler
 #ifdef __BORLANDC__
-#define ALIGN(a)
-
 #include <vcl.h>
 #include <mmsystem.h>
 #include <stdint.h>
+
+#define ALIGN(a)
+
 #include <assert.h>
 #include <utime.h>
 #define _utimbuf utimbuf
@@ -70,7 +74,6 @@
 #include <sys\utime.h>
 #endif
 
-
 #define NOGDICAPMASKS
 //#define NOSYSMETRICS
 #define NOMENUS
@@ -96,4 +99,42 @@
 #endif
 #pragma warning(pop)
 
+#elif defined(__linux__) || defined(__linux)
+
+#include <string>
+
+#define XR_EXPORT __attribute__((visibility("default")))
+#define XR_IMPORT __attribute__((visibility("default")))
+
+// inline control - redefine to use compiler's heuristics ONLY
+// it seems "IC" is misused in many places which cause code-bloat
+#define _inline inline
+#define __inline inline
+#define IC inline
+#ifdef _EDITOR
+# define ICF inline
+# define ICN
+#else
+# define ICF inline __attribute__((always_inline)) // !!! this should be used only in critical places found by PROFILER
+# define ICN __attribute__((noinline))
 #endif
+
+#define ALIGN(a) __attribute__ ((aligned (a)))
+
+#define _cdecl
+#define _stdcall
+#define _fastcall
+
+#define __cdecl
+#define __stdcall
+#define __fastcall
+
+#define _copysign copysign
+
+char *itoa (int value, char *str, int base);
+
+#else
+#  error "The project is not ported to the target platform"
+#endif
+
+#endif // XRCORE_PLATFORM_H
