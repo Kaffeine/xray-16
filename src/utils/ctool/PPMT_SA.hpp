@@ -1,5 +1,15 @@
+#include "../../xrCore/_types.h"
+#include "../../xrCore/xrCore_platform.h"
+
+#ifdef _WIN32
+#include <windows.h>
+#else
+#include <cstring>
+#endif
+
 #define _FASTCALL __fastcall
 #define _STDCALL  __stdcall
+
 template <class TMP_TYPE>
 inline TMP_TYPE CLAMP(const TMP_TYPE& X,const TMP_TYPE& LoX,const TMP_TYPE& HiX) { return (X < LoX)?(LoX):((HiX < X)?(HiX):(X)); }
 template <class TMP_TYPE>
@@ -58,6 +68,7 @@ BOOL _STDCALL StartSubAllocator(int SASize)
     if ((HeapStart=new BYTE[t]) == NULL)    return FALSE;
     SubAllocatorSize=t;                     return TRUE;
 }
+
 static inline void InitSubAllocator()
 {
     int i, k;

@@ -7,7 +7,6 @@
  ****************************************************************************/
 #include <math.h>
 #include <stdio.h>
-#include <windows.h>
 #pragma hdrstop
 #include "PPMT_SA.hpp"
 #include "xrCore/_types.h"

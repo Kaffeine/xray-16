@@ -6,8 +6,16 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+
+#ifdef __WIN32
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
+#else
+#include <cstring>
+#define _stricmp strcasecmp
+#define _strnicmp strncasecmp
+#define _snprintf snprintf
+#endif
 
 using namespace std;
 
