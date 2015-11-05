@@ -3,10 +3,26 @@
 #pragma once
 
 #include "lzhuf.h"
-#include <io.h>
+
 #include <fcntl.h>
-#include <sys\stat.h>
+#include <sys/stat.h>
+
+#ifdef _WIN32
+#include <io.h>
 #include <share.h>
+#else
+#include <stdio.h>
+
+#define _sopen open
+#define _fdopen fdopen
+
+#define _O_WRONLY O_WRONLY
+#define _O_TRUNC O_TRUNC
+#define _O_CREAT O_CREAT
+#define _O_BINARY 0
+#define SH_DENYWR 0
+
+#endif
 
 void* FileDownload(LPCSTR fn, u32* pdwSize = NULL);
 void FileCompress(const char* fn, const char* sign, void* data, u32 size);
@@ -45,12 +61,14 @@ public:
         {
             fclose(hf);
             // release RO attrib
+#ifdef _WIN32
             DWORD dwAttr = GetFileAttributes(*fName);
             if ((dwAttr != u32(-1)) && (dwAttr&FILE_ATTRIBUTE_READONLY))
             {
                 dwAttr &= ~FILE_ATTRIBUTE_READONLY;
                 SetFileAttributes(*fName, dwAttr);
             }
+#endif // Probably not needed.
         }
     }
     // kernel
