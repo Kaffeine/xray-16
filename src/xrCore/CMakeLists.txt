@@ -10,7 +10,7 @@ SET(SOURCES
 #    LocatorAPI_defs.cpp
 #    LzHuf.cpp
     Model.cpp
-#    NET_utils.cpp
+    NET_utils.cpp
     Xr_ini.cpp
     _compressed_normal.cpp
 #    _math.cpp
@@ -41,7 +41,7 @@ SET(SOURCES
 #    rt_lzo_init.cpp
 #    stdafx.cpp
 #    stream_reader.cpp
-#    string_concatenations.cpp
+    string_concatenations.cpp
 #    xrCore.cpp
 #    xrDebug.cpp
 #    xrDebugNew.cpp

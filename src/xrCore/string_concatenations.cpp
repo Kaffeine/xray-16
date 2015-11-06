@@ -1,6 +1,12 @@
 #include "stdafx.h"
 #include "string_concatenations.h"
 
+#ifndef _WIN32
+#include <alloca.h>
+
+#define _alloca alloca
+#endif
+
 namespace xray
 {
 
@@ -63,6 +69,7 @@ static inline void process(LPSTR& i, LPCSTR e, u32 const index, LPCSTR(&strings)
 
 } // namespace strconcat_error
 
+#ifdef _WIN32
 int stack_overflow_exception_filter(int exception_code)
 {
     if (exception_code == EXCEPTION_STACK_OVERFLOW)
@@ -89,6 +96,13 @@ void check_stack_overflow(u32 stack_increment)
         _resetstkoflw();
     }
 }
+#else
+void check_stack_overflow(u32 stack_increment)
+{
+    void* p = _alloca(stack_increment);
+    p;
+}
+#endif
 
 void string_tupples::error_process() const
 {

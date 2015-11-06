@@ -6,14 +6,6 @@
 #ifndef _WIN32
 #define _atoi64 atol
 
-void _splitpath (
-   const char *path,  // Path Input
-   char *drive,       // Drive     : Output
-   char *dir,         // Directory : Output
-   char *fname,       // Filename  : Output
-   char *ext          // Extension : Output
-);
-
 inline long _strtoui64(const char *c, char **endptr, int base)
 {
     return atol(c);

@@ -5,6 +5,8 @@
 #ifndef FileSystemH
 #define FileSystemH
 
+#include "_stl_extensions.h"
+
 #define BACKUP_FILE_LEVEL 5
 
 class XRCORE_API EFS_Utils

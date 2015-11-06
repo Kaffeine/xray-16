@@ -5,9 +5,20 @@
 #include "stdafx.h"
 #pragma hdrstop
 
+#ifdef _WIN32
 #include "cderr.h"
 #include "commdlg.h"
 #include "vfw.h"
+#else
+
+void _splitpath (
+   const char *path,  // Path Input
+   char *drive,       // Drive     : Output
+   char *dir,         // Directory : Output
+   char *fname,       // Filename  : Output
+   char *ext          // Extension : Output
+);
+#endif
 
 EFS_Utils* xr_EFS = NULL;
 //----------------------------------------------------
