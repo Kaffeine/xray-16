@@ -1,18 +1,15 @@
+#include <stdlib.h>
+#include "xrCore/_types.h"
+#undef FLT_MAX
+#undef FLT_MIN
+#include <stdio.h>
+#include <vector>
+#include <algorithm>
+#include <string>
+#define WIN32_LEAN_AND_MEAN
+#include <windows.h>
 
-
-	#include <stdlib.h>
-    #include "xrCore/_types.h"
-	#undef FLT_MAX
-	#undef FLT_MIN
-	#include <stdio.h>
-    #include <vector>
-    #include <algorithm>
-    #include <string>
-    #define WIN32_LEAN_AND_MEAN
-    #include <windows.h>
-
-    using namespace std;
-
+using namespace std;
 
 #define MAKE_FOUR_CC(ch0,ch1,ch2,ch3)   \
 ((u32)(u8)(ch0)            |  \
