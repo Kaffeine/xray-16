@@ -8,6 +8,11 @@
 
 # include <boost/crc.hpp>
 
+#ifndef _WIN32
+#include <alloca.h>
+#define _alloca alloca
+#endif
+
 extern void BuildStackTrace ();
 
 extern char g_stackTrace[100][4096];
@@ -16,7 +21,7 @@ extern int g_stackTraceCount;
 static bool g_mem_alloc_gather_stats = false;
 static float g_mem_alloc_gather_stats_frequency = 0.f;
 
-typedef std::pair<PSTR,u32> STATS_PAIR;
+typedef std::pair<char*,u32> STATS_PAIR;
 typedef std::multimap<u32,STATS_PAIR> STATS;
 static STATS stats;
 
@@ -74,7 +79,7 @@ void mem_alloc_clear_stats ()
     stats.clear ();
 }
 
-__declspec(noinline)
+ICN
 void save_stack_trace ()
 {
     if (!g_mem_alloc_gather_stats)
@@ -102,9 +107,9 @@ void save_stack_trace ()
         }
     }
 
-    PSTR string = (PSTR)malloc(accumulator);
+    char* string = (char*)malloc(accumulator);
     {
-        PSTR J = string;
+        char* J = string;
         VERIFY (g_stackTraceCount > 2);
         int* I = lengths;
         for (int i=2; i<g_stackTraceCount; ++i, ++I, ++J)

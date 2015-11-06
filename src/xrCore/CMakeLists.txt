@@ -25,7 +25,7 @@ SET(SOURCES
 #    log.cpp
 #    lzo1x_d3.cpp
     lzo_compressor.cpp
-#    memory_allocation_stats.cpp
+    memory_allocation_stats.cpp
 #    memory_monitor.cpp
 #    memory_usage.cpp
 #    os_clipboard.cpp
