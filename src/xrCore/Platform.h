@@ -6,6 +6,7 @@
 
 #ifdef _WIN32
 
+>>>>>>> ai_cleanup
 #define VC_EXTRALEAN // Exclude rarely-used stuff from Windows headers
 #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 #ifndef STRICT
@@ -37,14 +38,14 @@
 # define ICN __declspec (noinline)
 #endif
 
+#include <time.h>
 // work-around dumb borland compiler
 #ifdef __BORLANDC__
+#define ALIGN(a)
+
 #include <vcl.h>
 #include <mmsystem.h>
 #include <stdint.h>
-
-#define ALIGN(a)
-
 #include <assert.h>
 #include <utime.h>
 #define _utimbuf utimbuf
