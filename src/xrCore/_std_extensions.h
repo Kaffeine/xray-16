@@ -277,8 +277,7 @@ inline int __cdecl xr_sprintf(LPSTR destination, size_t const buffer_size, LPCST
 #ifdef _WIN32
     return vsnprintf_s(destination, buffer_size, buffer_size - 1, format_string, args);
 #else
-//    return vsnprintf(destination, buffer_size, buffer_size - 1, format_string, args);
-return 0;
+    return vsnprintf(destination, buffer_size, format_string, args);
 #endif
 }
 
@@ -287,7 +286,11 @@ inline int __cdecl xr_sprintf(char(&destination)[count], LPCSTR format_string, .
 {
     va_list args;
     va_start(args, format_string);
+#ifdef _WIN32
     return vsnprintf_s(destination, count, count - 1, format_string, args);
+#else
+    return vsnprintf(destination, count, format_string, args);
+#endif
 }
 #endif // #ifndef MASTER_GOLD
 
