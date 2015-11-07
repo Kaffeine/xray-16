@@ -57,7 +57,7 @@ SET(SOURCES
 #    xrSyncronize.cpp
 #    xr_shared.cpp
     xr_trims.cpp
-#    xrsharedmem.cpp
+    xrsharedmem.cpp
     xrstring.cpp
 )
 
