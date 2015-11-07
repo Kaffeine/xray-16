@@ -82,6 +82,18 @@ set(CONTAINERS_HEADERS
     AssociativeVectorComparer.hpp
 )
 
+set(CRYPTO_SOURCES
+    crypto/crypto.cpp
+    crypto/xr_dsa.cpp
+    crypto/xr_sha.cpp
+)
+
+set(CRYPTO_HEADERS
+    crypto/crypto.h
+    crypto/xr_dsa.h
+    crypto/xr_sha.h
+)
+
 set(MATH_SOURCES
     Math/MathUtil.cpp
     Math/PLC_SSE.cpp
@@ -227,6 +239,7 @@ SET(HEADERS
 
 add_library(xrCore SHARED ${SOURCES}  ${HEADERS}
     ${ANIMATION_SOURCES}
+    ${CRYPTO_SOURCES}
     ${MATH_SOURCES}
     ${MEDIA_SOURCES}
     ${POST_PROCESS_SOURCES}
