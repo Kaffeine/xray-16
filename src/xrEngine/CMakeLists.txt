@@ -94,7 +94,7 @@ SET(SOURCES
 #    xrImage_Resampler.cpp
 #    xrLoadSurface.cpp
 #    xrSASH.cpp
-#    xrSheduler.cpp
+    xrSheduler.cpp
 #    xrTheora_Stream.cpp
 #    xrTheora_Surface.cpp
 #    xrTheora_Surface_mmx.cpp
