@@ -95,8 +95,8 @@ SET(SOURCES
 #    xrLoadSurface.cpp
 #    xrSASH.cpp
     xrSheduler.cpp
-#    xrTheora_Stream.cpp
-#    xrTheora_Surface.cpp
+    xrTheora_Stream.cpp
+    xrTheora_Surface.cpp
 #    xrTheora_Surface_mmx.cpp
 #    xr_collide_form.cpp
 #    xr_efflensflare.cpp
