@@ -214,7 +214,7 @@ SET(HEADERS
     rt_lzodefs.h
     rt_miniacc.h
     stdafx.h
-    stream_reader.h
+    Stream_Reader.h
     stream_reader_inline.h
     string_concatenations.h
     string_concatenations_inline.h
