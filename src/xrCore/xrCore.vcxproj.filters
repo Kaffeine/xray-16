@@ -794,9 +794,6 @@
     <ClInclude Include="crypto\crypto.h">
       <Filter>crypto</Filter>
     </ClInclude>
-    <ClInclude Include="crypto\crypto_api_def.h">
-      <Filter>crypto</Filter>
-    </ClInclude>
     <ClInclude Include="crypto\xr_dsa.h">
       <Filter>crypto</Filter>
     </ClInclude>
