@@ -18,14 +18,14 @@ SET(SOURCES
 #    clsid.cpp
 #    cpuid.cpp
     crc32.cpp
-#    doug_lea_allocator.cpp
-#    dump_string.cpp
+    doug_lea_allocator.cpp
+    dump_string.cpp
 #    file_stream_reader.cpp
 #    log.cpp
 #    lzo1x_d3.cpp
     lzo_compressor.cpp
     memory_allocation_stats.cpp
-#    memory_monitor.cpp
+    memory_monitor.cpp
 #    memory_usage.cpp
 #    os_clipboard.cpp
 #    ppmd_compressor.cpp
@@ -38,21 +38,21 @@ SET(SOURCES
 #    rt_lzo1x_d2.cpp
 #    rt_lzo1x_d3.cpp
 #    rt_lzo_init.cpp
-#    stdafx.cpp
+    stdafx.cpp
 #    stream_reader.cpp
     string_concatenations.cpp
 #    xrCore.cpp
 #    xrDebugNew.cpp
     xrMemory.cpp
-#    xrMemory_POOL.cpp
+    xrMemory_POOL.cpp
 #    xrMemory_align.cpp
 #    xrMemory_debug.cpp
 #    xrMemory_pso_Copy.cpp
-#    xrMemory_pso_Fill.cpp
+    xrMemory_pso_Fill.cpp
 #    xrMemory_pso_Fill32.cpp
 #    xrMemory_subst_borland.cpp
 #    xrMemory_subst_msvc.cpp
-#    xr_shared.cpp
+    xr_shared.cpp
     xr_trims.cpp
     xrsharedmem.cpp
     xrstring.cpp
