@@ -83,15 +83,19 @@ set(CONTAINERS_HEADERS
 )
 
 set(CRYPTO_SOURCES
-    crypto/crypto.cpp
-    crypto/xr_dsa.cpp
-    crypto/xr_sha.cpp
+    Crypto/crypto.cpp
+#    Crypto/xr_dsa_signer.cpp
+    Crypto/xr_dsa_verifyer.cpp
+    Crypto/xr_dsa.cpp
+    Crypto/xr_sha.cpp
 )
 
 set(CRYPTO_HEADERS
-    crypto/crypto.h
-    crypto/xr_dsa.h
-    crypto/xr_sha.h
+    Crypto/crypto.h
+    Crypto/xr_dsa_signer.h
+    Crypto/xr_dsa_verifyer.h
+    Crypto/xr_dsa.h
+    Crypto/xr_sha.h
 )
 
 set(MATH_SOURCES
