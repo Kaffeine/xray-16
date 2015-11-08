@@ -9,8 +9,7 @@ compiler:
 
 before_install:
     - sudo apt-get -qq update
-    - sudo apt-get install -y libsdl2-dev
-    - sudo apt-get install -y libtheora-dev
+    - sudo apt-get install -y --no-install-recommends libsdl2-dev libtheora-dev
 
 before_script:
   - cd src
