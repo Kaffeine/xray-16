@@ -1,11 +1,10 @@
 SET(SOURCES
-#    ELocatorAPI.cpp
+#    FMesh.cpp
 #    FS.cpp
     FTimer.cpp
 #    FileSystem.cpp
 #    FileSystem_borland.cpp
 #    LocatorAPI.cpp
-#    LocatorAPI_Notifications.cpp
 #    LocatorAPI_auth.cpp
 #    LocatorAPI_defs.cpp
 #    LzHuf.cpp
@@ -43,7 +42,6 @@ SET(SOURCES
 #    stream_reader.cpp
     string_concatenations.cpp
 #    xrCore.cpp
-#    xrDebug.cpp
 #    xrDebugNew.cpp
     xrMemory.cpp
 #    xrMemory_POOL.cpp
@@ -54,7 +52,6 @@ SET(SOURCES
 #    xrMemory_pso_Fill32.cpp
 #    xrMemory_subst_borland.cpp
 #    xrMemory_subst_msvc.cpp
-#    xrSyncronize.cpp
 #    xr_shared.cpp
     xr_trims.cpp
     xrsharedmem.cpp
