@@ -27,7 +27,7 @@ SET(SOURCES
     memory_allocation_stats.cpp
     memory_monitor.cpp
 #    memory_usage.cpp
-#    os_clipboard.cpp
+    os_clipboard.cpp
 #    ppmd_compressor.cpp
 #    rt_compressor.cpp
 #    rt_compressor9.cpp
