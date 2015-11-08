@@ -6,6 +6,11 @@ add_definitions(-D_MT)
 
 #find_package(Lua51 REQUIRED)
 
+# Load pkg-config module
+find_package(PkgConfig)
+
+pkg_check_modules(THEORA theoradec)
+
 #include_directories(${LUA_INCLUDE_DIR})
 
 add_subdirectory(xrCore)
