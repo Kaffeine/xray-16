@@ -20,10 +20,6 @@ before_script:
 
 script: make
 
-branches:
-  only:
-    - linux
-
 notifications:
   email: false
 
