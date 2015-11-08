@@ -223,9 +223,8 @@ SET(HEADERS
     xr_object_list.h
 )
 
-add_library(xrEngine SHARED ${SOURCES}  ${HEADERS}
-)
+add_library(xrEngine SHARED ${SOURCES} ${HEADERS})
 
-include_directories(${CMAKE_SOURCE_DIR})
+include_directories("." ${CMAKE_SOURCE_DIR} ${THEORA_INCLUDE_DIRS})
 
-include_directories(".")
+target_link_libraries(xrEngine ${THEORA_LIBRARIES})
