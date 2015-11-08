@@ -247,6 +247,8 @@ add_library(xrCore SHARED ${SOURCES}  ${HEADERS}
     ${TEXT_SOURCES}
 )
 
+target_link_libraries(xrCore ${SDL2_LIBRARIES})
+
 include_directories(${CMAKE_SOURCE_DIR})
 
 include_directories(".")

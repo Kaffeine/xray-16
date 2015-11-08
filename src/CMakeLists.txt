@@ -9,6 +9,7 @@ add_definitions(-D_MT)
 # Load pkg-config module
 find_package(PkgConfig)
 
+pkg_check_modules(SDL2 REQUIRED sdl2)
 pkg_check_modules(THEORA theoradec)
 
 #include_directories(${LUA_INCLUDE_DIR})
