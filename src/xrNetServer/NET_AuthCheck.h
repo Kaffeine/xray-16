@@ -1,7 +1,7 @@
 #ifndef NET_AUTH_CHECK_INCLUDED
 #define NET_AUTH_CHECK_INCLUDED
 
-#include "net_shared.h"
+#include "NET_Shared.h"
 
 typedef xr_vector<shared_str> xr_auth_strings_t;
 void XRNETSERVER_API fill_auth_check_params	(xr_auth_strings_t & ignore,
