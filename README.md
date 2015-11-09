@@ -1,6 +1,8 @@
 X-Ray Engine 1.6 expansion
 ==========================
 
+Linux branch status [![Build Status](https://travis-ci.org/Kaffeine/xray-16.svg?branch=linux)](https://travis-ci.org/Kaffeine/xray-16)
+
 This repository contains X-Ray Engine sources based on version 1.6.02.
 The original engine is used in S.T.A.L.K.E.R. Call of Pripyat game released by GSC Game World.
 
