@@ -135,6 +135,18 @@ set(TEXT_HEADERS
     Text/MbHelpers.hpp
 )
 
+set(THREADING_SOURCES
+#    Threading/Event.cpp
+    Threading/Lock.cpp
+#    Threading/ttapi.cpp
+)
+
+set(THREADING_HEADERS
+    Threading/Event.hpp
+    Threading/Lock.hpp
+    Threading/ttapi.h
+)
+
 SET(HEADERS 
     ChooseTypes.H
     Coder.hpp
@@ -245,6 +257,7 @@ add_library(xrCore SHARED ${SOURCES}  ${HEADERS}
     ${MEDIA_SOURCES}
     ${POST_PROCESS_SOURCES}
     ${TEXT_SOURCES}
+    ${THREADING_SOURCES}
 )
 
 target_link_libraries(xrCore ${SDL2_LIBRARIES})
