@@ -39,7 +39,7 @@ void *xrMemory::mem_alloc(size_t size)
     if (!g_use_pure_alloc_initialized)
     {
         g_use_pure_alloc_initialized = true;        
-        g_use_pure_alloc = Core.PluginMode || strstr(GetCommandLine(), "-pure_alloc");
+        g_use_pure_alloc = Core.PluginMode || strstr(Core.Params, "-pure_alloc");
     }
     if (g_use_pure_alloc)
     {
