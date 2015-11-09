@@ -10,7 +10,7 @@ add_definitions(-D_MT)
 find_package(PkgConfig)
 
 pkg_check_modules(SDL2 REQUIRED sdl2)
-pkg_check_modules(THEORA theoradec)
+pkg_check_modules(THEORA REQUIRED theoradec)
 
 #include_directories(${LUA_INCLUDE_DIR})
 
