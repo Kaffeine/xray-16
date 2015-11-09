@@ -228,3 +228,5 @@ add_library(xrEngine SHARED ${SOURCES} ${HEADERS})
 include_directories("." ${CMAKE_SOURCE_DIR} ${THEORA_INCLUDE_DIRS})
 
 target_link_libraries(xrEngine ${THEORA_LIBRARIES})
+
+target_link_libraries(xrEngine xrCore)
