@@ -6,6 +6,8 @@ add_definitions(-D_MT)
 
 #find_package(Lua51 REQUIRED)
 
+find_package(OpenSSL REQUIRED)
+
 # Load pkg-config module
 find_package(PkgConfig)
 
