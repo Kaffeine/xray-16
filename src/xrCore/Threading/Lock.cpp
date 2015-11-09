@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "Lock.hpp"
-#include <windows.h>
 
-#ifdef PROFILE_CRITICAL_SECTIONS
+#ifdef PROFILE_LOCKS
 static add_profile_portion_callback add_profile_portion = 0;
 void set_add_profile_portion(add_profile_portion_callback callback)
 {
@@ -32,37 +31,20 @@ struct profiler
         (*add_profile_portion)(m_timer_id, time - m_time);
     }
 };
-#endif // PROFILE_CRITICAL_SECTIONS
-
-#ifdef PROFILE_CRITICAL_SECTIONS
-Lock::Lock(const char *id) : id(id)
-#else
-Lock::Lock()
-#endif
-{ InitializeCriticalSection(&cs); }
-
-Lock::~Lock() { DeleteCriticalSection(&cs); }
-
-#ifdef DEBUG
-extern void OutputDebugStackTrace(const char *header);
-#endif
 
 void Lock::Enter()
 {
-#ifdef PROFILE_CRITICAL_SECTIONS
 # if 0//def DEBUG
     static bool show_call_stack = false;
     if (show_call_stack)
         OutputDebugStackTrace("----------------------------------------------------");
 # endif // DEBUG
     profiler temp(id);
-#endif // PROFILE_CRITICAL_SECTIONS
-    EnterCriticalSection(&cs);
+    mutex.lock();
+    is_locked = true;
 }
+#endif // PROFILE_LOCKS
 
-bool Lock::TryEnter() { return !!TryEnterCriticalSection(&cs); }
-
-void Lock::Leave() { LeaveCriticalSection(&cs); }
-
-bool Lock::IsLocked() const
-{ return cs.RecursionCount>0 && (DWORD)cs.OwningThread==GetCurrentThreadId(); }
+#ifdef DEBUG
+extern void OutputDebugStackTrace(const char *header);
+#endif
