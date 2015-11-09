@@ -49,9 +49,9 @@ SET(SOURCES
 #    xrMemory_debug.cpp
 #    xrMemory_pso_Copy.cpp
     xrMemory_pso_Fill.cpp
-#    xrMemory_pso_Fill32.cpp
+    xrMemory_pso_Fill32.cpp
 #    xrMemory_subst_borland.cpp
-#    xrMemory_subst_msvc.cpp
+    xrMemory_subst_msvc.cpp
     xr_shared.cpp
     xr_trims.cpp
     xrsharedmem.cpp
