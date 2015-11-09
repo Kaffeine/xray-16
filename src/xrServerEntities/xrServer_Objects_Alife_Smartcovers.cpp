@@ -89,7 +89,7 @@ CSE_SmartCover::~CSE_SmartCover ()
 #endif // XRSE_FACTORY_EXPORTS
 }
 
-ISE_Shape* CSE_SmartCover::shape()
+IServerEntityShape* CSE_SmartCover::shape()
 {
     return                      (this);
 }
@@ -552,7 +552,7 @@ void CSE_SmartCover::load_draw_data () {
     fill_visuals                ();
 }
 
-void CSE_SmartCover::on_render  (CDUInterface* du, ISE_AbstractLEOwner* owner, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F)
+void CSE_SmartCover::on_render  (CDUInterface* du, IServerEntityLEOwner* owner, bool bSelected, const Fmatrix& parent,int priority, bool strictB2F)
 {
     inherited1::on_render   (du, owner, bSelected, parent, priority, strictB2F);
     if ( !((1==priority)&&(false==strictB2F)) ) 
