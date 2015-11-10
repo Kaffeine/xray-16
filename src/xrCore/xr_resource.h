@@ -67,7 +67,7 @@ public:
     ~resptr_core() { C::_dec(); }
 
     // assignment
-    self& operator= (const self& rhs) { _set(rhs); return (self&)*this; }
+    self& operator= (const self& rhs) { C::_set(rhs); return (self&)*this; }
 
     // accessors
     T& operator*() const { return *C::p_; }
