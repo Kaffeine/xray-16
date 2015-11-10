@@ -43,6 +43,17 @@ public:
     void clear() { std::vector<T>::erase( std::vector<T>::begin(),  std::vector<T>::end()); }
     void clear_and_free() { std::vector<T>::clear(); }
     void clear_not_free() { std::vector<T>::erase( std::vector<T>::begin(), std::vector<T>::end()); }
+    void clear_and_reserve()
+    {
+        if (std::vector<T>::capacity() <= (std::vector<T>::size() + std::vector<T>::size() / 4))
+            clear_not_free();
+        else
+        {
+            u32 old = std::vector<T>::size();
+            clear_and_free();
+            std::vector<T>::reserve(old);
+        }
+    }
     ICF const_reference operator[] (size_type _Pos) const { {VERIFY(_Pos <  std::vector<T>::size()); } return (*( std::vector<T>::begin() + _Pos)); }
     ICF reference operator[] (size_type _Pos) { {VERIFY(_Pos <  std::vector<T>::size()); } return (*( std::vector<T>::begin() + _Pos)); }
 };
