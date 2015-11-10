@@ -8,7 +8,7 @@
 
 #include "stdafx.h"
 #include "aimers_base.h"
-#include "gameobject.h"
+#include "GameObject.h"
 #include "Include/xrRender/kinematics.h"
 #include "animation_movement_controller.h"
 

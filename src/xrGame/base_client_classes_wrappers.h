@@ -10,13 +10,13 @@
 
 
 #include "base_client_classes.h"
-#include "xrEngine/engineapi.h"
-#include "xrCDB/ispatial.h"
-#include "xrEngine/isheduled.h"
-#include "xrEngine/irenderable.h"
-#include "xrEngine/icollidable.h"
+#include "xrEngine/EngineAPI.h"
+#include "xrCDB/ISpatial.h"
+#include "xrEngine/ISheduled.h"
+#include "xrEngine/IRenderable.h"
+#include "xrEngine/ICollidable.h"
 #include "xrEngine/xr_object.h"
-#include "entity.h"
+#include "Entity.h"
 #include "ai_space.h"
 #include "xrScriptEngine/script_engine.hpp"
 #include <loki/typelist.h>

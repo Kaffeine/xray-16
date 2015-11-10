@@ -1,5 +1,5 @@
 #pragma once
-#include "physicsshellholder.h"
+#include "PhysicsShellHolder.h"
 #include "xrPhysics/iclimableobject.h"
 class IPHStaticGeomShell;
 class CPHCharacter;

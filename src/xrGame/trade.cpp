@@ -4,7 +4,7 @@
 #include "ai/stalker/ai_stalker.h"
 #include "ai/trader/ai_trader.h"
 #include "artefact.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "xrmessages.h"
 #include "character_info.h"
 #include "relation_registry.h"

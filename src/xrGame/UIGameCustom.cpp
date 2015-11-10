@@ -13,7 +13,7 @@
 #include "ui/UIMessagesWindow.h"
 #include "ui/UIHudStatesWnd.h"
 #include "actor.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "game_cl_base.h"
 
 #include "xrEngine/x_ray.h"

@@ -2,7 +2,7 @@
 #include "actor.h"
 #include "weapon.h"
 #include "mercuryball.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "character_info.h"
 #include "xr_level_controller.h"
 #include "UsableScriptObject.h"
@@ -16,7 +16,7 @@
 #include "game_cl_base.h"
 #include "Level.h"
 #include "clsid_game.h"
-#include "hudmanager.h"
+#include "HUDManager.h"
 
 #define PICKUP_INFO_COLOR 0xFFDDDDDD
 

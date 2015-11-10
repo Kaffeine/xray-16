@@ -1,7 +1,7 @@
 #pragma once
 #include "inventory_item_object.h"
-#include "xrEngine/feel_touch.h"
-#include "hudsound.h"
+#include "xrEngine/Feel_Touch.h"
+#include "HudSound.h"
 #include "customzone.h"
 #include "artefact.h"
 #include "ai_sounds.h"

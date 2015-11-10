@@ -2,7 +2,7 @@
 
 #include "CharacterPhysicsSupport.h"
 #include "alife_space.h"
-#include "hit.h"
+#include "Hit.h"
 #include "PHDestroyable.h"
 #include "PHMovementControl.h"
 #include "CustomMonster.h"
@@ -35,7 +35,7 @@
 #include "interactive_animation.h"
 #include "stalker_animation_manager.h"
 #include "inventoryowner.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "activatingcharcollisiondelay.h"
 #include "stalker_movement_manager_smart_cover.h"
 

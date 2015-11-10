@@ -2,7 +2,7 @@
 #include "mosquitobald.h"
 #include "ParticlesObject.h"
 #include "Level.h"
-#include "physicsshellholder.h"
+#include "PhysicsShellHolder.h"
 #include "xrEngine/xr_collide_form.h"
 
 CMosquitoBald::CMosquitoBald(void) 

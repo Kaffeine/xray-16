@@ -4,7 +4,7 @@
 
 
 
-#include "xrPhysics/physicsexternalcommon.h"
+#include "xrPhysics/PhysicsExternalCommon.h"
 #include "xrPhysics/mathutils.h"
 #include "xrPhysics/movementboxdynamicactivate.h"
 namespace ALife {

@@ -16,7 +16,7 @@
 #include "ai/Monsters/Pseudodog/psy_dog_aura.h"
 #include "ai/Monsters/Pseudodog/psy_dog_state_manager.h"
 #include "alife_object_registry.h"
-#include "xrServerEntities/xrserver_objects_alife_monsters.h"
+#include "xrServerEntities/xrServer_Objects_ALife_Monsters.h"
 
 CPsyDog::CPsyDog()
 {

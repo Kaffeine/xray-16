@@ -16,7 +16,7 @@
 #include "sound_memory_manager.h"
 #include "hit_memory_manager.h"
 #include "actor_memory.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "weapon.h"
 #include "ai_object_location.h"
 #include "movement_manager_space.h"

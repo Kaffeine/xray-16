@@ -5,7 +5,7 @@
 #include "PHDebug.h"
 #endif
 #include "alife_space.h"
-#include "hit.h"
+#include "Hit.h"
 #include "phdestroyable.h"
 #include "car.h"
 #include "actor.h"

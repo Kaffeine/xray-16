@@ -12,14 +12,14 @@
 #ifndef AI_COMPILER
 
 #include "level_graph.h"
-#include "xrEngine/customhud.h"
+#include "xrEngine/CustomHUD.h"
 #include "ai_space.h"
 #include "ui_base.h"
 #include "game_graph.h"
 #include "game_sv_single.h"
 #include "custommonster.h"
 #include "ai/stalker/ai_stalker.h"
-#include "xrserver_objects_alife_monsters.h"
+#include "xrServer_Objects_ALife_Monsters.h"
 #include "cover_point.h"
 #include "cover_manager.h"
 #include "cover_evaluators.h"

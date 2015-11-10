@@ -3,7 +3,7 @@
 #include "xrPhysics/PhysicsShell.h"
 #include "PhysicsShellHolder.h"
 #include "Level.h"
-#include "hit.h"
+#include "Hit.h"
 #include "phdestroyable.h"
 #include "xrmessages.h"
 #include "Include/xrRender/Kinematics.h"

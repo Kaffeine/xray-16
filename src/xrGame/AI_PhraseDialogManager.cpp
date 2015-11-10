@@ -10,7 +10,7 @@
 #include "PhraseDialog.h"
 #include "inventoryowner.h"
 #include "character_info.h"
-#include "gameobject.h"
+#include "GameObject.h"
 #include "relation_registry.h"
 
 CAI_PhraseDialogManager::CAI_PhraseDialogManager	(void)

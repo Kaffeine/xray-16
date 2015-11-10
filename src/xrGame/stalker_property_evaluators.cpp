@@ -12,7 +12,7 @@
 #include "stalker_decision_space.h"
 #include "script_game_object.h"
 #include "ai/ai_monsters_misc.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "alife_simulator.h"
 #include "alife_object_registry.h"
 #include "memory_manager.h"

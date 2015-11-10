@@ -8,7 +8,7 @@
 
 #include "stdafx.h"
 #include "level_changer.h"
-#include "hit.h"
+#include "Hit.h"
 #include "actor.h"
 #include "xrserver_objects_alife.h"
 #include "Level.h"

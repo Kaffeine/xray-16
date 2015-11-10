@@ -18,7 +18,7 @@
 #include "entity_alive.h"
 
 #include "inventory_item.h"
-#include "inventory.h"
+#include "Inventory.h"
 
 #include <ai/monsters/poltergeist/poltergeist.h>
 

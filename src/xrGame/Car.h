@@ -2,10 +2,10 @@
 
 //#if 0
 
-#include "entity.h"
+#include "Entity.h"
 
 #include "xrPhysics/PhysicsShell.h"
-#include "xrPhysics/phupdateobject.h"
+#include "xrPhysics/PHUpdateObject.h"
 #include "script_entity.h"
 #include "CarLights.h"
 

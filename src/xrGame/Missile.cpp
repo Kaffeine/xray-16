@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "missile.h"
+#include "Missile.h"
 //.#include "WeaponHUD.h"
 #include "xrPhysics/PhysicsShell.h"
 #include "actor.h"
@@ -13,7 +13,7 @@
 #include "xrPhysics/ExtendedGeom.h"
 #include "xrPhysics/MathUtils.h"
 #include "CharacterPhysicsSupport.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "xrEngine/IGame_Persistent.h"
 #ifdef DEBUG
 #	include "phdebug.h"
@@ -24,7 +24,7 @@
 
 #include "ui/UIProgressShape.h"
 #include "ui/UIXmlInit.h"
-#include "physicsshellholder.h"
+#include "PhysicsShellHolder.h"
 
 CUIProgressShape* g_MissileForceShape = NULL;
 

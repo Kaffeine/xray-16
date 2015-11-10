@@ -8,7 +8,7 @@
 
 #include "stdafx.h"
 #include "profiler.h"
-#include "xrEngine/gamefont.h"
+#include "xrEngine/GameFont.h"
 
 #ifdef CONFIG_PROFILE_LOCKS
 static volatile LONG					critical_section_counter = 0;

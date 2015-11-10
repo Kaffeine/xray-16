@@ -4,7 +4,7 @@
 #include "PHDynamicData.h"
 #include "Physics.h"
 #include "ExtendedGeom.h"
-#include "iphysicsshellholder.h"
+#include "IPhysicsShellHolder.h"
 
 #include "xrCDB/Intersect.hpp"
 #include "xrEngine/GameMtlLib.h"

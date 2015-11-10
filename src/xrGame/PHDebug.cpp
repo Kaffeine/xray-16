@@ -15,12 +15,12 @@
 #include "Level.h"
 
 #include "debug_renderer.h"
-#include "physicsshellholder.h"
+#include "PhysicsShellHolder.h"
 
 #include "Include/xrRender/Kinematics.h"
 #include "Include/xrRender/KinematicsAnimated.h"
 #include "xrCore/Animation/Bone.hpp"
-#include "xrEngine/iphdebug.h"
+#include "xrEngine/IPHdebug.h"
 
 #include "ui_base.h"
 

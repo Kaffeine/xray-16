@@ -5,7 +5,7 @@
 #include "xrServer_Object_Base.h"
 #include "xrServer_Objects.h"
 #include "Level.h"
-#include "xrserver_objects_alife_monsters.h"
+#include "xrServer_Objects_ALife_Monsters.h"
 #include "actor.h"
 #include "xrEngine/XR_IOConsole.h"
 #include "xrEngine/IGame_Persistent.h"

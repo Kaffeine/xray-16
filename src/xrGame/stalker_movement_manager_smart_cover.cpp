@@ -23,7 +23,7 @@
 #include "script_game_object.h"
 #include "smart_cover_transition_animation.hpp"
 #include "CharacterPhysicsSupport.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "weapon.h"
 
 namespace smart_cover {

@@ -2,8 +2,8 @@
 
 #include "holder_custom.h"
 #include "shootingobject.h"
-#include "physicsshellholder.h"
-#include "hudsound.h"
+#include "PhysicsShellHolder.h"
+#include "HudSound.h"
 class CCartridge;
 class CCameraBase;
 

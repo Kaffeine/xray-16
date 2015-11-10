@@ -12,7 +12,7 @@
 #	ifdef XRGAME_EXPORTS
 #		include "Include/xrRender/rendervisual.h"
 #		include "alife_space.h"
-#		include "hit.h"
+#		include "Hit.h"
 #		include "actor.h"
 #		include "custommonster.h"
 #		include "ai/stalker/ai_stalker.h"

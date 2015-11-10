@@ -9,7 +9,7 @@
 
 
 #include "Include/xrRender/Kinematics.h"
-#include "iphysicsshellholder.h"
+#include "IPhysicsShellHolder.h"
 #include "xrCore/Animation/Bone.hpp"
 #include "xrEngine/device.h"
 #include "mathutilsode.h"

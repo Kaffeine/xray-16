@@ -1,9 +1,9 @@
 #include "stdafx.h"
 #include "weaponmagazinedwgrenade.h"
-#include "entity.h"
+#include "Entity.h"
 #include "ParticlesObject.h"
 #include "GrenadeLauncher.h"
-#include "xrserver_objects_alife_items.h"
+#include "xrServer_Objects_ALife_Items.h"
 #include "ExplosiveRocket.h"
 #include "Actor.h"
 #include "xr_level_controller.h"
@@ -227,7 +227,7 @@ bool CWeaponMagazinedWGrenade::Action(u16 cmd, u32 flags)
 	return false;
 }
 
-#include "inventory.h"
+#include "Inventory.h"
 #include "inventoryOwner.h"
 void CWeaponMagazinedWGrenade::state_Fire(float dt) 
 {

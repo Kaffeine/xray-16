@@ -10,7 +10,7 @@
 
 
 
-#include "iphysicsshellholder.h"
+#include "IPhysicsShellHolder.h"
 #include "xrCore/Animation/Bone.hpp"
 #include "xrEngine/device.h"
 extern	class CPHWorld	*ph_world;

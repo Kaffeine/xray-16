@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "entity.h"
+#include "Entity.h"
 #include "xrserver_objects.h"
 #include "Level.h"
 #include "xrmessages.h"

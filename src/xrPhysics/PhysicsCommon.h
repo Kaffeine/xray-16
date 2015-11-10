@@ -2,7 +2,7 @@
 #define PHYSICS_COMMON_H
 
 #include "DisablingParams.h"
-#include "physicsexternalcommon.h"
+#include "PhysicsExternalCommon.h"
 
 
 

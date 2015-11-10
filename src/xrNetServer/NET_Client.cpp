@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "NET_Common.h"
 #include "net_client.h"
-#include "net_server.h"
+#include "NET_Server.h"
 #include "net_messages.h"
 #include "NET_Log.h"
 

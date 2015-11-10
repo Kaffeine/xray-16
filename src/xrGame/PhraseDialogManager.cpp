@@ -10,7 +10,7 @@
 
 #include "ai_space.h"
 #include "xrScriptEngine/script_engine.hpp"
-#include "gameobject.h"
+#include "GameObject.h"
 #include "script_game_object.h"
 
 CPhraseDialogManager::CPhraseDialogManager	(void)

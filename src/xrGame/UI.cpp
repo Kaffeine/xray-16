@@ -69,8 +69,8 @@ void CUI::UIOnFrame()
 	m_pMessagesWnd->Update();
 }
 
-#include "inventory.h"
-#include "huditem.h"
+#include "Inventory.h"
+#include "HudItem.h"
 bool CUI::Render()
 {
 	if( GameIndicatorsShown() )

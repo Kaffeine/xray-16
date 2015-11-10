@@ -3,7 +3,7 @@
 
 #include "Level.h"
 #include "actor.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "xrServer_Objects_ALife_Items.h"
 #include "weapon.h"
 #include "xr_level_controller.h"

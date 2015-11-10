@@ -10,7 +10,7 @@
 #include "PHSplitedShell.h"
 
 
-#include "iphysicsshellholder.h"
+#include "IPhysicsShellHolder.h"
 
 
 #include "phvalide.h"

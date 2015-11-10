@@ -2,7 +2,7 @@
 
 #include "phvalide.h"
 #include "mathutils.h"
-#include "iphysicsshellholder.h"
+#include "IPhysicsShellHolder.h"
 
 
 

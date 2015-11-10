@@ -3,14 +3,14 @@
 #include "ActorAnimation.h"
 #include "actor_anim_defs.h"
 #include "weapon.h"
-#include "inventory.h"
-#include "missile.h"
+#include "Inventory.h"
+#include "Missile.h"
 #include "Level.h"
 #ifdef DEBUG
 #include "PHDebug.h"
 #include "ui_base.h"
 #endif
-#include "hit.h"
+#include "Hit.h"
 #include "PHDestroyable.h"
 #include "Car.h"
 #include "Include/xrRender/Kinematics.h"

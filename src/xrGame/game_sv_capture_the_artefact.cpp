@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "game_sv_capture_the_artefact.h"
-#include "xrserver_objects_alife_monsters.h"
+#include "xrServer_Objects_ALife_Monsters.h"
 #include "Level.h"
 #include "xrserver.h"
 #include "Inventory.h"
@@ -21,7 +21,7 @@
 #include "ui\UIBuyWndShared.h"
 #include "UIGameCTA.h"
 #include "string_table.h"
-#include "xrEngine/xr_ioconsole.h"
+#include "xrEngine/XR_IOConsole.h"
 
 //-------------------------------------------------------------
 u32			g_sv_cta_dwInvincibleTime		=		5;	//5 seconds

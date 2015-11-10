@@ -13,7 +13,7 @@
 
 #include "xrPhysics/phCharacter.h"
 #include "xrPhysics/IPHCapture.h"
-#include "xrPhysics/iphysicsshellholder.h"
+#include "xrPhysics/IPhysicsShellHolder.h"
 #include "xrPhysics/ElevatorState.h"
 #include "xrPhysics/CalculateTriangle.h"
 #include "xrPhysics/Icolisiondamageinfo.h"
@@ -26,7 +26,7 @@
 #include "xrEngine/xr_object.h"
 #include "CaptureBoneCallback.h"
 #include "Level.h"
-#include "physicsshellholder.h"
+#include "PhysicsShellHolder.h"
 #ifdef DEBUG
 #include "phdebug.h"
 #endif

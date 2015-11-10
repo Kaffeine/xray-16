@@ -3,7 +3,7 @@
 #include "IKLimbsController.h"
 
 #include "IK/IKLimb.h"
-#include "physicsshellholder.h"
+#include "PhysicsShellHolder.h"
 
 #include "ik_anim_state.h"
 #include "xrPhysics/mathutils.h"
