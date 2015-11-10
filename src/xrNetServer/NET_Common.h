@@ -42,15 +42,11 @@ class XRNETSERVER_API
 MultipacketSender
 {
 public:
-                    MultipacketSender();
     virtual         ~MultipacketSender() {}
 
+protected:
     void            SendPacket( const void* packet_data, u32 packet_sz, u32 flags, u32 timeout );
     void            FlushSendBuffer( u32 timeout );
-
-
-protected:
-
     virtual void    _SendTo_LL( const void* data, u32 size, u32 flags, u32 timeout ) =0;
 
 
@@ -85,11 +81,8 @@ public:
 
     virtual         ~MultipacketReciever() {}
 
-    void            RecievePacket( const void* packet_data, u32 packet_sz, u32 param=0 );
-
-
 protected:
-
+    void            RecievePacket( const void* packet_data, u32 packet_sz, u32 param=0 );
     virtual void    _Recieve( const void* data, u32 data_size, u32 param ) =0;
 };
 

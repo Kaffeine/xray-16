@@ -4,11 +4,7 @@
 #include <mutex>
 #include <atomic>
 
-#ifdef PROFILE_CRITICAL_SECTIONS
-#define PROFILE_LOCKS
-#endif
-
-#ifdef PROFILE_LOCKS
+#ifdef CONFIG_PROFILE_LOCKS
 typedef void(*add_profile_portion_callback) (LPCSTR id, const u64& time);
 void XRCORE_API set_add_profile_portion(add_profile_portion_callback callback);
 
@@ -18,44 +14,44 @@ void XRCORE_API set_add_profile_portion(add_profile_portion_callback callback);
 # define CONCATENIZE(a,b) CONCATENIZE_HELPER(a,b)
 # define MUTEX_PROFILE_PREFIX_ID #mutexes/
 # define MUTEX_PROFILE_ID(a) STRINGIZER(CONCATENIZE(MUTEX_PROFILE_PREFIX_ID,a))
-#endif // PROFILE_LOCKS
+#endif // CONFIG_PROFILE_LOCKS
 
 class XRCORE_API Lock
 {
 public:
-#ifdef PROFILE_LOCKS
-    inline Lock(const char *id) : is_locked(false), id(id) { }
+#ifdef CONFIG_PROFILE_LOCKS
+    Lock(const char *id) : isLocked(false), id(id) { }
 #else
-    inline Lock() : is_locked(false) { }
+    Lock() : isLocked(false) { }
 #endif
 
     Lock(const Lock &) = delete;
     Lock operator=(const Lock &) = delete;
 
-#ifdef PROFILE_LOCKS
+#ifdef CONFIG_PROFILE_LOCKS
     void Enter();
 #else
-    inline void Enter() { return mutex.lock(); is_locked = true; }
+    void Enter() { return mutex.lock(); isLocked = true; }
 #endif
 
-    inline bool TryEnter()
+    bool TryEnter()
     {
         bool locked = mutex.try_lock();
         if (locked)
         {
-            is_locked = true;
+            isLocked = true;
         }
         return locked;
     }
 
-    inline void Leave() { return mutex.unlock(); is_locked = false; }
+    void Leave() { return mutex.unlock(); isLocked = false; }
 
-    inline bool IsLocked() const { return is_locked; }
+    bool IsLocked() const { return isLocked; }
 
 private:
     std::mutex mutex;
-    std::atomic_bool is_locked;
-#ifdef PROFILE_LOCKS
+    std::atomic_bool isLocked;
+#ifdef CONFIG_PROFILE_LOCKS
     const char *id;
 #endif
 };

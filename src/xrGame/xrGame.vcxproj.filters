@@ -1861,9 +1861,6 @@
     <Filter Include="Core\Common\NET Shared\SecureMessages">
       <UniqueIdentifier>{8ff2daa1-7b8a-4348-816a-c58970bff531}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Core\Common\ObjectBroker">
-      <UniqueIdentifier>{602bf42d-2d38-4e35-bb1a-c33344ce782d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Core\Common\ObjectFactory">
       <UniqueIdentifier>{7d122c12-20b0-4319-8129-7c26677aedd3}</UniqueIdentifier>
     </Filter>
@@ -2455,12 +2452,6 @@
       <Filter>AI</Filter>
     </ClInclude>
     <ClInclude Include="damage_manager.h">
-      <Filter>AI\AComponents\DamageManager</Filter>
-    </ClInclude>
-    <ClInclude Include="damage_manager_inline.h">
-      <Filter>AI\AComponents\DamageManager</Filter>
-    </ClInclude>
-    <ClInclude Include="DamageSource.h">
       <Filter>AI\AComponents\DamageManager</Filter>
     </ClInclude>
     <ClInclude Include="wrapper_abstract.h">
@@ -5115,7 +5106,7 @@
     <ClInclude Include="CameraFirstEye.h">
       <Filter>Core\Client\Cameras</Filter>
     </ClInclude>
-    <ClInclude Include="cameralook.h">
+    <ClInclude Include="CameraLook.h">
       <Filter>Core\Client\Cameras</Filter>
     </ClInclude>
     <ClInclude Include="ActorEffector.h">
@@ -5939,30 +5930,6 @@
     </ClInclude>
     <ClInclude Include="secure_messaging.h">
       <Filter>Core\Common\NET Shared\SecureMessages</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntities\object_broker.h">
-      <Filter>Core\Common\ObjectBroker</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntities\object_cloner.h">
-      <Filter>Core\Common\ObjectBroker</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntities\object_comparer.h">
-      <Filter>Core\Common\ObjectBroker</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntities\object_destroyer.h">
-      <Filter>Core\Common\ObjectBroker</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntities\object_interfaces.h">
-      <Filter>Core\Common\ObjectBroker</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntities\object_loader.h">
-      <Filter>Core\Common\ObjectBroker</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntities\object_saver.h">
-      <Filter>Core\Common\ObjectBroker</Filter>
-    </ClInclude>
-    <ClInclude Include="..\xrServerEntities\object_type_traits.h">
-      <Filter>Core\Common\ObjectBroker</Filter>
     </ClInclude>
     <ClInclude Include="..\xrServerEntities\clsid_game.h">
       <Filter>Core\Common\ObjectFactory</Filter>
@@ -8589,7 +8556,7 @@
     <ClCompile Include="CameraFirstEye.cpp">
       <Filter>Core\Client\Cameras</Filter>
     </ClCompile>
-    <ClCompile Include="cameralook.cpp">
+    <ClCompile Include="CameraLook.cpp">
       <Filter>Core\Client\Cameras</Filter>
     </ClCompile>
     <ClCompile Include="ActorEffector.cpp">

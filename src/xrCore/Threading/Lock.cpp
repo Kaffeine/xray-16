@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Lock.hpp"
 
-#ifdef PROFILE_LOCKS
+#ifdef CONFIG_PROFILE_LOCKS
 static add_profile_portion_callback add_profile_portion = 0;
 void set_add_profile_portion(add_profile_portion_callback callback)
 {
@@ -41,9 +41,9 @@ void Lock::Enter()
 # endif // DEBUG
     profiler temp(id);
     mutex.lock();
-    is_locked = true;
+    isLocked = true;
 }
-#endif // PROFILE_LOCKS
+#endif // CONFIG_PROFILE_LOCKS
 
 #ifdef DEBUG
 extern void OutputDebugStackTrace(const char *header);

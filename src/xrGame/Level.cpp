@@ -67,7 +67,7 @@ u32 lvInterpSteps = 0;
 
 CLevel::CLevel() :
     IPureClient(Device.GetTimerGlobal())
-#ifdef PROFILE_CRITICAL_SECTIONS
+#ifdef CONFIG_PROFILE_LOCKS
     , DemoCS(MUTEX_PROFILE_ID(DemoCS))
 #endif
 {
@@ -486,7 +486,7 @@ void CLevel::OnFrame()
                 const IServerStatistic* S = Server->GetStatistic();
                 F->SetHeightI(0.015f);
                 F->OutSetI(0.0f, 0.5f);
-                F->SetColor(D3DCOLOR_XRGB(0, 255, 0));
+                F->SetColor(color_xrgb(0, 255, 0));
                 F->OutNext("IN:  %4d/%4d (%2.1f%%)", S->bytes_in_real, S->bytes_in,
                     100.f*float(S->bytes_in_real) / float(S->bytes_in));
                 F->OutNext("OUT: %4d/%4d (%2.1f%%)", S->bytes_out_real, S->bytes_out,
@@ -494,7 +494,7 @@ void CLevel::OnFrame()
                 F->OutNext("client_2_sever ping: %d", net_Statistic.getPing());
                 F->OutNext("SPS/Sended : %4d/%4d", S->dwBytesPerSec, S->dwBytesSended);
                 F->OutNext("sv_urate/cl_urate : %4d/%4d", psNET_ServerUpdate, psNET_ClientUpdate);
-                F->SetColor(D3DCOLOR_XRGB(255, 255, 255));
+                F->SetColor(color_xrgb(255, 255, 255));
                 struct net_stats_functor
                 {
                     xrServer* m_server;
@@ -523,10 +523,10 @@ void CLevel::OnFrame()
                 IPureClient::UpdateStatistic();
                 F->SetHeightI(0.015f);
                 F->OutSetI(0.0f, 0.5f);
-                F->SetColor(D3DCOLOR_XRGB(0, 255, 0));
+                F->SetColor(color_xrgb(0, 255, 0));
                 F->OutNext("client_2_sever ping: %d", net_Statistic.getPing());
                 F->OutNext("sv_urate/cl_urate : %4d/%4d", psNET_ServerUpdate, psNET_ClientUpdate);
-                F->SetColor(D3DCOLOR_XRGB(255, 255, 255));
+                F->SetColor(color_xrgb(255, 255, 255));
                 F->OutNext("BReceivedPs(%2d), BSendedPs(%2d), Retried(%2d), Blocked(%2d)",
                     net_Statistic.getReceivedPerSec(),
                     net_Statistic.getSendedPerSec(),
@@ -677,7 +677,7 @@ void CLevel::OnRender()
             }
         }
         //  [7/5/2005]
-        if (Server && Server->game) Server->game->OnRender();
+        if (Server && Server->GetGameState()) Server->GetGameState()->OnRender();
         //  [7/5/2005]
         ObjectSpace.dbgRender();
         UI().Font().pFontStat->OutSet(170, 630);

@@ -103,16 +103,16 @@ void SBullet::Init(const Fvector& position,
 
 
 CBulletManager::CBulletManager()
-#if 0//def PROFILE_CRITICAL_SECTIONS
+#if 0//def CONFIG_PROFILE_LOCKS
 	: m_Lock(MUTEX_PROFILE_ID(CBulletManager))
 #	ifdef DEBUG
 		,m_thread_id(GetCurrentThreadId())
 #	endif // #ifdef DEBUG
-#else // #ifdef PROFILE_CRITICAL_SECTIONS
+#else // #ifdef CONFIG_PROFILE_LOCKS
 #	ifdef DEBUG
 		: m_thread_id(GetCurrentThreadId())
 #	endif // #ifdef DEBUG
-#endif // #ifdef PROFILE_CRITICAL_SECTIONS
+#endif // #ifdef CONFIG_PROFILE_LOCKS
 {
 	m_Bullets.clear			();
 	m_Bullets.reserve		(100);
@@ -934,12 +934,12 @@ void CBulletManager::Render	()
 		BulletPoints::const_iterator	e = m_bullet_points.end();
 		for ( ; i != e; i+=2) {
 			sphere.c					= *i;
-			renderer.draw_ellipse		(sphere, D3DCOLOR_XRGB(255, 0, 0));
+			renderer.draw_ellipse		(sphere, color_xrgb(255, 0, 0));
 
-			renderer.draw_line			(Fidentity, *i, *(i + 1), D3DCOLOR_XRGB(0, 255, 0));
+			renderer.draw_line			(Fidentity, *i, *(i + 1), color_xrgb(0, 255, 0));
 
 			sphere.c					= *(i + 1);
-			renderer.draw_ellipse		(sphere, D3DCOLOR_XRGB(255, 0, 0));
+			renderer.draw_ellipse		(sphere, color_xrgb(255, 0, 0));
 		}
 
 		if (m_bullet_points.size() > 32768)

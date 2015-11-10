@@ -109,7 +109,7 @@
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4237;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4237;4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
@@ -159,7 +159,7 @@
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4237;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4237;4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
@@ -211,7 +211,7 @@
       <WarningLevel>Level4</WarningLevel>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
-      <DisableSpecificWarnings>4237;%(DisableSpecificWarnings)</DisableSpecificWarnings>
+      <DisableSpecificWarnings>4237;4250;%(DisableSpecificWarnings)</DisableSpecificWarnings>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
     <ResourceCompile>
@@ -251,15 +251,10 @@
     <ClInclude Include="..\xrServerEntities\inventory_space.h" />
     <ClInclude Include="..\xrServerEntities\ItemListTypes.h" />
     <ClInclude Include="..\xrServerEntities\LevelGameDef.h" />
-    <ClInclude Include="..\xrServerEntities\object_broker.h" />
-    <ClInclude Include="..\xrServerEntities\object_cloner.h" />
-    <ClInclude Include="..\xrServerEntities\object_comparer.h" />
-    <ClInclude Include="..\xrServerEntities\object_destroyer.h" />
     <ClInclude Include="..\xrServerEntities\object_factory.h" />
     <ClInclude Include="..\xrServerEntities\object_factory_impl.h" />
     <ClInclude Include="..\xrServerEntities\object_factory_inline.h" />
     <ClInclude Include="..\xrServerEntities\object_factory_space.h" />
-    <ClInclude Include="..\xrServerEntities\object_interfaces.h" />
     <ClInclude Include="..\xrServerEntities\object_item_abstract.h" />
     <ClInclude Include="..\xrServerEntities\object_item_abstract_inline.h" />
     <ClInclude Include="..\xrServerEntities\object_item_client_server.h" />
@@ -267,9 +262,6 @@
     <ClInclude Include="..\xrServerEntities\object_item_script.h" />
     <ClInclude Include="..\xrServerEntities\object_item_single.h" />
     <ClInclude Include="..\xrServerEntities\object_item_single_inline.h" />
-    <ClInclude Include="..\xrServerEntities\object_loader.h" />
-    <ClInclude Include="..\xrServerEntities\object_saver.h" />
-    <ClInclude Include="..\xrServerEntities\object_type_traits.h" />
     <ClInclude Include="..\xrServerEntities\pch_script.h" />
     <ClInclude Include="..\xrServerEntities\PHNetState.h" />
     <ClInclude Include="..\xrServerEntities\PropertiesListTypes.h" />
@@ -811,7 +803,7 @@
     <ClInclude Include="callback_info.h" />
     <ClInclude Include="CameraEffector.h" />
     <ClInclude Include="CameraFirstEye.h" />
-    <ClInclude Include="cameralook.h" />
+    <ClInclude Include="CameraLook.h" />
     <ClInclude Include="CameraRecoil.h" />
     <ClInclude Include="CaptureBoneCallback.h" />
     <ClInclude Include="Car.h" />
@@ -854,9 +846,7 @@
     <ClInclude Include="CustomRocket.h" />
     <ClInclude Include="CustomZone.h" />
     <ClInclude Include="DamagableItem.h" />
-    <ClInclude Include="DamageSource.h" />
     <ClInclude Include="damage_manager.h" />
-    <ClInclude Include="damage_manager_inline.h" />
     <ClInclude Include="danger_cover_location.h" />
     <ClInclude Include="danger_cover_location_inline.h" />
     <ClInclude Include="danger_explosive.h" />
@@ -2428,7 +2418,7 @@
     <ClCompile Include="BreakableObject.cpp" />
     <ClCompile Include="CameraEffector.cpp" />
     <ClCompile Include="CameraFirstEye.cpp" />
-    <ClCompile Include="cameralook.cpp" />
+    <ClCompile Include="CameraLook.cpp" />
     <ClCompile Include="Car.cpp" />
     <ClCompile Include="CarCameras.cpp" />
     <ClCompile Include="CarDamageParticles.cpp" />

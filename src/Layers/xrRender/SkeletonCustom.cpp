@@ -10,9 +10,9 @@
 #endif
 int			psSkeletonUpdate	= 32;
 Lock	UCalc_Mutex
-#ifdef PROFILE_CRITICAL_SECTIONS
+#ifdef CONFIG_PROFILE_LOCKS
 	(MUTEX_PROFILE_ID(UCalc_Mutex))
-#endif // PROFILE_CRITICAL_SECTIONS
+#endif // CONFIG_PROFILE_LOCKS
 ;
 
 #ifndef _EDITOR
@@ -69,12 +69,12 @@ void CKinematics::DebugRender(Fmatrix& XFORM)
 		Fvector P1,P2;
 		M1.transform_tiny(P1,Z);
 		M2.transform_tiny(P2,Z);
-		RCache.dbg_DrawLINE(XFORM,P1,P2,D3DCOLOR_XRGB(0,255,0));
+		RCache.dbg_DrawLINE(XFORM,P1,P2,color_xrgb(0,255,0));
 
 		Fmatrix M;
 		M.mul_43(XFORM,M2);
-		RCache.dbg_DrawOBB(M,H1,D3DCOLOR_XRGB(255,255,255));
-		RCache.dbg_DrawOBB(M,H2,D3DCOLOR_XRGB(255,255,255));
+		RCache.dbg_DrawOBB(M,H1,color_xrgb(255,255,255));
+		RCache.dbg_DrawOBB(M,H2,color_xrgb(255,255,255));
 	}
 
 	for (u32 b=0; b<bones->size(); b++)
@@ -84,7 +84,7 @@ void CKinematics::DebugRender(Fmatrix& XFORM)
 		Fmatrix		Mbox;	obb.xform_get(Mbox);
 		Fmatrix		X;		X.mul(Mbone,Mbox);
 		Fmatrix		W;		W.mul(XFORM,X);
-		RCache.dbg_DrawOBB(W,obb.m_halfsize,D3DCOLOR_XRGB(0,0,255));
+		RCache.dbg_DrawOBB(W,obb.m_halfsize,color_xrgb(0,0,255));
 	}
 }
 #endif
