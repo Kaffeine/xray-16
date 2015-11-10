@@ -6,7 +6,7 @@
 #include "stdafx.h"
 #include "RocketLauncher.h"
 #include "CustomRocket.h"
-#include "xrserver_objects_alife_items.h"
+#include "xrServer_Objects_ALife_Items.h"
 #include "Level.h"
 #include "ai_object_location.h"
 #include "xrEngine/IGame_Persistent.h"

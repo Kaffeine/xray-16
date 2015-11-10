@@ -2,7 +2,7 @@
 #include "game_cl_deathmatch.h"
 #include "Level.h"
 #include "actor.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "xrServer_Objects_ALife_Items.h"
 #include "weapon.h"
 #include "WeaponMagazinedWGrenade.h"

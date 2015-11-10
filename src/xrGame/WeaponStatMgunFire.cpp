@@ -2,7 +2,7 @@
 #include "WeaponStatMgun.h"
 #include "Level.h"
 #include "entity_alive.h"
-#include "hudsound.h"
+#include "HudSound.h"
 #include "actor.h"
 #include "actorEffector.h"
 #include "EffectorShot.h"

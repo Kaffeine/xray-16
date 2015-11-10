@@ -1,7 +1,7 @@
 #ifndef PH_WORLD_H
 #define PH_WORLD_H
 #include "Physics.h"
-#include "phupdateobject.h"
+#include "PHUpdateObject.h"
 #include "IPHWorld.h"
 #include <boost/noncopyable.hpp>
 #include "physics_scripted.h"

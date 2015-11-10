@@ -5,7 +5,7 @@
 #include "UIGameAHunt.h"
 #include "map_manager.h"
 #include "LevelGameDef.h"
-#include "hit.h"
+#include "Hit.h"
 #include "PHDestroyable.h"
 #include "actor.h"
 #include "ui/UIMainIngameWnd.h"

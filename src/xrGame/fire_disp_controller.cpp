@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "fire_disp_controller.h"
 #include "Actor.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "weapon.h"
 #include "Level.h"
 

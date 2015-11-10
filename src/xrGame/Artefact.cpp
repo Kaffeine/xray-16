@@ -7,7 +7,7 @@
 #include "Include/xrRender/Kinematics.h"
 #include "Include/xrRender/KinematicsAnimated.h"
 
-#include "inventory.h"
+#include "Inventory.h"
 #include "Level.h"
 #include "ai_object_location.h"
 #include "xrServer_Objects_ALife_Monsters.h"

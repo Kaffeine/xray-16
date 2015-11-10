@@ -7,7 +7,7 @@
 #pragma once
 
 #include "../xrEngine/effectorPP.h"
-#include "../xrEngine/effector.h"
+#include "../xrEngine/Effector.h"
 #include "../xrEngine/cameramanager.h"
 
 

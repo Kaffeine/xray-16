@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "contextmenu.h"
-#include "../xrEngine/gamefont.h"
+#include "../xrEngine/GameFont.h"
   
 const float fade_speed = 8.0f;
 

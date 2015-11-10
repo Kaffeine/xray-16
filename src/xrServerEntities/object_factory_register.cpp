@@ -21,7 +21,7 @@
 #	include "xrEngine/std_classes.h"
 #	include "Level.h"
 #	include "gamepersistent.h"
-#	include "hudmanager.h"
+#	include "HUDManager.h"
 #	include "actor.h"
 #	include "spectator.h"
 
@@ -55,7 +55,7 @@
 #		include "PHDebug.h"
 #	endif // DEBUG
 
-#	include "hit.h"
+#	include "Hit.h"
 #	include "PHDestroyable.h"
 #	include "car.h"
 

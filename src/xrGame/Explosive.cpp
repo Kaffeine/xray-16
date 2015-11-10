@@ -4,10 +4,10 @@
 
 #include "stdafx.h"
 
-#include "explosive.h"
+#include "Explosive.h"
 
 #include "xrPhysics/PhysicsShell.h"
-#include "entity.h"
+#include "Entity.h"
 
 #include "ParticlesObject.h"
 
@@ -17,7 +17,7 @@
 #include "actor.h"
 #include "actoreffector.h"
 #include "Level.h"
-#include "level_bullet_manager.h"
+#include "Level_Bullet_Manager.h"
 #include "xrmessages.h"
 #include "xrEngine/GameMtlLib.h"
 

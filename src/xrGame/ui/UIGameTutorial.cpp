@@ -8,7 +8,7 @@
 #include "xr_level_controller.h"
 #include "xrScriptEngine/script_engine.hpp"
 #include "ai_space.h"
-#include "xrEngine/xr_ioconsole.h"
+#include "xrEngine/XR_IOConsole.h"
 #include "UIGameCustom.h"
 #include "UIActorMenu.h"
 #include "UIPdaWnd.h"

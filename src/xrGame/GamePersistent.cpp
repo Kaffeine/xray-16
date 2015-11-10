@@ -1,7 +1,7 @@
 #include "pch_script.h"
 #include "gamepersistent.h"
 #include "xrCore/FMesh.hpp"
-#include "xrEngine/xr_ioconsole.h"
+#include "xrEngine/XR_IOConsole.h"
 #include "xrEngine/GameMtlLib.h"
 #include "Include/xrRender/Kinematics.h"
 #include "profiler.h"
@@ -26,7 +26,7 @@
 
 #include "holder_custom.h"
 #include "game_cl_base.h"
-#include "xrserver_objects_alife_monsters.h"
+#include "xrServer_Objects_ALife_Monsters.h"
 #include "xrServerEntities/xrServer_Object_Base.h"
 #include "UI/UIGameTutorial.h"
 #include "xrEngine/GameFont.h"
@@ -875,7 +875,7 @@ void CGamePersistent::RestoreEffectorDOF()
 {
 	SetEffectorDOF			(m_dof[3]);
 }
-#include "hudmanager.h"
+#include "HUDManager.h"
 
 //	m_dof		[4];	// 0-dest 1-current 2-from 3-original
 void CGamePersistent::UpdateDof()

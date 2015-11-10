@@ -14,7 +14,7 @@
 #include "movement_manager_space.h"
 #include "detail_path_manager_space.h"
 #include "stalker_movement_manager_smart_cover.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "weapon.h"
 #include "xr_level_controller.h"
 #include "clsid_game.h"

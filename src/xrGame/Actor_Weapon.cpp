@@ -6,7 +6,7 @@
 #include "actor.h"
 #include "actoreffector.h"
 #include "Missile.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "weapon.h"
 #include "map_manager.h"
 #include "Level.h"

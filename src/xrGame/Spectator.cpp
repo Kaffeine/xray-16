@@ -4,7 +4,7 @@
 
 #include "stdafx.h"
 #include "spectator.h"
-#include "effectorfall.h"
+#include "EffectorFall.h"
 #include "CameraLook.h"
 #include "spectator_camera_first_eye.h"
 #include "actor.h"
@@ -18,7 +18,7 @@
 #include "group_hierarchy_holder.h"
 #include "xrEngine/CameraManager.h"
 #include "Inventory.h"
-#include "huditem.h"
+#include "HudItem.h"
 #include "game_cl_mp.h"
 #include "string_table.h"
 #include "map_manager.h"

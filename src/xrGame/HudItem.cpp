@@ -6,7 +6,7 @@
 #include "Missile.h"
 #include "xrmessages.h"
 #include "Level.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "xrEngine/CameraBase.h"
 #include "player_hud.h"
 #include "xrCore/Animation/SkeletonMotions.hpp"

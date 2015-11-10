@@ -9,7 +9,7 @@
 #include "game_cl_base.h"
 #include "NET_Queue.h"
 #include "file_transfer.h"
-#include "hudmanager.h"
+#include "HUDManager.h"
 
 #include "xrPhysics/iphworld.h"
 

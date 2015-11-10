@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "actor.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "weapon.h"
 #include "xrEngine/CameraBase.h"
 #include "xrMessages.h"
@@ -9,7 +9,7 @@
 #include "Level.h"
 #include "UIGameCustom.h"
 #include "string_table.h"
-#include "actorcondition.h"
+#include "ActorCondition.h"
 #include "game_cl_base.h"
 #include "WeaponMagazined.h"
 #include "CharacterPhysicsSupport.h"

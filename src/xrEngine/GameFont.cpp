@@ -216,7 +216,8 @@ u16 CGameFont::GetCutLengthPos(float fTargetWidth, const char* pszText)
 
     u16 len = mbhMulti2Wide(wsStr, wsPos, MAX_MB_CHARS, pszText);
 
-    for (u16 i = 1; i <= len; i++)
+    u16 i = 1;
+    for (; i <= len; i++)
     {
 
         fDelta = GetCharTC(wsStr[i]).z - 2;
@@ -284,11 +285,7 @@ void CGameFont::MasterOut(
     rs.c = dwCurrentColor;
     rs.height = fCurrentHeight;
     rs.align = eCurrentAlignment;
-#ifndef _EDITOR
-    int vs_sz = vsprintf_s(rs.string, fmt, p);
-#else
-    int vs_sz = vsprintf(rs.string, fmt, p);
-#endif
+    int vs_sz = xr_sprintf(rs.string, fmt, p);
     //VERIFY( ( vs_sz != -1 ) && ( rs.string[ vs_sz ] == '\0' ) );
 
     rs.string[sizeof(rs.string) - 1] = 0;

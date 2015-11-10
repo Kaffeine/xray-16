@@ -18,7 +18,7 @@
 #include "stalker_animation_manager.h"
 #include "stalker_planner.h"
 #include "weapon.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "customzone.h"
 #include "patrol_path_manager.h"
 #include "object_handler_planner.h"

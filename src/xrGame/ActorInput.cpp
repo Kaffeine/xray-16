@@ -9,16 +9,16 @@
 #	include "PHDebug.h"
 #endif
 
-#include "hit.h"
+#include "Hit.h"
 #include "PHDestroyable.h"
 #include "Car.h"
 #include "UIGameSP.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "Level.h"
 #include "game_cl_base.h"
 #include "xr_level_controller.h"
 #include "UsableScriptObject.h"
-#include "actorcondition.h"
+#include "ActorCondition.h"
 #include "actor_input_handler.h"
 #include "string_table.h"
 #include "UI/UIStatic.h"
@@ -31,7 +31,7 @@
 #include "flare.h"
 #include "CustomDetector.h"
 #include "clsid_game.h"
-#include "hudmanager.h"
+#include "HUDManager.h"
 #include "Weapon.h"
 
 extern u32 hud_adj_mode;

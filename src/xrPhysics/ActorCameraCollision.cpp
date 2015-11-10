@@ -10,7 +10,7 @@
 #include "phcollidevalidator.h"
 #include "PHShell.h"
 #include "matrix_utils.h"
-#include "iphysicsshellholder.h"
+#include "IPhysicsShellHolder.h"
 
 
 #include "GeometryBits.h"

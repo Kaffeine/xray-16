@@ -3,7 +3,7 @@
 #define PH_CAPTURE_H
 
 
-#include "phupdateobject.h"
+#include "PHUpdateObject.h"
 
 
 #include "phisland.h"

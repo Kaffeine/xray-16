@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "actor_mp_client.h"
 #include "CharacterPhysicsSupport.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "xrPhysics/phvalide.h"
 
 

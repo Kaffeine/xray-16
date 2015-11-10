@@ -3,10 +3,10 @@
 
 #pragma once
 
-#include "xrEngine/feel_touch.h"
-#include "xrEngine/iinputreceiver.h"
+#include "xrEngine/Feel_Touch.h"
+#include "xrEngine/IInputReceiver.h"
 
-#include "entity.h"
+#include "Entity.h"
 #include "actor_flags.h"
 
 // refs

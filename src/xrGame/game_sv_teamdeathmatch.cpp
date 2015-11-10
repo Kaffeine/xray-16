@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "game_sv_teamdeathmatch.h"
-#include "xrserver_objects_alife_monsters.h"
+#include "xrServer_Objects_ALife_Monsters.h"
 #include "xrserver.h"
 #include "Level.h"
 #include "game_cl_mp.h"

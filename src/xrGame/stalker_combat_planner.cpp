@@ -24,8 +24,8 @@
 #include "enemy_manager.h"
 #include "danger_manager.h"
 #include "sound_player.h"
-#include "missile.h"
-#include "explosive.h"
+#include "Missile.h"
+#include "Explosive.h"
 #include "agent_manager.h"
 #include "agent_member_manager.h"
 #include "member_order.h"
@@ -37,7 +37,7 @@
 #include "stalker_low_cover_planner.h"
 #include "stalker_search_planner.h"
 #include "smart_cover_evaluators.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "weaponmagazined.h"
 
 using namespace StalkerSpace;

@@ -11,7 +11,7 @@
 #include "xrServer.h"
 #include "game_cl_base.h"
 #include "game_cl_mp.h"
-#include "xrEngine/xr_ioconsole.h"
+#include "xrEngine/XR_IOConsole.h"
 #include "string_table.h"
 
 extern int g_sv_adm_menu_ping_limit;

@@ -1,7 +1,7 @@
 #pragma once
 
-#include "gameobject.h"
-#include "physicsshellholder.h"
+#include "GameObject.h"
+#include "PhysicsShellHolder.h"
 #include "physicsskeletonobject.h"
 #include "PHSkeleton.h"
 #include "animation_script_callback.h"

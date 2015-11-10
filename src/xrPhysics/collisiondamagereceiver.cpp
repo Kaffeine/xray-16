@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "icollisiondamagereceiver.h"
-#include "iphysicsshellholder.h"
+#include "IPhysicsShellHolder.h"
 
 #include "extendedgeom.h"
 #include "mathutilsode.h"

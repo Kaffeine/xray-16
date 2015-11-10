@@ -7,7 +7,7 @@
 #include "Physics.h"
 #include "ph_valid_ode.h"
 #include "MathUtilsOde.h"
-#include "iphysicsshellholder.h"
+#include "IPhysicsShellHolder.h"
 #include "phcharacter.h"
 #include "xrEngine/GameMtlLib.h"
 

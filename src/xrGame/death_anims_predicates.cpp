@@ -6,7 +6,7 @@
 #include	"ai/stalker/ai_stalker.h"
 #include	"stalker_movement_manager_smart_cover.h"
 #include	"weaponshotgun.h"
-#include	"explosive.h"
+#include	"Explosive.h"
 #include	"weaponmagazined.h"
 #include	"CharacterPhysicsSupport.h"
 #include	"animation_utils.h"

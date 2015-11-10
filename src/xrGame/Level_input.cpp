@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include <dinput.h>
-#include "xrEngine/xr_ioconsole.h"
+#include "xrEngine/XR_IOConsole.h"
 #include "entity_alive.h"
 #include "game_sv_single.h"
 #include "alife_simulator.h"
@@ -16,7 +16,7 @@
 #include "autosave_manager.h"
 
 #include "actor.h"
-#include "huditem.h"
+#include "HudItem.h"
 #include "UIGameCustom.h"
 #include "UI/UIDialogWnd.h"
 #include "xrEngine/xr_input.h"

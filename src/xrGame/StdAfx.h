@@ -18,7 +18,7 @@
 #	define	THROW3					VERIFY3
 #endif
 
-#include "xrEngine/gamefont.h"
+#include "xrEngine/GameFont.h"
 #include "xrEngine/xr_object.h"
 #include "xrEngine/IGame_Level.h"
 #include "xrPhysics/xrphysics.h"

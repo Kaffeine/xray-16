@@ -12,7 +12,7 @@
 #include "Level.h"
 #include "actor.h"
 #include "artefact.h"
-#include "inventory.h"
+#include "Inventory.h"
 #include "xrServer_Objects_ALife_Items.h"
 #include "weapon.h"
 #include "WeaponMagazinedWGrenade.h"

@@ -9,7 +9,7 @@
 #include "Include/xrRender/Kinematics.h"
 #include <boost/noncopyable.hpp>
 ///////////////////////////////////////////////////////////////////////////////////////
-#include "physicsshellholder.h"
+#include "PhysicsShellHolder.h"
 
 #include "game_object_space.h"
 #include "animation_utils.h"

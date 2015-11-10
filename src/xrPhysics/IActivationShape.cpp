@@ -2,7 +2,7 @@
 #include "iactivationshape.h"
 #include "phactivationshape.h"
 #include "physics.h"
-#include "iphysicsshellholder.h"
+#include "IPhysicsShellHolder.h"
 #include "phcollidevalidator.h"
 void ActivateShapeExplosive( IPhysicsShellHolder* self_obj, const Fvector &size, Fvector &out_size, Fvector &in_out_pos)
 {

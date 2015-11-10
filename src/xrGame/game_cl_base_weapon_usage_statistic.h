@@ -1,5 +1,5 @@
 #pragma once
-#include "level_bullet_manager.h"
+#include "Level_Bullet_Manager.h"
 #include "game_base_kill_type.h"
 
 #define STAT_TEAM_COUNT 3

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "game_sv_deathmatch.h"
-#include "xrserver_objects_alife_monsters.h"
+#include "xrServer_Objects_ALife_Monsters.h"
 #include "Level.h"
 #include "xrserver.h"
 #include "Inventory.h"
@@ -18,7 +18,7 @@
 
 //#define DELAYED_ROUND_TIME	7000
 #include "ui\UIBuyWndShared.h"
-#include "xrEngine/xr_ioconsole.h"
+#include "xrEngine/XR_IOConsole.h"
 
 #define UNBUYABLESLOT		20
 
