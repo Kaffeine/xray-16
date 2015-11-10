@@ -169,7 +169,7 @@ void IGame_Level::OnRender()
     }
     else
     {
-        Sleep (psNET_DedicatedSleep);
+//        Sleep (psNET_DedicatedSleep);
     }
 
 #ifdef _GPA_ENABLED

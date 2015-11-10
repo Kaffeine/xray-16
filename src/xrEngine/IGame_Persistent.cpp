@@ -5,6 +5,11 @@
 #include "GameFont.h"
 #include "PerformanceAlert.hpp"
 
+#ifdef __linux__
+#include <alloca.h>
+#define _alloca alloca
+#endif
+
 #ifndef _EDITOR
 #include "Environment.h"
 # include "x_ray.h"
