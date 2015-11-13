@@ -1,11 +1,11 @@
 SET(SOURCES
-#    FMesh.cpp
+    FMesh.cpp
 #    FS.cpp
     FTimer.cpp
 #    FileSystem.cpp
 #    FileSystem_borland.cpp
 #    LocatorAPI.cpp
-#    LocatorAPI_auth.cpp
+    LocatorAPI_auth.cpp
 #    LocatorAPI_defs.cpp
 #    LzHuf.cpp
     Model.cpp
@@ -81,7 +81,7 @@ set(CONTAINERS_HEADERS
 
 set(CRYPTO_SOURCES
     Crypto/crypto.cpp
-#    Crypto/xr_dsa_signer.cpp
+    Crypto/xr_dsa_signer.cpp
     Crypto/xr_dsa_verifyer.cpp
     Crypto/xr_dsa.cpp
     Crypto/xr_sha.cpp
