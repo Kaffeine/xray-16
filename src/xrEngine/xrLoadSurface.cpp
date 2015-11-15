@@ -1,6 +1,11 @@
 #include "stdafx.h"
 #pragma hdrstop
 
+#ifdef __linux__
+// Workaround typedefs from xrCore re-assigned by FreeImage
+#define DWORD DWORD2
+#endif
+
 #include <FreeImage.h>
 
 struct SExts
