@@ -22,7 +22,7 @@ CHelicopter::CHelicopter()
 	m_lanim			= NULL;
 
 	ISpatial*		self				=	smart_cast<ISpatial*> (this);
-	if (self)		self->spatial.type  |=  STYPE_VISIBLEFORAI;
+	if (self)		self->GetSpatialData().type  |=  STYPE_VISIBLEFORAI;
 
 	m_movement.parent	= this;
 	m_body.parent		= this;
@@ -59,7 +59,7 @@ void CHelicopter::init()
 	SetfHealth					(1.0f);
 }
 
-DLL_Pure* CHelicopter::_construct()
+IFactoryObject* CHelicopter::_construct()
 {
 	CEntity::_construct	();
 	init				();

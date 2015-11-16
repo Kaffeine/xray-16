@@ -8,9 +8,6 @@
 #include "stdafx.h"
 #include "IGame_Level.h"
 #include "IGame_Persistent.h"
-
-#include "dedicated_server_only.h"
-#include "no_single.h"
 #include "xrNetServer/NET_AuthCheck.h"
 
 #include "xr_input.h"
@@ -27,9 +24,6 @@
 #include <locale.h>
 
 #include "xrSASH.h"
-
-#include "securom_api.h"
-#include "xrScriptEngine/script_engine.hpp"
 
 //---------------------------------------------------------------------
 ENGINE_API CInifile* pGameIni = NULL;
@@ -72,10 +66,8 @@ static int start_year = 1999; // 1999
 #define DEFAULT_MODULE_HASH "3CAABCFCFF6F3A810019C6A72180F166"
 static char szEngineHash[33] = DEFAULT_MODULE_HASH;
 
-PROTECT_API char* ComputeModuleHash(char* pszHash)
+char* ComputeModuleHash(char* pszHash)
 {
-    SECUROM_MARKER_HIGH_SECURITY_ON(3)
-
     char szModuleFileName[MAX_PATH];
     HANDLE hModuleHandle = NULL, hFileMapping = NULL;
     LPVOID lpvMapping = NULL;
@@ -122,9 +114,6 @@ PROTECT_API char* ComputeModuleHash(char* pszHash)
     UnmapViewOfFile(lpvMapping);
     CloseHandle(hFileMapping);
     CloseHandle(hModuleHandle);
-
-    SECUROM_MARKER_HIGH_SECURITY_OFF(3)
-
     return pszHash;
 }
 #endif // DEDICATED_SERVER
@@ -176,7 +165,6 @@ struct _SoundProcessor : public pureFrame
 ENGINE_API CApplication* pApp = NULL;
 static HWND logoWindow = NULL;
 
-int doLauncher();
 void doBenchmark(LPCSTR name);
 ENGINE_API bool g_bBenchmark = false;
 string512 g_sBenchmarkName;
@@ -199,9 +187,6 @@ void InitEngine()
 static void InitEngineExt()
 {
     Engine.External.Initialize();
-    // once all libraries got loaded, instantiate and initialize script engine
-    GlobalEnv.ScriptEngine = xr_new<CScriptEngine>();
-    GlobalEnv.ScriptEngine->init();
 }
 
 struct path_excluder_predicate
@@ -220,7 +205,7 @@ struct path_excluder_predicate
     xr_auth_strings_t const* m_ignore;
 };
 
-PROTECT_API void InitSettings()
+void InitSettings()
 {
 #ifndef DEDICATED_SERVER
     Msg("EH: %s\n", ComputeModuleHash(szEngineHash));
@@ -254,10 +239,8 @@ PROTECT_API void InitSettings()
     pGameIni = xr_new<CInifile>(fname, TRUE);
     CHECK_OR_EXIT(0 != pGameIni->section_count(), make_string("Cannot find file %s.\nReinstalling application may fix this problem.", fname));
 }
-PROTECT_API void InitConsole()
+void InitConsole()
 {
-    SECUROM_MARKER_SECURITY_ON(5)
-
 #ifdef DEDICATED_SERVER
     {
         Console = xr_new<CTextConsole>();
@@ -277,11 +260,9 @@ PROTECT_API void InitConsole()
         sscanf(strstr(Core.Params, "-ltx ") + 5, "%[^ ] ", c_name);
         xr_strcpy(Console->ConfigFile, c_name);
     }
-
-    SECUROM_MARKER_SECURITY_OFF(5)
 }
 
-PROTECT_API void InitInput()
+void InitInput()
 {
     BOOL bCaptureInput = !strstr(Core.Params, "-i");
 
@@ -292,12 +273,12 @@ void destroyInput()
     xr_delete(pInput);
 }
 
-PROTECT_API void InitSound1()
+void InitSound1()
 {
     CSound_manager_interface::_create(0);
 }
 
-PROTECT_API void InitSound2()
+void InitSound2()
 {
     CSound_manager_interface::_create(1);
 }
@@ -323,9 +304,6 @@ void destroyConsole()
 
 void destroyEngine()
 {
-    // destroy script engine before detaching libraries because lua GC calls
-    // destructors from these libraries
-    xr_delete(GlobalEnv.ScriptEngine);
     Device.Destroy();
     Engine.Destroy();
 }
@@ -616,49 +594,6 @@ struct damn_keys_filter
 #undef dwFilterKeysStructSize
 #undef dwToggleKeysStructSize
 
-// Фунция для тупых требований THQ и тупых американских пользователей
-BOOL IsOutOfVirtualMemory()
-{
-#define VIRT_ERROR_SIZE 256
-#define VIRT_MESSAGE_SIZE 512
-
-    SECUROM_MARKER_HIGH_SECURITY_ON(1)
-
-    MEMORYSTATUSEX statex;
-    DWORD dwPageFileInMB = 0;
-    DWORD dwPhysMemInMB = 0;
-    HINSTANCE hApp = 0;
-    char pszError[VIRT_ERROR_SIZE];
-    char pszMessage[VIRT_MESSAGE_SIZE];
-
-    ZeroMemory(&statex, sizeof(MEMORYSTATUSEX));
-    statex.dwLength = sizeof(MEMORYSTATUSEX);
-
-    if (!GlobalMemoryStatusEx(&statex))
-        return 0;
-
-    dwPageFileInMB = (DWORD)(statex.ullTotalPageFile / (1024 * 1024));
-    dwPhysMemInMB = (DWORD)(statex.ullTotalPhys / (1024 * 1024));
-
-    // Довольно отфонарное условие
-    if ((dwPhysMemInMB > 500) && ((dwPageFileInMB + dwPhysMemInMB) > 2500))
-        return 0;
-
-    hApp = GetModuleHandle(NULL);
-
-    if (!LoadString(hApp, RC_VIRT_MEM_ERROR, pszError, VIRT_ERROR_SIZE))
-        return 0;
-
-    if (!LoadString(hApp, RC_VIRT_MEM_TEXT, pszMessage, VIRT_MESSAGE_SIZE))
-        return 0;
-
-    MessageBox(NULL, pszMessage, pszError, MB_OK | MB_ICONHAND);
-
-    SECUROM_MARKER_HIGH_SECURITY_OFF(1)
-
-    return 1;
-}
-
 #include "xr_ioc_cmd.h"
 
 //typedef void DUMMY_STUFF (const void*,const u32&,void*);
@@ -705,11 +640,6 @@ void foo()
 
 ENGINE_API bool g_dedicated_server = false;
 
-#ifndef DEDICATED_SERVER
-// forward declaration for Parental Control checks
-BOOL IsPCAccessAllowed();
-#endif // DEDICATED_SERVER
-
 int APIENTRY WinMain_impl(HINSTANCE hInstance,
                           HINSTANCE hPrevInstance,
                           char* lpCmdLine,
@@ -748,18 +678,6 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 
     // foo();
 #ifndef DEDICATED_SERVER
-
-    // Check for virtual memory
-    if ((strstr(lpCmdLine, "--skipmemcheck") == NULL) && IsOutOfVirtualMemory())
-        return 0;
-
-    // Parental Control for Vista and upper
-    if (!IsPCAccessAllowed())
-    {
-        MessageBox(NULL, "Access restricted", "Parental Control", MB_OK | MB_ICONERROR);
-        return 1;
-    }
-
     // Check for another instance
 #ifdef NO_MULTI_INSTANCES
 #define STALKER_PRESENCE_MUTEX "Local\\STALKER-COP"
@@ -871,14 +789,7 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
             g_SASH.Init(sash_arg);
             g_SASH.MainLoop();
             return 0;
-        }
-        if (strstr(lpCmdLine, "-launcher"))
-        {
-            int l_res = doLauncher();
-            if (l_res != 0)
-                return 0;
-        }
-        
+        }        
 #ifndef DEDICATED_SERVER
         if (strstr(Core.Params, "-r2a"))
             Console->Execute("renderer renderer_r2a");
@@ -893,7 +804,7 @@ int APIENTRY WinMain_impl(HINSTANCE hInstance,
 #else
         Console->Execute("renderer renderer_r1");
 #endif
-        InitEngineExt(); // load xrRender, xrGame and ScriptEngine
+        InitEngineExt(); // load xrRender and xrGame
         Startup();
         Core._destroy();
 
@@ -1108,36 +1019,19 @@ void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
         Level_Current = u32(-1);
         R_ASSERT(0 == g_pGameLevel);
         R_ASSERT(0 != g_pGamePersistent);
-
-#ifdef NO_SINGLE
-        Console->Execute("main_menu on");
-        if ((op_server == NULL) ||
-                (!xr_strlen(op_server)) ||
-                (
-                    (strstr(op_server, "/dm") || strstr(op_server, "/deathmatch") ||
-                     strstr(op_server, "/tdm") || strstr(op_server, "/teamdeathmatch") ||
-                     strstr(op_server, "/ah") || strstr(op_server, "/artefacthunt") ||
-                     strstr(op_server, "/cta") || strstr(op_server, "/capturetheartefact")
-                    ) &&
-                    !strstr(op_server, "/alife")
-                )
-           )
-#endif // #ifdef NO_SINGLE
-        {
-            Console->Execute("main_menu off");
-            Console->Hide();
-            //! this line is commented by Dima
-            //! because I don't see any reason to reset device here
-            //! Device.Reset (false);
-            //-----------------------------------------------------------
-            g_pGamePersistent->PreStart(op_server);
-            //-----------------------------------------------------------
-            g_pGameLevel = (IGame_Level*)NEW_INSTANCE(CLSID_GAME_LEVEL);
-            pApp->LoadBegin();
-            g_pGamePersistent->Start(op_server);
-            g_pGameLevel->net_Start(op_server, op_client);
-            pApp->LoadEnd();
-        }
+        Console->Execute("main_menu off");
+        Console->Hide();
+        //! this line is commented by Dima
+        //! because I don't see any reason to reset device here
+        //! Device.Reset (false);
+        //-----------------------------------------------------------
+        g_pGamePersistent->PreStart(op_server);
+        //-----------------------------------------------------------
+        g_pGameLevel = (IGame_Level*)NEW_INSTANCE(CLSID_GAME_LEVEL);
+        pApp->LoadBegin();
+        g_pGamePersistent->Start(op_server);
+        g_pGameLevel->net_Start(op_server, op_client);
+        pApp->LoadEnd();
         xr_free(op_server);
         xr_free(op_client);
     }
@@ -1242,7 +1136,7 @@ void CApplication::destroy_loading_shaders()
 
 //u32 calc_progress_color(u32, u32, int, int);
 
-PROTECT_API void CApplication::LoadDraw()
+void CApplication::LoadDraw()
 {
     if (g_appLoaded) return;
     Device.dwFrame += 1;
@@ -1318,8 +1212,6 @@ void CApplication::Level_Append(LPCSTR folder)
 
 void CApplication::Level_Scan()
 {
-    SECUROM_MARKER_PERFORMANCE_ON(8)
-
     for (u32 i = 0; i < Levels.size(); i++)
     {
         xr_free(Levels[i].folder);
@@ -1335,8 +1227,6 @@ void CApplication::Level_Scan()
         Level_Append((*folder)[i]);
 
     FS.file_list_close(folder);
-
-    SECUROM_MARKER_PERFORMANCE_OFF(8)
 }
 
 void gen_logo_name(string_path& dest, LPCSTR level_name, int num)
@@ -1354,8 +1244,6 @@ void gen_logo_name(string_path& dest, LPCSTR level_name, int num)
 
 void CApplication::Level_Set(u32 L)
 {
-    SECUROM_MARKER_PERFORMANCE_ON(9)
-
     if (L >= Levels.size()) return;
     FS.get_path("$level$")->_set(Levels[L].folder);
 
@@ -1389,16 +1277,11 @@ void CApplication::Level_Set(u32 L)
         m_pRender->setLevelLogo(path);
 
     CheckCopyProtection();
-
-    SECUROM_MARKER_PERFORMANCE_OFF(9)
 }
 
 int CApplication::Level_ID(LPCSTR name, LPCSTR ver, bool bSet)
 {
     int result = -1;
-
-    SECUROM_MARKER_SECURITY_ON(7)
-
     CLocatorAPI::archives_it it = FS.m_archives.begin();
     CLocatorAPI::archives_it it_e = FS.m_archives.end();
     bool arch_res = false;
@@ -1437,9 +1320,6 @@ int CApplication::Level_ID(LPCSTR name, LPCSTR ver, bool bSet)
 
     if (arch_res)
         g_pGamePersistent->OnAssetsChanged();
-
-    SECUROM_MARKER_SECURITY_OFF(7)
-
     return result;
 }
 
@@ -1469,115 +1349,6 @@ void CApplication::LoadAllArchives()
         Level_Scan();
         g_pGamePersistent->OnAssetsChanged();
     }
-}
-
-#ifndef DEDICATED_SERVER
-// Parential control for Vista and upper
-typedef BOOL(*PCCPROC)(CHAR*);
-
-BOOL IsPCAccessAllowed()
-{
-    CHAR szPCtrlChk[MAX_PATH], szGDF[MAX_PATH], *pszLastSlash;
-    HINSTANCE hPCtrlChk = NULL;
-    PCCPROC pctrlchk = NULL;
-    BOOL bAllowed = TRUE;
-
-    if (!GetModuleFileName(NULL, szPCtrlChk, MAX_PATH))
-        return TRUE;
-
-    if ((pszLastSlash = strrchr(szPCtrlChk, '\\')) == NULL)
-        return TRUE;
-
-    *pszLastSlash = '\0';
-
-    strcpy_s(szGDF, szPCtrlChk);
-
-    strcat_s(szPCtrlChk, "\\pctrlchk.dll");
-    if (GetFileAttributes(szPCtrlChk) == INVALID_FILE_ATTRIBUTES)
-        return TRUE;
-
-    if ((pszLastSlash = strrchr(szGDF, '\\')) == NULL)
-        return TRUE;
-
-    *pszLastSlash = '\0';
-
-    strcat_s(szGDF, "\\Stalker-COP.exe");
-    if (GetFileAttributes(szGDF) == INVALID_FILE_ATTRIBUTES)
-        return TRUE;
-
-    if ((hPCtrlChk = LoadLibrary(szPCtrlChk)) == NULL)
-        return TRUE;
-
-    if ((pctrlchk = (PCCPROC)GetProcAddress(hPCtrlChk, "pctrlchk")) == NULL)
-    {
-        FreeLibrary(hPCtrlChk);
-        return TRUE;
-    }
-
-    bAllowed = pctrlchk(szGDF);
-
-    FreeLibrary(hPCtrlChk);
-
-    return bAllowed;
-}
-#endif // DEDICATED_SERVER
-
-//launcher stuff----------------------------
-extern "C" {
-    typedef int __cdecl LauncherFunc(int);
-}
-HMODULE hLauncher = NULL;
-LauncherFunc* pLauncher = NULL;
-
-void InitLauncher()
-{
-    if (hLauncher)
-        return;
-    hLauncher = LoadLibrary("xrLauncher.dll");
-    if (0 == hLauncher) R_CHK(GetLastError());
-    R_ASSERT2(hLauncher, "xrLauncher DLL raised exception during loading or there is no xrLauncher.dll at all");
-
-    pLauncher = (LauncherFunc*)GetProcAddress(hLauncher, "RunXRLauncher");
-    R_ASSERT2(pLauncher, "Cannot obtain RunXRLauncher function from xrLauncher.dll");
-};
-
-void FreeLauncher()
-{
-    if (hLauncher)
-    {
-        FreeLibrary(hLauncher);
-        hLauncher = NULL;
-        pLauncher = NULL;
-    };
-}
-
-int doLauncher()
-{
-    /*
-    execUserScript();
-    InitLauncher();
-    int res = pLauncher(0);
-    FreeLauncher();
-    if(res == 1) // do benchmark
-    g_bBenchmark = true;
-
-    if(g_bBenchmark){ //perform benchmark cycle
-    doBenchmark();
-
-    // InitLauncher ();
-    // pLauncher (2); //show results
-    // FreeLauncher ();
-
-    Core._destroy ();
-    return (1);
-
-    };
-    if(res==8){//Quit
-    Core._destroy ();
-    return (1);
-    }
-    */
-    return 0;
 }
 
 void doBenchmark(LPCSTR name)

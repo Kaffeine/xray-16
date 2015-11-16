@@ -8,7 +8,7 @@
 #include "IGame_Persistent.h"
 
 CPS_Instance::CPS_Instance(bool destroy_on_game_load) :
-    ISpatial(g_SpatialSpace),
+    SpatialBase(g_SpatialSpace),
     m_destroy_on_game_load(destroy_on_game_load)
 {
     g_pGamePersistent->ps_active.insert(this);
@@ -41,7 +41,7 @@ void CPS_Instance::shedule_Update(u32 dt)
 {
     if (renderable.pROS) GlobalEnv.Render->ros_destroy(renderable.pROS); //. particles doesn't need ROS
 
-    ISheduled::shedule_Update(dt);
+    ScheduledBase::shedule_Update(dt);
     m_iLifeTime -= dt;
 
     // remove???

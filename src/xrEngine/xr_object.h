@@ -22,15 +22,17 @@ class CSE_Abstract;
 //-----------------------------------------------------------------------------------------------------------
 // CObject
 //-----------------------------------------------------------------------------------------------------------
+
 class IPhysicsShell;
 xr_pure_interface IObjectPhysicsCollision;
+// XXX: merge into CGameObject
 #pragma pack(push,4)
 class ENGINE_API CObject :
-    public DLL_Pure,
-    public ISpatial,
-    public ISheduled,
-    public IRenderable,
-    public ICollidable
+    public FactoryObjectBase,
+    public SpatialBase,
+    public ScheduledBase,
+    public RenderableBase,
+    public CollidableBase
 {
 public:
     struct SavedPosition
@@ -123,14 +125,13 @@ public:
     virtual float Radius() const;
     virtual const Fbox& BoundingBox() const;
 
-    IC IRender_Sector* Sector() { return H_Root()->spatial.sector; }
+    IC IRender_Sector* Sector() { return H_Root()->GetSpatialData().sector; }
     IC IRender_ObjectSpecific* ROS() { return renderable_ROS(); }
     virtual BOOL renderable_ShadowGenerate() { return TRUE; }
     virtual BOOL renderable_ShadowReceive() { return TRUE; }
 
     // Accessors and converters
     ICF IRenderVisual* Visual() const { return renderable.visual; }
-    ICF ICollisionForm* CFORM() const { return collidable.model; }
     virtual CObject* dcast_CObject() { return this; }
     virtual IRenderable* dcast_Renderable() { return this; }
     virtual void OnChangeVisual() { }

@@ -267,7 +267,7 @@ void					CRender::set_Object				(IRenderable*		O )
 	val_pObject				= O;		// NULL is OK, trust me :)
 	if (val_pObject)		{
 		VERIFY(dynamic_cast<CObject*>(O)||dynamic_cast<CPS_Instance*>(O));
-		if (O->renderable.pROS) { VERIFY(dynamic_cast<CROS_impl*>(O->renderable.pROS)); }
+		if (O->GetRenderData().pROS) { VERIFY(dynamic_cast<CROS_impl*>(O->GetRenderData().pROS)); }
 	}
 	if (PHASE_NORMAL==phase)	{
 		if (L_Shadows)
@@ -287,9 +287,9 @@ void					CRender::apply_object			(IRenderable*		O )
 {
 	if (0==O)			return	;
 	if (PHASE_NORMAL==phase	&& O->renderable_ROS())		{
-		CROS_impl& LT		= *((CROS_impl*)O->renderable.pROS);
+		CROS_impl& LT		= *((CROS_impl*)O->GetRenderData().pROS);
 		VERIFY(dynamic_cast<CObject*>(O)||dynamic_cast<CPS_Instance*>(O));
-		VERIFY(dynamic_cast<CROS_impl*>(O->renderable.pROS));
+		VERIFY(dynamic_cast<CROS_impl*>(O->GetRenderData().pROS));
 		float o_hemi		= 0.5f*LT.get_hemi						();
 		float o_sun			= 0.5f*LT.get_sun						();
 		RCache.set_c		(c_ldynamic_props,o_sun,o_sun,o_sun,o_hemi);
@@ -333,8 +333,8 @@ extern float		r_ssaHZBvsTEX;
 
 ICF bool			pred_sp_sort		(ISpatial* _1, ISpatial* _2)
 {
-	float	d1		= _1->spatial.sphere.P.distance_to_sqr(Device.vCameraPosition);
-	float	d2		= _2->spatial.sphere.P.distance_to_sqr(Device.vCameraPosition);
+	float	d1		= _1->GetSpatialData().sphere.P.distance_to_sqr(Device.vCameraPosition);
+	float	d2		= _2->GetSpatialData().sphere.P.distance_to_sqr(Device.vCameraPosition);
 	return	d1<d2;
 }
 
@@ -454,20 +454,20 @@ void CRender::Calculate				()
 			for (u32 o_it=0; o_it<lstRenderables.size(); o_it++)
 			{
 				ISpatial*	spatial		= lstRenderables[o_it];		spatial->spatial_updatesector	();
-				CSector*	sector		= (CSector*)spatial->spatial.sector	;
+				CSector*	sector		= (CSector*)spatial->GetSpatialData().sector	;
 				if	(0==sector)										
 					continue;	// disassociated from S/P structure
 
 				// Filter only not light spatial
-				if	(PortalTraverser.i_marker != sector->r_marker && (spatial->spatial.type & STYPE_RENDERABLE) )	continue;	// inactive (untouched) sector
+				if	(PortalTraverser.i_marker != sector->r_marker && (spatial->GetSpatialData().type & STYPE_RENDERABLE) )	continue;	// inactive (untouched) sector
 
-				if (spatial->spatial.type & STYPE_RENDERABLE)
+				if (spatial->GetSpatialData().type & STYPE_RENDERABLE)
 				{
 					for (u32 v_it=0; v_it<sector->r_frustums.size(); v_it++)
 					{
 						set_Frustum			(&(sector->r_frustums[v_it]));
 
-						if (!View->testSphere_dirty(spatial->spatial.sphere.P,spatial->spatial.sphere.R) /*&& (spatial->spatial.type & STYPE_RENDERABLE)*/)	continue;
+						if (!View->testSphere_dirty(spatial->GetSpatialData().sphere.P,spatial->GetSpatialData().sphere.R) /*&& (spatial->spatial.type & STYPE_RENDERABLE)*/)	continue;
 						// renderable
 						IRenderable*	renderable		= spatial->dcast_Renderable	();
 						if (0==renderable)	{
@@ -483,9 +483,9 @@ void CRender::Calculate				()
 #endif
 						} else {
 							// Occlusiond
-							vis_data&		v_orig			= renderable->renderable.visual->getVisData();
+							vis_data&		v_orig			= renderable->GetRenderData().visual->getVisData();
 							vis_data		v_copy			= v_orig;
-							v_copy.box.xform				(renderable->renderable.xform);
+							v_copy.box.xform				(renderable->GetRenderData().xform);
 							BOOL			bVisible		= HOM.visible(v_copy);
 							v_orig.accept_frame				= v_copy.accept_frame;
 							v_orig.marker					= v_copy.marker;
@@ -508,9 +508,9 @@ void CRender::Calculate				()
 				} 
 				else
 				{
-					if ( ViewBase.testSphere_dirty(spatial->spatial.sphere.P,spatial->spatial.sphere.R) )
+					if ( ViewBase.testSphere_dirty(spatial->GetSpatialData().sphere.P,spatial->GetSpatialData().sphere.R) )
 					{
-						VERIFY								(spatial->spatial.type & STYPE_LIGHTSOURCE);
+						VERIFY								(spatial->GetSpatialData().type & STYPE_LIGHTSOURCE);
 						// lightsource
 						light*			L					= (light*)	spatial->dcast_Light	();
 						VERIFY								(L);

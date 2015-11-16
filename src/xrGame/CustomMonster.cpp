@@ -701,10 +701,10 @@ BOOL CCustomMonster::net_Spawn	(CSE_Abstract* DC)
 
 	ISpatial					*self = smart_cast<ISpatial*> (this);
 	if (self) {
-		self->spatial.type		|= STYPE_VISIBLEFORAI;
+		self->GetSpatialData().type		|= STYPE_VISIBLEFORAI;
 		// enable react to sound only if alive
 		if (g_Alive())
-			self->spatial.type	|= STYPE_REACTTOSOUND;
+			self->GetSpatialData().type	|= STYPE_REACTTOSOUND;
 	}
 
 	CSE_Abstract				*e	= (CSE_Abstract*)(DC);
@@ -983,7 +983,7 @@ const MonsterSpace::SBoneRotation &CCustomMonster::head_orientation	() const
 	return					(movement().m_body);
 }
 
-DLL_Pure *CCustomMonster::_construct()
+IFactoryObject *CCustomMonster::_construct()
 {
 	m_memory_manager			= create_memory_manager();
 	m_movement_manager			= create_movement_manager();

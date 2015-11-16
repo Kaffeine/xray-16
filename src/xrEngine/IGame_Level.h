@@ -41,7 +41,7 @@ public:
 
 //-----------------------------------------------------------------------------------------------------------
 class ENGINE_API IGame_Level :
-    public DLL_Pure,
+    public FactoryObjectBase,
     public IInputReceiver,
     public pureRender,
     public pureFrame,

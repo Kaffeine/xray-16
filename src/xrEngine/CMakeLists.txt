@@ -148,14 +148,12 @@ SET(HEADERS
     Properties.h
     Rain.h
     Render.h
-    StatGraph.cpp
     StatGraph.h
     Stats.h
     Text_Console.h
     WaveForm.h
     XR_IOConsole.h
     cf_dynamic_mesh.h
-    dedicated_server_only.h
     defines.h
     device.h
     edit_actions.h
@@ -190,7 +188,6 @@ SET(HEADERS
     line_edit_control.h
     line_editor.h
     mp_logging.h
-    no_single.h
     perlin.h
     property_collection.hpp
     property_collection_forward.hpp
@@ -199,7 +196,6 @@ SET(HEADERS
     pure.h
     pure_relcase.h
     resource.h
-    securom_api.h
     std_classes.h
     stdafx.h
     thunderbolt.h

@@ -1,9 +1,7 @@
 #include "stdafx.h"
 #include "Include/xrRender/DrawUtils.h"
 #include "Render.h"
-#include "dedicated_server_only.h"
 #include "xrCDB/xrXRC.h"
-#include "securom_api.h"
 
 extern XRCDB_API BOOL* cdb_bDebug;
 
@@ -20,9 +18,8 @@ void CRenderDevice::_SetupStates()
     GlobalEnv.Render->SetupStates();
 }
 
-PROTECT_API void CRenderDevice::Create()
+void CRenderDevice::Create()
 {
-    SECUROM_MARKER_SECURITY_ON(4);
     if (b_is_Ready)
         return; // prevent double call
     Statistic = xr_new<CStats>();
@@ -52,5 +49,4 @@ PROTECT_API void CRenderDevice::Create()
     Statistic->OnDeviceCreate();
     dwFrame = 0;
     PreCache(0, false, false);
-    SECUROM_MARKER_SECURITY_OFF(4);
 }

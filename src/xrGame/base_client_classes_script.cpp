@@ -7,7 +7,6 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "pch_script.h"
-#include "base_client_classes.h"
 #include "base_client_classes_wrappers.h"
 #include "xrEngine/Feel_Sound.h"
 #include "Include/xrRender/RenderVisual.h"
@@ -17,13 +16,14 @@
 
 using namespace luabind;
 
-SCRIPT_EXPORT(DLL_Pure, (),
+SCRIPT_EXPORT(IFactoryObject, (),
 {
 	module(luaState)
 	[
-		class_<DLL_Pure,CDLL_PureWrapper>("DLL_Pure")
+        // 'DLL_Pure' is preserved to maintain backward compatibility with mod scripts
+		class_<IFactoryObject,FactoryObjectWrapper>("DLL_Pure")
 			.def(constructor<>())
-			.def("_construct",&DLL_Pure::_construct,&CDLL_PureWrapper::_construct_static)
+			.def("_construct",&IFactoryObject::_construct,&FactoryObjectWrapper::_construct_static)
 	];
 });
 
@@ -74,15 +74,14 @@ SCRIPT_EXPORT(ICollidable, (),
 	module(luaState)
 	[
 		class_<ICollidable>("ICollidable")
-			.def(constructor<>())
 	];
 });
 
-SCRIPT_EXPORT(CGameObject, (DLL_Pure, ISheduled, ICollidable, IRenderable),
+SCRIPT_EXPORT(CGameObject, (IFactoryObject, ISheduled, ICollidable, IRenderable),
 {
 	module(luaState)
 	[
-//		class_<CObject,bases<DLL_Pure,ISheduled,ICollidable,IRenderable>,CObjectWrapper>("CObject")
+//		class_<CObject,bases<IFactoryObject,ISheduled,ICollidable,IRenderable>,CObjectWrapper>("CObject")
 //			.def(constructor<>())
 //			.def("_construct",			&CObject::_construct,&CObjectWrapper::_construct_static)
 /*			
@@ -101,7 +100,7 @@ SCRIPT_EXPORT(CGameObject, (DLL_Pure, ISheduled, ICollidable, IRenderable),
 //			.def("renderable_ShadowReceive",&CObject::renderable_ShadowReceive,&CObjectWrapper::renderable_ShadowReceive_static)
 //			.def("Visual",					&CObject::Visual)
 
-		class_<CGameObject,bases<DLL_Pure,ISheduled,ICollidable,IRenderable>,CGameObjectWrapper>("CGameObject")
+		class_<CGameObject,bases<IFactoryObject,ISheduled,ICollidable,IRenderable>,CGameObjectWrapper>("CGameObject")
 			.def(constructor<>())
 			.def("_construct",			&CGameObject::_construct,&CGameObjectWrapper::_construct_static)
 			.def("Visual",				&CGameObject::Visual)

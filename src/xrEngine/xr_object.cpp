@@ -122,7 +122,7 @@ void CObject::setEnabled(BOOL _enabled)
     if (_enabled)
     {
         Props.bEnabled = 1;
-        if (collidable.model) spatial.type |= STYPE_COLLIDEABLE;
+        if (CForm) spatial.type |= STYPE_COLLIDEABLE;
     }
     else
     {
@@ -157,7 +157,7 @@ const Fbox& CObject::BoundingBox() const { VERIFY2(renderable.visual, *cName());
 // Purpose :
 //----------------------------------------------------------------------
 CObject::CObject() :
-    ISpatial(g_SpatialSpace),
+    SpatialBase(g_SpatialSpace),
     dwFrame_AsCrow(u32(-1))
 {
     // Transform
@@ -170,7 +170,7 @@ CObject::CObject() :
     NameVisual = NULL;
 
 #ifdef DEBUG
-    dbg_update_shedule = u32(-1) / 2;
+    shedule.dbg_update_shedule = u32(-1) / 2;
     dbg_update_cl = u32(-1) / 2;
 #endif
 }
@@ -212,12 +212,12 @@ BOOL CObject::net_Spawn(CSE_Abstract* data)
     if (0 == Visual() && pSettings->line_exist(cNameSect(), "visual"))
         cNameVisual_set(pSettings->r_string(cNameSect(), "visual"));
 
-    if (0 == collidable.model)
+    if (0 == CForm)
     {
         if (pSettings->line_exist(cNameSect(), "cform"))
         {
             VERIFY3(*NameVisual, "Model isn't assigned for object, but cform requisted", *cName());
-            collidable.model = xr_new<CCF_Skeleton>(this);
+            CForm = xr_new<CCF_Skeleton>(this);
         }
     }
 
@@ -239,7 +239,7 @@ BOOL CObject::net_Spawn(CSE_Abstract* data)
 void CObject::net_Destroy()
 {
     VERIFY(getDestroy());
-    xr_delete(collidable.model);
+    xr_delete(CForm);
     if (register_schedule())
         shedule_unregister();
 
@@ -323,7 +323,7 @@ void CObject::UpdateCL()
 
     if (Parent && spatial.node_ptr) Debug.fatal(DEBUG_INFO, "Object %s has parent but is still registered inside spatial DB", *cName());
 
-    if ((0 == collidable.model) && (spatial.type&STYPE_COLLIDEABLE)) Debug.fatal(DEBUG_INFO, "Object %s registered as 'collidable' but has no collidable model", *cName());
+    if ((0 == CForm) && (spatial.type&STYPE_COLLIDEABLE)) Debug.fatal(DEBUG_INFO, "Object %s registered as 'collidable' but has no collidable model", *cName());
 #endif
 
     spatial_update(base_spu_epsP * 5, base_spu_epsR * 5);
@@ -347,7 +347,7 @@ void CObject::shedule_Update(u32 T)
 {
     // consistency check
     // Msg ("-SUB-:[%x][%s] CObject::shedule_Update",dynamic_cast<void*>(this),*cName());
-    ISheduled::shedule_Update(T);
+    ScheduledBase::shedule_Update(T);
     spatial_update(base_spu_epsP * 1, base_spu_epsR * 1);
 
     // Always make me crow on shedule-update
@@ -363,19 +363,19 @@ void CObject::spatial_register()
 {
     Center(spatial.sphere.P);
     spatial.sphere.R = Radius();
-    ISpatial::spatial_register();
+    SpatialBase::spatial_register();
 }
 
 void CObject::spatial_unregister()
 {
-    ISpatial::spatial_unregister();
+    SpatialBase::spatial_unregister();
 }
 
 void CObject::spatial_move()
 {
     Center(spatial.sphere.P);
     spatial.sphere.R = Radius();
-    ISpatial::spatial_move();
+    SpatialBase::spatial_move();
 }
 
 CObject::SavedPosition CObject::ps_Element(u32 ID) const
@@ -462,7 +462,7 @@ Fvector CObject::get_last_local_point_on_mesh(Fvector const& local_point, u16 co
     // Fetch data
     Fmatrix mE;
     const Fmatrix& M = XFORM();
-    const Fbox& B = CFORM()->getBBox();
+    const Fbox& B = CForm->getBBox();
 
     // Build OBB + Ellipse and X-form point
     Fvector c, r;

@@ -12,8 +12,6 @@
 #include "xr_object.h"
 #include "Feel_Sound.h"
 
-#include "securom_api.h"
-
 ENGINE_API IGame_Level* g_pGameLevel = NULL;
 extern BOOL g_bLoaded;
 
@@ -82,10 +80,8 @@ static void __stdcall build_callback(Fvector* V, int Vcnt, CDB::TRI* T, int Tcnt
 
 bool IGame_Level::Load(u32 dwNum)
 {
-    SECUROM_MARKER_PERFORMANCE_ON(10)
-
-        // Initialize level data
-        pApp->Level_Set(dwNum);
+    // Initialize level data
+    pApp->Level_Set(dwNum);
     string_path temp;
     if (!FS.exist(temp, "$level$", "level.ltx"))
         Debug.fatal(DEBUG_INFO, "Can't find level configuration file '%s'.", temp);
@@ -137,10 +133,7 @@ bool IGame_Level::Load(u32 dwNum)
 #endif
 
     Device.seqFrame.Add(this);
-
-    SECUROM_MARKER_PERFORMANCE_OFF(10)
-
-        return true;
+    return true;
 }
 
 #ifndef _EDITOR
@@ -296,8 +289,8 @@ void IGame_Level::SoundEvent_Register(ref_sound_data_ptr S, float range)
         if (CO->getDestroy()) continue;
 
         // Energy and signal
-        VERIFY(_valid((*it)->spatial.sphere.P));
-        float dist = snd_position.distance_to((*it)->spatial.sphere.P);
+        VERIFY(_valid((*it)->GetSpatialData().sphere.P));
+        float dist = snd_position.distance_to((*it)->GetSpatialData().sphere.P);
         if (dist > p->max_ai_distance) continue;
         VERIFY(_valid(dist));
         VERIFY2(!fis_zero(p->max_ai_distance), S->handle->file_name());
@@ -305,7 +298,7 @@ void IGame_Level::SoundEvent_Register(ref_sound_data_ptr S, float range)
         VERIFY(_valid(Power));
         if (Power > EPS_S)
         {
-            float occ = Sound->get_occlusion_to((*it)->spatial.sphere.P, snd_position);
+            float occ = Sound->get_occlusion_to((*it)->GetSpatialData().sphere.P, snd_position);
             VERIFY(_valid(occ));
             Power *= occ;
             if (Power > EPS_S)

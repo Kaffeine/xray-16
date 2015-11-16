@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "ISpatial.h"
-#include "frustum.h"
+#include "Frustum.h"
 
 extern Fvector	c_spatial_offset[8];
 
@@ -30,10 +30,10 @@ public:
 		for (; _it!=_end; _it++)
 		{
 			ISpatial*		S	= *_it;
-			if (0==(S->spatial.type&mask))	continue;
+			if (0==(S->GetSpatialData().type&mask))	continue;
 
-			Fvector&		sC		= S->spatial.sphere.P;
-			float			sR		= S->spatial.sphere.R;
+			Fvector&		sC		= S->GetSpatialData().sphere.P;
+			float			sR		= S->GetSpatialData().sphere.R;
 			u32				tmask	= fmask;
 			if (fcvNone==F->testSphere(sC,sR,tmask))	continue;
 

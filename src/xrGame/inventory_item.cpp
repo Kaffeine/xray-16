@@ -93,7 +93,7 @@ void CInventoryItem::Load(LPCSTR section)
 	CHitImmunity::LoadImmunities	(pSettings->r_string(section,"immunities_sect"),pSettings);
 
 	ISpatial*			self				=	smart_cast<ISpatial*> (this);
-	if (self)			self->spatial.type	|=	STYPE_VISIBLEFORAI;	
+	if (self)			self->GetSpatialData().type	|=	STYPE_VISIBLEFORAI;
 
 	m_section_id._set	( section );
 	m_name				= CStringTable().translate( pSettings->r_string(section, "inv_name") );
@@ -1372,7 +1372,7 @@ void CInventoryItem::OnRender()
 }
 #endif
 
-DLL_Pure *CInventoryItem::_construct	()
+IFactoryObject *CInventoryItem::_construct	()
 {
 	m_object	= smart_cast<CPhysicsShellHolder*>(this);
 	VERIFY		(m_object);

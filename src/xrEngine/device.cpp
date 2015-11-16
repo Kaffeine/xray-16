@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "xrCDB/frustum.h"
+#include "xrCDB/Frustum.h"
 
 #pragma warning(disable:4995)
 // mmsystem.h

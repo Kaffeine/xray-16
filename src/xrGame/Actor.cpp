@@ -45,7 +45,6 @@
 #include "game_cl_single.h"
 #include "xrmessages.h"
 #include "string_table.h"
-#include "usablescriptobject.h"
 #include "xrCDB/Intersect.hpp"
 
 #include "alife_registry_wrappers.h"
@@ -286,8 +285,8 @@ void CActor::Load	(LPCSTR section )
 	//////////////////////////////////////////////////////////////////////////
 	ISpatial*		self			=	smart_cast<ISpatial*> (this);
 	if (self)	{
-		self->spatial.type	|=	STYPE_VISIBLEFORAI;
-		self->spatial.type	&= ~STYPE_REACTTOSOUND;
+		self->GetSpatialData().type	|=	STYPE_VISIBLEFORAI;
+		self->GetSpatialData().type	&= ~STYPE_REACTTOSOUND;
 	}
 	//////////////////////////////////////////////////////////////////////////
 
@@ -1299,7 +1298,7 @@ void CActor::shedule_Update	(u32 DT)
 		m_pObjectWeLookingAt			= smart_cast<CGameObject*>(RQ.O);
 		
 		CGameObject						*game_object = smart_cast<CGameObject*>(RQ.O);
-		m_pUsableObject					= smart_cast<CUsableScriptObject*>(game_object);
+		m_pUsableObject					= game_object;
 		m_pInvBoxWeLookingAt			= smart_cast<CInventoryBox*>(game_object);
 		m_pPersonWeLookingAt			= smart_cast<CInventoryOwner*>(game_object);
 		m_pVehicleWeLookingAt			= smart_cast<CHolderCustom*>(game_object);
@@ -1859,7 +1858,7 @@ CEntityConditionSimple *CActor::create_entity_condition	(CEntityConditionSimple*
 	return		(inherited::create_entity_condition(m_entity_condition));
 }
 
-DLL_Pure *CActor::_construct			()
+IFactoryObject *CActor::_construct			()
 {
 	m_pPhysics_support				=	xr_new<CCharacterPhysicsSupport>(CCharacterPhysicsSupport::etActor,this);
 	CEntityAlive::_construct		();

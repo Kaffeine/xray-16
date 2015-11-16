@@ -1,7 +1,5 @@
 #include "stdafx.h"
 #include "resource.h"
-#include "dedicated_server_only.h"
-
 #ifdef INGAME_EDITOR
 # include "Include/editor/ide.hpp"
 # include "engine_impl.hpp"
@@ -32,7 +30,7 @@ void CRenderDevice::initialize_editor()
 }
 #endif // #ifdef INGAME_EDITOR
 
-PROTECT_API void CRenderDevice::Initialize()
+void CRenderDevice::Initialize()
 {
     Log("Initializing Engine...");
     TimerGlobal.Start();

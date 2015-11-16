@@ -6,9 +6,9 @@
 #include "IRenderable.h"
 
 class ENGINE_API CPS_Instance :
-    public ISpatial,
-    public ISheduled,
-    public IRenderable
+    public SpatialBase,
+    public ScheduledBase,
+    public RenderableBase
 {
     friend class IGame_Persistent;
 

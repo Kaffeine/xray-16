@@ -35,8 +35,6 @@ class ENGINE_API CBlend;
 class CWeaponList;
 class CEffectorBobbing;
 class CHolderCustom;
-class CUsableScriptObject;
-
 struct SShootingEffector;
 struct SSleepEffector;
 class  CSleepEffectorPP;
@@ -344,7 +342,7 @@ public:
 	CInventoryOwner*		PersonWeLookingAt			() {return m_pPersonWeLookingAt;}
 	LPCSTR					GetDefaultActionForObject	() {return *m_sDefaultObjAction;}
 protected:
-	CUsableScriptObject*	m_pUsableObject;
+    CGameObject*	m_pUsableObject;
 	// Person we're looking at
 	CInventoryOwner*		m_pPersonWeLookingAt;
 	CHolderCustom*			m_pVehicleWeLookingAt;
@@ -646,7 +644,7 @@ protected:
 
 public:
 	IC		CActorCondition		&conditions					() const;
-	virtual DLL_Pure			*_construct					();
+	virtual IFactoryObject			*_construct					();
 	virtual bool				natural_weapon				() const {return false;}
 	virtual bool				natural_detector			() const {return false;}
 	virtual bool				use_center_to_aim			() const;

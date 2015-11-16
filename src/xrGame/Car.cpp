@@ -146,7 +146,7 @@ void	CCar::Load					( LPCSTR section )
 	inherited::Load					(section);
 	//CPHSkeleton::Load(section);
 	ISpatial*		self				=	smart_cast<ISpatial*> (this);
-	if (self)		self->spatial.type	|=	STYPE_VISIBLEFORAI;	
+	if (self)		self->GetSpatialData().type	|=	STYPE_VISIBLEFORAI;	
 }
 
 BOOL	CCar::net_Spawn				(CSE_Abstract* DC)
@@ -1463,7 +1463,7 @@ bool CCar::Use(const Fvector& pos,const Fvector& dir,const Fvector& foot_pos)
 	RQR.r_clear			();
 	collide::ray_defs	Q(pos, dir, 3.f, CDB::OPT_CULL,collide::rqtObject);  // CDB::OPT_ONLYFIRST CDB::OPT_ONLYNEAREST
 	VERIFY(!fis_zero(Q.dir.square_magnitude()));
-	if (g_pGameLevel->ObjectSpace.RayQuery(RQR,collidable.model,Q))
+	if (g_pGameLevel->ObjectSpace.RayQuery(RQR,CForm,Q))
 	{
 		collide::rq_results& R = RQR;
 		int y=R.r_count();
@@ -1934,7 +1934,7 @@ IC void CCar::fill_doors_map(LPCSTR S,xr_map<u16,SDoor>& doors)
 	}
 }
 
-DLL_Pure *CCar::_construct			()
+IFactoryObject *CCar::_construct			()
 {
 	inherited::_construct		();
 	CScriptEntity::_construct	();

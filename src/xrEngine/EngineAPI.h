@@ -9,22 +9,33 @@
 #pragma once
 #include "xrEngine/Engine.h"
 
-// Abstract 'Pure' class for DLL interface
-class ENGINE_API DLL_Pure
+class IFactoryObject
+{
+public:
+    virtual ~IFactoryObject() = 0;
+    virtual CLASS_ID &GetClassId() = 0;
+    virtual IFactoryObject *_construct() = 0;
+};
+
+inline IFactoryObject::~IFactoryObject() {}
+inline IFactoryObject *IFactoryObject::_construct() { return this; }
+
+class ENGINE_API FactoryObjectBase : public IFactoryObject
 {
 public:
     CLASS_ID CLS_ID;
 
-    DLL_Pure(void* params) { CLS_ID = 0; };
-    DLL_Pure() { CLS_ID = 0; };
-    virtual DLL_Pure* _construct() { return this; }
-    virtual ~DLL_Pure() {};
+    FactoryObjectBase(void* params) { CLS_ID = 0; };
+    FactoryObjectBase() { CLS_ID = 0; };
+    virtual CLASS_ID &GetClassId() override { return CLS_ID; }
+    virtual IFactoryObject *_construct() override { return IFactoryObject::_construct(); }
+    virtual ~FactoryObjectBase() {};
 };
 
 // Class creation/destroying interface
 extern "C" {
-    typedef DLL_API DLL_Pure* __cdecl Factory_Create(CLASS_ID CLS_ID);
-    typedef DLL_API void __cdecl Factory_Destroy(DLL_Pure* O);
+    typedef DLL_API IFactoryObject* __cdecl Factory_Create(CLASS_ID CLS_ID);
+    typedef DLL_API void __cdecl Factory_Destroy(IFactoryObject* O);
 };
 
 // Tuning interface
