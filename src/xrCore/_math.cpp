@@ -1,15 +1,15 @@
 #include "stdafx.h"
 #pragma hdrstop
 
-#include <process.h>
+//#include <process.h>
 
-// mmsystem.h
-#define MMNOSOUND
-#define MMNOMIDI
-#define MMNOAUX
-#define MMNOMIXER
-#define MMNOJOY
-#include <mmsystem.h>
+//// mmsystem.h
+//#define MMNOSOUND
+//#define MMNOMIDI
+//#define MMNOAUX
+//#define MMNOMIXER
+//#define MMNOJOY
+//#include <mmsystem.h>
 
 // Initialized on startup
 XRCORE_API Fmatrix Fidentity;
@@ -23,37 +23,37 @@ namespace FPU
 {
 XRCORE_API void m24(void)
 {
-    _control87(_PC_24, MCW_PC);
-    _control87(_RC_CHOP, MCW_RC);
+//    _control87(_PC_24, MCW_PC);
+//    _control87(_RC_CHOP, MCW_RC);
 }
 XRCORE_API void m24r(void)
 {
-    _control87(_PC_24, MCW_PC);
-    _control87(_RC_NEAR, MCW_RC);
+//    _control87(_PC_24, MCW_PC);
+//    _control87(_RC_NEAR, MCW_RC);
 }
 XRCORE_API void m53(void)
 {
-    _control87(_PC_53, MCW_PC);
-    _control87(_RC_CHOP, MCW_RC);
+//    _control87(_PC_53, MCW_PC);
+//    _control87(_RC_CHOP, MCW_RC);
 }
 XRCORE_API void m53r(void)
 {
-    _control87(_PC_53, MCW_PC);
-    _control87(_RC_NEAR, MCW_RC);
+//    _control87(_PC_53, MCW_PC);
+//    _control87(_RC_NEAR, MCW_RC);
 }
 XRCORE_API void m64(void)
 {
-    _control87(_PC_64, MCW_PC);
-    _control87(_RC_CHOP, MCW_RC);
+//    _control87(_PC_64, MCW_PC);
+//    _control87(_RC_CHOP, MCW_RC);
 }
 XRCORE_API void m64r(void)
 {
-    _control87(_PC_64, MCW_PC);
-    _control87(_RC_NEAR, MCW_RC);
+//    _control87(_PC_64, MCW_PC);
+//    _control87(_RC_NEAR, MCW_RC);
 }
 
 void initialize() {}
-};
+}
 #else
 u16 getFPUsw()
 {
@@ -148,8 +148,8 @@ XRCORE_API _processor_info ID;
 
 XRCORE_API u64 QPC()
 {
-    u64 _dest;
-    QueryPerformanceCounter((PLARGE_INTEGER)&_dest);
+    u64 _dest = 0;
+//    QueryPerformanceCounter((PLARGE_INTEGER)&_dest);
     qpc_counter++;
     return _dest;
 }
@@ -170,11 +170,34 @@ void Detect()
         // Core.Fatal ("Fatal error: can't detect CPU/FPU.");
         abort();
     }
+    
+#if __linux__
+    clk_per_second = 100000;
 
+    // Detect RDTSC Overhead
+    clk_overhead = 0;
+
+    qpc_overhead = 0;
+    
+    clk_per_second -= clk_overhead;
+    clk_per_milisec = clk_per_second / 1000;
+    clk_per_microsec = clk_per_milisec / 1000;
+
+    double a, b;
+    a = 1;
+    b = double(clk_per_second);
+    clk_to_seconds = float(double(a / b));
+    a = 1000;
+    b = double(clk_per_second);
+    clk_to_milisec = float(double(a / b));
+    a = 1000000;
+    b = double(clk_per_second);
+    clk_to_microsec = float(double(a / b));
+#else
     // Timers & frequency
     u64 start, end;
     u32 dwStart, dwTest;
-
+    
     SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
 
     // Detect Freq
@@ -224,6 +247,8 @@ void Detect()
     a = 1000000;
     b = double(clk_per_second);
     clk_to_microsec = float(double(a / b));
+    
+#endif
 }
 };
 
@@ -305,14 +330,14 @@ void _initialize_cpu_thread()
         _MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);
         if (_denormals_are_zero_supported)
         {
-            __try
-            {
-                _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
-            }
-            __except (EXCEPTION_EXECUTE_HANDLER)
-            {
-                _denormals_are_zero_supported = FALSE;
-            }
+//            __try
+//            {
+//                _MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON);
+//            }
+//            __except (EXCEPTION_EXECUTE_HANDLER)
+//            {
+//                _denormals_are_zero_supported = FALSE;
+//            }
         }
     }
 }
@@ -333,13 +358,13 @@ void thread_name(const char* name)
     tn.szName = name;
     tn.dwThreadID = DWORD(-1);
     tn.dwFlags = 0;
-    __try
-    {
-        RaiseException(0x406D1388, 0, sizeof(tn) / sizeof(DWORD), (DWORD*)&tn);
-    }
-    __except (EXCEPTION_CONTINUE_EXECUTION)
-    {
-    }
+//    __try
+//    {
+//        RaiseException(0x406D1388, 0, sizeof(tn) / sizeof(DWORD), (DWORD*)&tn);
+//    }
+//    __except (EXCEPTION_CONTINUE_EXECUTION)
+//    {
+//    }
 }
 #pragma pack(pop)
 
@@ -371,7 +396,7 @@ void thread_spawn(thread_t* entry, const char* name, unsigned stack, void* argli
     startup->entry = entry;
     startup->name = (char*)name;
     startup->args = arglist;
-    _beginthread(thread_entry, stack, startup);
+//    _beginthread(thread_entry, stack, startup);
 }
 
 void spline1(float t, Fvector* p, Fvector* ret)

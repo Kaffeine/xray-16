@@ -216,6 +216,24 @@ IC int xr_strcmp(const char* S1, const char* S2)
 }
 #endif
 
+inline char *xr_itoa(int value, char *str, int base)
+{
+#ifdef _WIN32
+    return itoa(value, str,base);
+#else
+    switch (base) {
+    default:
+    case 10:
+        sprintf(str, "%d", value);
+        break;
+    case 16:
+        sprintf(str, "%x", value);
+        break;
+    }
+    return str;
+#endif
+}
+
 #ifndef _EDITOR
 #ifndef MASTER_GOLD
 

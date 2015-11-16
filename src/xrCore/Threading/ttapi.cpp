@@ -1,13 +1,16 @@
 #include "stdafx.h"
 #include "ttapi.h"
+
+#if 0
 #include <windows.h>
 #ifdef _GPA_ENABLED
 #include <tal.h>
 #endif
+#endif
 
 typedef struct TTAPI_WORKER_PARAMS
 {
-    volatile LONG vlFlag;
+    volatile long vlFlag;
     TTAPIWorkerFunc	lpWorkerFunc;
     LPVOID lpvWorkerFuncParams;
     DWORD dwPadding[13];
@@ -26,10 +29,11 @@ static DWORD ttapi_dwSlowIter = 0;
 
 struct
 {
-    volatile LONG size;
+    volatile long size;
     DWORD dwPadding[15];
 } ttapi_queue_size;
 
+#if 0
 static DWORD WINAPI ttapiThreadProc(void *lpParameter)
 {
     LPTTAPI_WORKER_PARAMS pParams = (LPTTAPI_WORKER_PARAMS)lpParameter;
@@ -78,6 +82,7 @@ static DWORD WINAPI ttapiThreadProc(void *lpParameter)
 
     return 0;
 }
+#endif
 
 typedef struct tagTHREADNAME_INFO
 {
@@ -86,6 +91,18 @@ typedef struct tagTHREADNAME_INFO
     DWORD dwThreadID;
     DWORD dwFlags;
 } THREADNAME_INFO;
+
+typedef union _LARGE_INTEGER {
+  struct {
+    DWORD LowPart;
+    long  HighPart;
+  };
+  struct {
+    DWORD LowPart;
+    long  HighPart;
+  } u;
+  long long QuadPart;
+} LARGE_INTEGER;
 
 void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName)
 {
@@ -96,12 +113,14 @@ void SetThreadName(DWORD dwThreadID, LPCSTR szThreadName)
         info.dwThreadID = dwThreadID;
         info.dwFlags = 0;
     }
+#if 0
     __try
     {
         RaiseException(0x406D1388, 0, sizeof(info) / sizeof(DWORD), (DWORD*)&info);
     } __except (EXCEPTION_CONTINUE_EXECUTION)
     {
     }
+#endif
 }
 
 int ttapi_Init(const _processor_info &pi)
@@ -109,34 +128,36 @@ int ttapi_Init(const _processor_info &pi)
     if (ttapi_initialized)
         return ttapi_worker_count;
 
+#if 0
     // System Info
     ttapi_worker_count = pi.n_cores;
-    SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
+//    SetPriorityClass(GetCurrentProcess(), REALTIME_PRIORITY_CLASS);
     DWORD i, dwNumIter;
     volatile DWORD dwDummy = 1;
-    LARGE_INTEGER liFrequency, liStart, liEnd;
-    QueryPerformanceFrequency(&liFrequency);
+    _LARGE_INTEGER liFrequency, liStart, liEnd;
+//    QueryPerformanceFrequency(&liFrequency);
     // Get fast spin-loop timings
     dwNumIter = 100000000;
-    QueryPerformanceCounter(&liStart);
+//    QueryPerformanceCounter(&liStart);
     for (i = 0; i < dwNumIter; ++i)
     {
         if (!dwDummy)
             goto process1;
-        __asm pause;
+        asm("pause");
+//        __asm pause;
     }
 process1:
-    QueryPerformanceCounter(&liEnd);
+//    QueryPerformanceCounter(&liEnd);
     // We want 1/25 (40ms) fast spin-loop
     ttapi_dwFastIter = (dwNumIter * liFrequency.QuadPart) / ((liEnd.QuadPart - liStart.QuadPart) * 25);
     // Get slow spin-loop timings
     dwNumIter = 10000000;
-    QueryPerformanceCounter(&liStart);
+//    QueryPerformanceCounter(&liStart);
     for (i = 0; i < dwNumIter; ++i)
     {
         if (!dwDummy)
             goto process2;
-        SwitchToThread();
+//        SwitchToThread();
     }
 process2:
     QueryPerformanceCounter(&liEnd);
@@ -167,6 +188,8 @@ process2:
     DWORD dwThreadId = 0;
     DWORD dwAffinitiMask = pi.affinity_mask;
     DWORD dwCurrentMask = 0x01;
+    
+#if 0
     // Setting affinity
     while (!(dwAffinitiMask & dwCurrentMask))
         dwCurrentMask <<= 1;
@@ -189,6 +212,8 @@ process2:
         sprintf_s(szThreadName, "Helper Thread #%u", i);
         SetThreadName(dwThreadId, szThreadName);
     }
+#endif
+#endif
     ttapi_initialized = true;
     return ttapi_worker_count;
 }
@@ -214,14 +239,17 @@ void ttapi_Run()
         // Setting queue size
         ttapi_queue_size.size = workerCount;
         // Starting all workers except the last
+#if 0
         for (DWORD i = 0; i < workerCount; ++i)
             _InterlockedExchange(&ttapi_worker_params[i].vlFlag, 0);
+#endif
         // Running last worker in current thread
         ttapi_worker_params[workerCount].lpWorkerFunc(ttapi_worker_params[workerCount].lpvWorkerFuncParams);
         // Waiting task queue to become empty
         //Start = __rdtsc();
         while (ttapi_queue_size.size)
-            __asm pause;
+            asm("pause");
+//            __asm pause;
         //Stop = __rdtsc();
         //Msg( "Wait: %u ticks" , Stop - Start );
     }
@@ -240,10 +268,14 @@ void ttapi_Done()
     for (DWORD i = 0; i < ttapi_thread_count; i++)
     {
         ttapi_worker_params[i].lpWorkerFunc = NULL;
+#if 0
         _InterlockedExchange(&ttapi_worker_params[i].vlFlag, 0);
+#endif
     }
     // Waiting threads for completion
+#if 0
     WaitForMultipleObjects(ttapi_thread_count, ttapi_threads_handles, TRUE, INFINITE);
+#endif
     // Freeing resources
     free(ttapi_threads_handles);
     ttapi_threads_handles = nullptr;
@@ -254,3 +286,4 @@ void ttapi_Done()
     ttapi_assigned_workers = 0;
     ttapi_initialized = false;
 }
+

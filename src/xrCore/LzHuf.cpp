@@ -4,9 +4,10 @@
 #include "stdafx.h"
 #pragma hdrstop
 
-#include <io.h>
 #include <fcntl.h>
-#include <sys\stat.h>
+#include <sys/stat.h>
+
+#include <cstdio>
 
 #define MODULE
 
@@ -695,16 +696,17 @@ void Decode(void) /* recover */
     tim_size = count;
 }
 
-unsigned _writeLZ(int hf, void* d, unsigned size)
+unsigned _writeLZ(FILE *file, void* data, unsigned size)
 {
-    u8* start = (u8*)d;
+    u8* start = (u8*)data;
     fs.Init_Input(start, start + size);
 
     // Actual compression
     Encode();
     // Flush cache
     int size_out = fs.OutSize();
-    if (size_out) _write(hf, fs.OutPointer(), size_out);
+    
+    if (size_out) fwrite(fs.OutPointer(), size_out, 1, file);
     fs.OutRelease();
     return size_out;
 }
@@ -727,11 +729,12 @@ void _decompressLZ(u8** dest, unsigned* dest_sz, void* src, unsigned src_sz)
     *dest_sz = fs.OutSize();
 }
 
-unsigned _readLZ(int hf, void*& d, unsigned size)
+unsigned _readLZ(FILE *file, void * &d, unsigned size)
 {
     // Read file in memory
     u8* data = (u8*)xr_malloc(size);
-    _read(hf, data, size);
+    
+    fread(data, size, 1, file);
 
     fs.Init_Input(data, data + size);
 

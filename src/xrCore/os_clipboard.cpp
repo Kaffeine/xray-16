@@ -12,7 +12,9 @@
 
 void os_clipboard::copy_to_clipboard(LPCSTR buf)
 {
+#ifdef __WIN32
     SDL_SetClipboardText(buf);
+#endif
 }
 
 void os_clipboard::paste_from_clipboard(LPSTR buffer, u32 const& buffer_size)

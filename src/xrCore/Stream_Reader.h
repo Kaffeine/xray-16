@@ -1,6 +1,8 @@
 #ifndef STREAM_READER_H
 #define STREAM_READER_H
 
+#include "FS.h"
+
 #ifndef _WIN32
 typedef FILE* HANDLE;
 #endif

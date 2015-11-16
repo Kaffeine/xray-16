@@ -2,7 +2,7 @@
 #pragma hdrstop
 
 #include "xr_ini_ex.h"
-#include "../../xrCore/fs_internal.h"
+#include "xrCore/FS_internal.h"
 
 CInifileEx *pSettingsEx	= NULL;
 
@@ -15,7 +15,7 @@ void CInifileEx::Destroy(CInifileEx* ini)
 bool sect_pred(const CInifileEx::Sect *x, LPCSTR val)
 {
 	return xr_strcmp(*x->Name,val)<0;
-};
+}
 
 bool item_pred(const CInifileEx::Item& x, LPCSTR val)
 {
@@ -24,7 +24,7 @@ bool item_pred(const CInifileEx::Item& x, LPCSTR val)
 }
 
 //------------------------------------------------------------------------------
-//Òåëî ôóíêöèé Inifile
+//Ð¢ÐµÐ»Ð¾ Ñ„ÑƒÐ½ÐºÑ†Ð¸Ð¹ Inifile
 //------------------------------------------------------------------------------
  BOOL _parse(LPSTR dest, LPCSTR src)
 {
@@ -259,7 +259,7 @@ void	CInifileEx::Load(IReader* F, LPCSTR path)
 				}
 			}
 			*strchr(str,']') 	= 0;
-			Current->Name 		= strlwr(str+1);
+			Current->Name 		= xr_strlwr(str+1);
 		} 
 		else // name = value
 		{

@@ -35,15 +35,27 @@ typedef const char* pcstr;
 #ifndef _WINDOWS_
 typedef int BOOL;
 typedef pstr LPSTR;
+typedef pstr PSTR;
+typedef pstr LPTSTR;
 typedef pcstr LPCSTR;
+typedef pcstr LPCTSTR;
 typedef unsigned char BYTE;
 typedef unsigned int UINT;
 
 typedef unsigned short WORD;
 typedef unsigned long DWORD;
 
+typedef unsigned long* LPDWORD;
+
 typedef void* HMODULE;
+typedef void* HINSTANCE;
 typedef void* LPVOID;
+typedef void* LPARAM;
+typedef void* LPOFNHOOKPROC;
+
+typedef void *HANDLE2;
+typedef HANDLE2 *PHANDLE;
+typedef HANDLE2 *LPHANDLE;
 
 typedef int HWND;
 typedef long HRESULT;

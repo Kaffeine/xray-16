@@ -10,14 +10,32 @@
 #include "commdlg.h"
 #include "vfw.h"
 #else
+typedef struct tagOFN {
+  DWORD         lStructSize;
+  HWND          hwndOwner;
+  HINSTANCE     hInstance;
+  LPCTSTR       lpstrFilter;
+  LPTSTR        lpstrCustomFilter;
+  DWORD         nMaxCustFilter;
+  DWORD         nFilterIndex;
+  LPTSTR        lpstrFile;
+  DWORD         nMaxFile;
+  LPTSTR        lpstrFileTitle;
+  DWORD         nMaxFileTitle;
+  LPCTSTR       lpstrInitialDir;
+  LPCTSTR       lpstrTitle;
+  DWORD         Flags;
+  WORD          nFileOffset;
+  WORD          nFileExtension;
+  LPCTSTR       lpstrDefExt;
+  LPARAM        lCustData;
+  LPOFNHOOKPROC lpfnHook;
+  LPCTSTR       lpTemplateName;
+  void          *pvReserved;
+  DWORD         dwReserved;
+  DWORD         FlagsEx;
+} OPENFILENAME, *LPOPENFILENAME;
 
-void _splitpath (
-   const char *path,  // Path Input
-   char *drive,       // Drive     : Output
-   char *dir,         // Directory : Output
-   char *fname,       // Filename  : Output
-   char *ext          // Extension : Output
-);
 #endif
 
 EFS_Utils* xr_EFS = NULL;
@@ -30,6 +48,7 @@ EFS_Utils::~EFS_Utils()
 {
 }
 
+#ifdef __WIN32
 xr_string EFS_Utils::ExtractFileName(LPCSTR src)
 {
     string_path name;
@@ -50,6 +69,43 @@ xr_string EFS_Utils::ExtractFilePath(LPCSTR src)
     _splitpath(src, drive, dir, 0, 0);
     return xr_string(drive) + dir;
 }
+#else
+xr_string EFS_Utils::ExtractFileName(const char *src)
+{
+    const char *filename = strrchr(src, '/'); // Do we need to check for "\\" too?
+
+    if (filename)
+        return xr_string(filename + 1);
+    else
+        return xr_string(src);
+}
+
+xr_string EFS_Utils::ExtractFileExt(const char *src)
+{
+    const char *extension = strrchr(src, '.');
+    const char *directory = strrchr(src, '/'); // Do we need to check for "\\" too?
+
+    if (extension && (!directory || directory < extension))
+        return xr_string(extension + 1);
+    else
+        return xr_string(); // No extension
+}
+
+xr_string EFS_Utils::ExtractFilePath(const char *src)
+{
+    string_path dir;
+    xr_strcpy(dir, src);
+    char *base = strrchr((char*)dir, '/'); // Do we need to check for "\\" too?
+
+    if (base)
+    {
+        base[0] = 0;
+        return xr_string(dir);
+    }
+    else
+        return xr_string(); // No directory
+}
+#endif
 
 xr_string EFS_Utils::ExcludeBasePath(LPCSTR full_path, LPCSTR excl_path)
 {
@@ -130,12 +186,12 @@ void MakeFilter(string1024& dest, LPCSTR info, LPCSTR ext)
 // start_flt_ext = -1-all 0..n-indices
 //------------------------------------------------------------------------------
 
-// Vista uses this hook for old-style save dialog
-UINT_PTR CALLBACK OFNHookProcOldStyle(HWND, UINT, WPARAM, LPARAM)
-{
-    // let default hook work on this message
-    return 0;
-}
+//// Vista uses this hook for old-style save dialog
+//UINT_PTR CALLBACK OFNHookProcOldStyle(HWND, UINT, WPARAM, LPARAM)
+//{
+//    // let default hook work on this message
+//    return 0;
+//}
 
 bool EFS_Utils::GetOpenNameInternal(LPCSTR initial, LPSTR buffer, int sz_buf, bool bMulti, LPCSTR offset, int start_flt_ext)
 {
@@ -149,6 +205,7 @@ bool EFS_Utils::GetOpenNameInternal(LPCSTR initial, LPSTR buffer, int sz_buf, bo
 
     if (xr_strlen(buffer))
     {
+#ifdef __WIN32
         string_path dr;
         if (!(buffer[0] == '\\' && buffer[1] == '\\'))  // if !network
         {
@@ -156,14 +213,17 @@ bool EFS_Utils::GetOpenNameInternal(LPCSTR initial, LPSTR buffer, int sz_buf, bo
 
             if (0 == dr[0])
             {
+#endif
                 string_path bb;
                 P._update(bb, buffer);
                 xr_strcpy(buffer, sz_buf, bb);
+#ifdef __WIN32
             }
         }
+#endif
     }
     ofn.lStructSize = sizeof(OPENFILENAME);
-    ofn.hwndOwner = GetForegroundWindow();
+//    ofn.hwndOwner = GetForegroundWindow();
     ofn.lpstrDefExt = P.m_DefExt;
     ofn.lpstrFile = buffer;
     ofn.nMaxFile = sz_buf;
@@ -173,14 +233,14 @@ bool EFS_Utils::GetOpenNameInternal(LPCSTR initial, LPSTR buffer, int sz_buf, bo
     string512 path;
     xr_strcpy(path, (offset&&offset[0]) ? offset : P.m_Path);
     ofn.lpstrInitialDir = path;
-    ofn.Flags = OFN_PATHMUSTEXIST |
-        OFN_FILEMUSTEXIST |
-        OFN_HIDEREADONLY |
-        OFN_FILEMUSTEXIST |
-        OFN_NOCHANGEDIR |
-        (bMulti ? OFN_ALLOWMULTISELECT | OFN_EXPLORER : 0);
+//    ofn.Flags = OFN_PATHMUSTEXIST |
+//        OFN_FILEMUSTEXIST |
+//        OFN_HIDEREADONLY |
+//        OFN_FILEMUSTEXIST |
+//        OFN_NOCHANGEDIR |
+//        (bMulti ? OFN_ALLOWMULTISELECT | OFN_EXPLORER : 0);
 
-    ofn.FlagsEx = OFN_EX_NOPLACESBAR;
+//    ofn.FlagsEx = OFN_EX_NOPLACESBAR;
 
     /*
      unsigned int dwVersion = GetVersion();
@@ -192,17 +252,18 @@ bool EFS_Utils::GetOpenNameInternal(LPCSTR initial, LPSTR buffer, int sz_buf, bo
      }
      */
 
-    bool bRes = !!GetOpenFileName(&ofn);
-    if (!bRes)
-    {
-        u32 err = CommDlgExtendedError();
-        switch (err)
-        {
-        case FNERR_BUFFERTOOSMALL:
-            Log("Too many files selected.");
-            break;
-        }
-    }
+    bool bRes = false;
+//    bool bRes = !!GetOpenFileName(&ofn);
+//    if (!bRes)
+//    {
+//        u32 err = CommDlgExtendedError();
+//        switch (err)
+//        {
+//        case FNERR_BUFFERTOOSMALL:
+//            Log("Too many files selected.");
+//            break;
+//        }
+//    }
     if (bRes && bMulti)
     {
         Log("buff=", buffer);
@@ -253,14 +314,22 @@ bool EFS_Utils::GetSaveName(LPCSTR initial, string_path& buffer, LPCSTR offset, 
     Memory.mem_fill(&ofn, 0, sizeof(ofn));
     if (xr_strlen(buffer))
     {
-        string_path dr;
+#ifdef __WIN32
         if (!(buffer[0] == '\\' && buffer[1] == '\\'))  // if !network
         {
+            string_path dr;
             _splitpath(buffer, dr, 0, 0, 0);
-            if (0 == dr[0]) P._update(buffer, buffer);
+
+            if (0 == dr[0])
+#endif
+            {
+                P._update(buffer, buffer);
+            }
+#ifdef __WIN32
         }
+#endif
     }
-    ofn.hwndOwner = GetForegroundWindow();
+//    ofn.hwndOwner = GetForegroundWindow();
     ofn.lpstrDefExt = def_ext;
     ofn.lpstrFile = buffer;
     ofn.lpstrFilter = flt;
@@ -271,8 +340,8 @@ bool EFS_Utils::GetSaveName(LPCSTR initial, string_path& buffer, LPCSTR offset, 
     string512 path;
     xr_strcpy(path, (offset&&offset[0]) ? offset : P.m_Path);
     ofn.lpstrInitialDir = path;
-    ofn.Flags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
-    ofn.FlagsEx = OFN_EX_NOPLACESBAR;
+//    ofn.Flags = OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT | OFN_NOCHANGEDIR;
+//    ofn.FlagsEx = OFN_EX_NOPLACESBAR;
 
     /*
      if ( dwWindowsMajorVersion == 6 )
@@ -282,17 +351,17 @@ bool EFS_Utils::GetSaveName(LPCSTR initial, string_path& buffer, LPCSTR offset, 
      }
      */
 
-    bool bRes = !!GetSaveFileName(&ofn);
-    if (!bRes)
-    {
-        u32 err = CommDlgExtendedError();
-        switch (err)
-        {
-        case FNERR_BUFFERTOOSMALL:
-            Log("Too many file selected.");
-            break;
-        }
-    }
+    bool bRes = false;// !!GetSaveFileName(&ofn);
+//    if (!bRes)
+//    {
+//        u32 err = CommDlgExtendedError();
+//        switch (err)
+//        {
+//        case FNERR_BUFFERTOOSMALL:
+//            Log("Too many file selected.");
+//            break;
+//        }
+//    }
     xr_strlwr(buffer);
     return bRes;
 }

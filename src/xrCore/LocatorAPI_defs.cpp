@@ -2,12 +2,22 @@
 #pragma hdrstop
 
 #include "LocatorAPI_defs.h"
-#pragma warning(disable:4995)
-#include <io.h>
-#include <direct.h>
+//#pragma warning(disable:4995)
+//#include <io.h>
+//#include <direct.h>
 #include <fcntl.h>
-#include <sys\stat.h>
-#pragma warning(default:4995)
+//#include <sys\stat.h>
+//#pragma warning(default:4995)
+
+struct std::_finddata_t
+{
+    char *name;
+    int attrib;
+    time_t time_write;
+    unsigned long size;
+};
+
+#define _A_SUBDIR 1
 
 //////////////////////////////////////////////////////////////////////
 // FS_File
@@ -35,12 +45,26 @@ FS_Path::FS_Path(LPCSTR _Root, LPCSTR _Add, LPCSTR _DefExt, LPCSTR _FilterCaptio
     string_path temp;
     xr_strcpy(temp, sizeof(temp), _Root);
     if (_Add) xr_strcat(temp, _Add);
-    if (temp[0] && temp[xr_strlen(temp) - 1] != '\\') xr_strcat(temp, "\\");
-    m_Path = xr_strlwr(xr_strdup(temp));
-    m_DefExt = _DefExt ? xr_strlwr(xr_strdup(_DefExt)) : 0;
-    m_FilterCaption = _FilterCaption ? xr_strlwr(xr_strdup(_FilterCaption)) : 0;
-    m_Add = _Add ? xr_strlwr(xr_strdup(_Add)) : 0;
-    m_Root = _Root ? xr_strlwr(xr_strdup(_Root)) : 0;
+    int tempLength = xr_strlen(temp);
+    
+    if (temp[0] && temp[tempLength - 1] != '/')
+    {
+        xr_strcat(temp, "/");
+        tempLength++;
+    }
+    
+    for (int i = 0; i < tempLength; i++)
+    {
+        if (temp[i] == '\\') {
+            temp[i] = '/';
+        }
+    }
+    
+    m_Path = xr_strdup(temp);
+    m_DefExt = _DefExt ? xr_strdup(_DefExt) : 0;
+    m_FilterCaption = _FilterCaption ? xr_strdup(_FilterCaption) : 0;
+    m_Add = _Add ? xr_strdup(_Add) : 0;
+    m_Root = _Root ? xr_strdup(_Root) : 0;
     m_Flags.assign(flags);
 #ifdef _EDITOR
     // Editor(s)/User(s) wants pathes already created in "real" file system :)
@@ -67,24 +91,24 @@ void FS_Path::_set(LPCSTR add)
     // m_Path
     string_path temp;
     strconcat(sizeof(temp), temp, m_Root, m_Add);
-    if (temp[xr_strlen(temp) - 1] != '\\') xr_strcat(temp, "\\");
+    if (temp[xr_strlen(temp) - 1] != '/') xr_strcat(temp, "/");
     xr_free(m_Path);
-    m_Path = xr_strlwr(xr_strdup(temp));
+    m_Path = xr_strdup(temp);
 }
 
 void FS_Path::_set_root(LPCSTR root)
 {
     string_path temp;
     xr_strcpy(temp, root);
-    if (m_Root[0] && m_Root[xr_strlen(m_Root) - 1] != '\\') xr_strcat(temp, "\\");
+    if (m_Root[0] && m_Root[xr_strlen(m_Root) - 1] != '/') xr_strcat(temp, "/");
     xr_free(m_Root);
-    m_Root = xr_strlwr(xr_strdup(temp));
+    m_Root = xr_strdup(temp);
 
     // m_Path
     strconcat(sizeof(temp), temp, m_Root, m_Add ? m_Add : "");
-    if (*temp && temp[xr_strlen(temp) - 1] != '\\') xr_strcat(temp, "\\");
+    if (*temp && temp[xr_strlen(temp) - 1] != '/') xr_strcat(temp, "/");
     xr_free(m_Path);
-    m_Path = xr_strlwr(xr_strdup(temp));
+    m_Path = xr_strdup(temp);
 }
 
 LPCSTR FS_Path::_update(string_path& dest, LPCSTR src)const

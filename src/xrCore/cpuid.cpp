@@ -16,6 +16,9 @@
 *   Returns int with capablity bit set.
 *
 ****************************************************/
+
+#define _EDITOR
+
 #ifdef _EDITOR
 int _cpuid ( _processor_info *pinfo )
 {

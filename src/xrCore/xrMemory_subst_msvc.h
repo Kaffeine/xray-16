@@ -172,6 +172,7 @@ IC void xr_delete(T*& ptr)
         ptr = NULL;
     }
 }
+
 template <class T>
 IC void xr_delete(T* const& ptr)
 {

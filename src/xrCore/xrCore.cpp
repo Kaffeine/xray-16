@@ -3,11 +3,13 @@
 #include "stdafx.h"
 #pragma hdrstop
 
-#include <mmsystem.h>
-#include <objbase.h>
+//#include <mmsystem.h>
+//#include <objbase.h>
 #include "xrCore.h"
 #include "Threading/ttapi.h"
 #include "Math/MathUtil.hpp"
+
+#include <SDL2/SDL.h>
 
 #pragma comment(lib,"winmm.lib")
 
@@ -26,8 +28,6 @@ extern void Detect();
 
 static u32 init_counter = 0;
 
-extern char g_application_path[256];
-
 //. extern xr_vector<shared_str>* LogFile;
 
 void xrCore::_initialize(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs, LPCSTR fs_fname, bool plugin)
@@ -38,20 +38,18 @@ void xrCore::_initialize(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs, 
         PluginMode = plugin;
         // Init COM so we can use CoCreateInstance
         // HRESULT co_res =
-        Params = xr_strdup(GetCommandLine());
-        xr_strlwr(Params);
+        
+#ifdef __WIN32
         if (!strstr(Params, "-editor"))
             CoInitializeEx(NULL, COINIT_MULTITHREADED);
+#endif
 
-        string_path fn, dr, di;
+//        string_path fn, dr, di;
 
         // application path
-        GetModuleFileName(GetModuleHandle(MODULE_NAME), fn, sizeof(fn));
-        _splitpath(fn, dr, di, 0, 0);
-        strconcat(sizeof(ApplicationPath), ApplicationPath, dr, di);
-#ifndef _EDITOR
-        xr_strcpy(g_application_path, sizeof(g_application_path), ApplicationPath);
-#endif
+//        GetModuleFileName(GetModuleHandle(MODULE_NAME), fn, sizeof(fn));
+//        _splitpath(fn, dr, di, 0, 0);
+//        strconcat(sizeof(ApplicationPath), ApplicationPath, dr, di);
 
 #ifdef _EDITOR
         // working path
@@ -62,8 +60,9 @@ void xrCore::_initialize(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs, 
             SetCurrentDirectory(c_name);
         }
 #endif
-
+        
         GetCurrentDirectory(sizeof(WorkingPath), WorkingPath);
+        GetApplicationDirectory(sizeof(ApplicationPath), ApplicationPath);
 
         // User/Comp Name
         DWORD sz_user = sizeof(UserName);
@@ -82,6 +81,7 @@ void xrCore::_initialize(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs, 
         InitLog();
         _initialize_cpu();
         R_ASSERT(CPU::ID.feature&_CPU_FEATURE_SSE);
+//        return;
         ttapi_Init(CPU::ID);
         XRay::Math::Initialize();
         // Debug._initialize ();
@@ -123,6 +123,8 @@ void xrCore::_initialize(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs, 
     }
     SetLogCB(cb);
     init_counter++;
+    
+    SDL_Init(SDL_INIT_EVERYTHING);
 }
 
 #ifndef _EDITOR
@@ -148,11 +150,29 @@ void xrCore::_destroy()
             xr_delete(trained_model);
         }
 #endif
-        xr_free(Params);
+//        xr_free(Params);
         Memory._destroy();
     }
 }
 
+void xrCore::InitializeArguments(int argc, char *argv[])
+{
+    static string4096 params;
+    xr_strcpy(params, argv[0]);
+    
+    int currentLength = xr_strlen(params);
+    for (int i = 1; i<argc; i++)
+    {
+        params[currentLength] = ' ';
+        ++currentLength;
+        params[currentLength] = 0;
+        xr_strcpy(params + currentLength, sizeof(params) - currentLength, argv[i]);
+        currentLength += xr_strlen(argv[i]);
+    }
+    Core.Params = params;
+}
+
+#ifdef __WIN32
 //. why ???
 #ifdef _EDITOR
 BOOL WINAPI DllEntryPoint(HINSTANCE hinstDLL, DWORD ul_reason_for_call, LPVOID lpvReserved)
@@ -187,3 +207,5 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD ul_reason_for_call, LPVOID lpvRese
     }
     return TRUE;
 }
+
+#endif

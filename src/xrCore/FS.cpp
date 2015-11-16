@@ -3,6 +3,13 @@
 
 #include "FS_internal.h"
 
+#ifdef __linux__
+#ifndef __USE_POSIX
+#define __USE_POSIX
+#endif
+#include <stdio.h>
+//#include <cstdio>
+#else
 #pragma warning(disable:4995)
 #include <io.h>
 #include <direct.h>
@@ -16,6 +23,7 @@
 #ifdef M_BORLAND
 # define O_SEQUENTIAL 0
 #endif // M_BORLAND
+#endif // ifdef linux
 
 #ifdef FS_DEBUG
 XRCORE_API u32 g_file_mapped_memory = 0;
@@ -86,7 +94,7 @@ void VerifyPath(LPCSTR path)
             continue;
         CopyMemory(tmp, path, i);
         tmp[i] = 0;
-        _mkdir(tmp);
+//        _mkdir(tmp);
     }
 }
 
@@ -108,27 +116,24 @@ bool file_handle_internal(LPCSTR file_name, u32& size, int& hFile)
 #else // EDITOR
 static int open_internal(LPCSTR fn, int& handle)
 {
-    return (
-        _sopen_s(
-        &handle,
-        fn,
-        _O_RDONLY | _O_BINARY,
-        _SH_DENYNO,
-        _S_IREAD
-        )
-        );
+    if ((handle = open(fn, O_RDONLY)) >= 0)
+        return 0;
+    
+    return handle;
 }
 
 bool file_handle_internal(LPCSTR file_name, u32& size, int& file_handle)
 {
     if (open_internal(file_name, file_handle))
     {
-        Sleep(1);
         if (open_internal(file_name, file_handle))
             return (false);
     }
-
-    size = _filelength(file_handle);
+    
+    FILE *f = fdopen(file_handle, "rb");
+    std::fseek(f, 0, SEEK_END);
+    size = std::ftell(f);
+    
     return (true);
 }
 #endif // EDITOR
@@ -142,11 +147,18 @@ void* FileDownload(LPCSTR file_name, const int& file_handle, u32& file_size)
 #endif // DEBUG_MEMORY_NAME
         );
 
-    int r_bytes = _read(file_handle, buffer, file_size);
+    FILE *f = fdopen(file_handle, "rb");
+    rewind(f);
+    
+    int res = std::fseek(f, 0, SEEK_SET);
+    int pos = std::ftell(f);
+    
+    int r_bytes = std::fread(buffer, file_size, 1, f);
     R_ASSERT3(
         // !file_size ||
         // (r_bytes && (file_size >= (u32)r_bytes)),
-        file_size == (u32)r_bytes,
+        1 == (u32)r_bytes,
+//        file_size == (u32)r_bytes,
         "can't read from file : ",
         file_name
         );
@@ -154,7 +166,7 @@ void* FileDownload(LPCSTR file_name, const int& file_handle, u32& file_size)
     // file_size = r_bytes;
 
     R_ASSERT3(
-        !_close(file_handle),
+        !std::fclose(f),
         "can't close file : ",
         file_name
         );
@@ -177,7 +189,7 @@ void* FileDownload(LPCSTR file_name, u32* buffer_size)
 typedef char MARK[9];
 IC void mk_mark(MARK& M, const char* S)
 {
-    strncpy_s(M, sizeof(M), S, 8);
+    xr_strcpy(M, 8, S);
 }
 
 void FileCompress(const char* fn, const char* sign, void* data, u32 size)
@@ -185,11 +197,14 @@ void FileCompress(const char* fn, const char* sign, void* data, u32 size)
     MARK M;
     mk_mark(M, sign);
 
-    int H = open(fn, O_BINARY | O_CREAT | O_WRONLY | O_TRUNC, S_IREAD | S_IWRITE);
+//    FILE *file = fopen(fn, O_BINARY | O_CREAT | O_WRONLY | O_TRUNC, S_IREAD | S_IWRITE);
+    FILE *H = fopen(fn, "wb");
+//    _writeLZ();
+    
     R_ASSERT2(H > 0, fn);
-    _write(H, &M, 8);
+    std::fwrite(&M, 8, 1, H);
     _writeLZ(H, data, size);
-    _close(H);
+//    _close(H);
 }
 
 void* FileDecompress(const char* fn, const char* sign, u32* size)
@@ -199,7 +214,7 @@ void* FileDecompress(const char* fn, const char* sign, u32* size)
 
     int H = open(fn, O_BINARY | O_RDONLY);
     R_ASSERT2(H > 0, fn);
-    _read(H, &F, 8);
+//    _read(H, &F, 8);
     if (strncmp(M, F, 8) != 0)
     {
         F[8] = 0;
@@ -209,8 +224,8 @@ void* FileDecompress(const char* fn, const char* sign, u32* size)
 
     void* ptr = 0;
     u32 SZ;
-    SZ = _readLZ(H, ptr, filelength(H) - 8);
-    _close(H);
+//    SZ = _readLZ(H, ptr, filelength(H) - 8);
+//    _close(H);
     if (size) *size = SZ;
     return ptr;
 }
@@ -327,11 +342,7 @@ void IWriter::w_printf(const char* format, ...)
     char buf[1024];
 
     va_start(mark, format);
-#ifndef _EDITOR
-    vsprintf_s(buf, format, mark);
-#else
-    vsprintf(buf, format, mark);
-#endif
+    xr_sprintf(buf, format, mark);
     va_end(mark);
 
     w(buf, xr_strlen(buf));
@@ -456,13 +467,9 @@ void IReader::r_string(char* dest, u32 tgt_sz)
     char* src = (char*)data + Pos;
     u32 sz = advance_term_string();
     R_ASSERT2(sz < (tgt_sz - 1), "Dest string less than needed.");
-    R_ASSERT(!IsBadReadPtr((void*)src, sz));
+//    R_ASSERT(!IsBadReadPtr((void*)src, sz));
 
-#ifdef _EDITOR
-    CopyMemory(dest, src, sz);
-#else
-    strncpy_s(dest, tgt_sz, src, sz);
-#endif
+    xr_strcpy(dest, tgt_sz, src);
     dest[sz] = 0;
 }
 void IReader::r_string(xr_string& dest)
@@ -512,7 +519,7 @@ CPackReader::~CPackReader()
     unregister_file_mapping(base_address, Size);
 #endif // DEBUG
 
-    UnmapViewOfFile(base_address);
+//    UnmapViewOfFile(base_address);
 };
 //---------------------------------------------------
 // file stream
@@ -541,16 +548,16 @@ CCompressedReader::~CCompressedReader()
 CVirtualFileRW::CVirtualFileRW(const char* cFileName)
 {
     // Open the file
-    hSrcFile = CreateFile(cFileName, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
-    R_ASSERT3(hSrcFile != INVALID_HANDLE_VALUE, cFileName, Debug.error2string(GetLastError()));
-    Size = (int)GetFileSize(hSrcFile, NULL);
-    R_ASSERT3(Size, cFileName, Debug.error2string(GetLastError()));
+//    hSrcFile = CreateFile(cFileName, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
+//    R_ASSERT3(hSrcFile != INVALID_HANDLE_VALUE, cFileName, Debug.error2string(GetLastError()));
+//    Size = (int)GetFileSize(hSrcFile, NULL);
+//    R_ASSERT3(Size, cFileName, Debug.error2string(GetLastError()));
 
-    hSrcMap = CreateFileMapping(hSrcFile, 0, PAGE_READWRITE, 0, 0, 0);
-    R_ASSERT3(hSrcMap != INVALID_HANDLE_VALUE, cFileName, Debug.error2string(GetLastError()));
+//    hSrcMap = CreateFileMapping(hSrcFile, 0, PAGE_READWRITE, 0, 0, 0);
+//    R_ASSERT3(hSrcMap != INVALID_HANDLE_VALUE, cFileName, Debug.error2string(GetLastError()));
 
-    data = (char*)MapViewOfFile(hSrcMap, FILE_MAP_ALL_ACCESS, 0, 0, 0);
-    R_ASSERT3(data, cFileName, Debug.error2string(GetLastError()));
+//    data = (char*)MapViewOfFile(hSrcMap, FILE_MAP_ALL_ACCESS, 0, 0, 0);
+//    R_ASSERT3(data, cFileName, Debug.error2string(GetLastError()));
 
 #ifdef FS_DEBUG
     register_file_mapping(data, Size, cFileName);
@@ -563,24 +570,24 @@ CVirtualFileRW::~CVirtualFileRW()
     unregister_file_mapping(data, Size);
 #endif // DEBUG
 
-    UnmapViewOfFile((void*)data);
-    CloseHandle(hSrcMap);
-    CloseHandle(hSrcFile);
+//    UnmapViewOfFile((void*)data);
+//    CloseHandle(hSrcMap);
+//    CloseHandle(hSrcFile);
 }
 
 CVirtualFileReader::CVirtualFileReader(const char* cFileName)
 {
     // Open the file
-    hSrcFile = CreateFile(cFileName, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0);
-    R_ASSERT3(hSrcFile != INVALID_HANDLE_VALUE, cFileName, Debug.error2string(GetLastError()));
-    Size = (int)GetFileSize(hSrcFile, NULL);
-    R_ASSERT3(Size, cFileName, Debug.error2string(GetLastError()));
+//    hSrcFile = CreateFile(cFileName, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0);
+//    R_ASSERT3(hSrcFile != INVALID_HANDLE_VALUE, cFileName, Debug.error2string(GetLastError()));
+//    Size = (int)GetFileSize(hSrcFile, NULL);
+//    R_ASSERT3(Size, cFileName, Debug.error2string(GetLastError()));
 
-    hSrcMap = CreateFileMapping(hSrcFile, 0, PAGE_READONLY, 0, 0, 0);
-    R_ASSERT3(hSrcMap != INVALID_HANDLE_VALUE, cFileName, Debug.error2string(GetLastError()));
+//    hSrcMap = CreateFileMapping(hSrcFile, 0, PAGE_READONLY, 0, 0, 0);
+//    R_ASSERT3(hSrcMap != INVALID_HANDLE_VALUE, cFileName, Debug.error2string(GetLastError()));
 
-    data = (char*)MapViewOfFile(hSrcMap, FILE_MAP_READ, 0, 0, 0);
-    R_ASSERT3(data, cFileName, Debug.error2string(GetLastError()));
+//    data = (char*)MapViewOfFile(hSrcMap, FILE_MAP_READ, 0, 0, 0);
+//    R_ASSERT3(data, cFileName, Debug.error2string(GetLastError()));
 
 #ifdef FS_DEBUG
     register_file_mapping(data, Size, cFileName);
@@ -593,7 +600,7 @@ CVirtualFileReader::~CVirtualFileReader()
     unregister_file_mapping(data, Size);
 #endif // DEBUG
 
-    UnmapViewOfFile((void*)data);
-    CloseHandle(hSrcMap);
-    CloseHandle(hSrcFile);
+//    UnmapViewOfFile((void*)data);
+//    CloseHandle(hSrcMap);
+//    CloseHandle(hSrcFile);
 }

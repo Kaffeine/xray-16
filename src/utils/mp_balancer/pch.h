@@ -2,16 +2,15 @@
 #define PCH_H_INCLUDED
 
 #include "../../xrCore/xrCore.h"
-#include "xr_ini_ex.h"
+#include "../../xrCore/xr_ini.h"
+//#include "xr_ini_ex.h"
+
+using CInifileEx = CInifile;
 
 #include <stdio.h>
-#include <conio.h>
 #include "iostreams_proxy.h"
 #include "tools.hpp"
-#include "../../xrServerEntities/object_broker.h"
-#include "../../xrServerEntities/associative_vector.h"
-
-#include <winnls.h>
-
+//#include "../../Common/object_broker.h"
+#include "../../xrCore/Containers/AssociativeVector.hpp"
 
 #endif // #define PCH_H_INCLUDED

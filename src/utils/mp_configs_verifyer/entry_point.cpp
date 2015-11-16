@@ -27,8 +27,8 @@ void safe_verify(LPCSTR file_name,
 				 u32 const data_size,
 				 string256 & dst_reason)
 {
-	__try
-	{
+//	__try
+//	{
 		if (!verifyer.verify(data, data_size, dst_reason))
 		{
 			printf("CHEATER (%s): %s\n", file_name, dst_reason);
@@ -36,10 +36,10 @@ void safe_verify(LPCSTR file_name,
 		{
 			printf("GOOD\n");
 		}
-	} __except(EXCEPTION_EXECUTE_HANDLER)
-	{
-		printf("FATAL ERROR (%s): failed to verify data\n");
-	}
+//	} __except(EXCEPTION_EXECUTE_HANDLER)
+//	{
+//		printf("FATAL ERROR (%s): failed to verify data\n");
+//	}
 }
 
 void check_file(LPCSTR file_name)
@@ -154,11 +154,11 @@ void run_configs_verifyer_server()
 {
 	string_path	file_to_check;
 	file_to_check[0] = 0;
-	while (scanf_s("%s", file_to_check, sizeof(file_to_check)) == 1)
+	while (scanf("%s", file_to_check))
 	{
 		check_file(file_to_check);
 	}
-};
+}
 
 void initialize_core()
 {
@@ -178,6 +178,7 @@ void deinitialize_core()
 
 int main(int argc, char ** argv)
 {
+    Core.InitializeArguments(argc, argv);
 	printf("Copyright (C) GSC Game World 2009\n");
 	if (argc <= 1)
 	{

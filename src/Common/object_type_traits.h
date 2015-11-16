@@ -26,20 +26,42 @@
 			enum { value = sizeof(detail::yes) == sizeof(select<T>(0)) };\
 		};
 
-	template <bool expression, typename T1, typename T2>
-	struct _if {
-		template <bool>
-		struct selector {
-			typedef T2 result;
-		};
+template<bool expr, typename T1, typename T2>
+struct _if
+{
+    template<bool, bool>
+    struct _selector;
+    template<bool sExpr>
+    using selector = _selector<sExpr, sExpr>;
+    using result = typename selector<expr>::result;
+};
+template<bool expr, typename T1, typename T2>
+template<bool dummy, bool sExpr>
+struct _if<expr, T1, T2>::_selector
+{
+    using result = T2;
+};
+template<bool expr, typename T1, typename T2>
+template<bool dummy>
+struct _if<expr, T1, T2>::_selector<dummy, true>
+{
+    using result = T1;
+};
 
-		template <>
-		struct selector<true> {
-			typedef T1 result;
-		};
+//	template <bool expression, typename T1, typename T2>
+//	struct _if {
+//		template <bool>
+//		struct selector {
+//			typedef T2 result;
+//		};
 
-		typedef typename selector<expression>::result result;
-	};
+//		template <>
+//		struct selector<true> {
+//			typedef T1 result;
+//		};
+
+//		typedef typename selector<expression>::result result;
+//	};
 
 	template <typename T1, typename T2>
 	struct is_type {

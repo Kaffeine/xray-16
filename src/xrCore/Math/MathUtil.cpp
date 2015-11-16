@@ -34,14 +34,14 @@ void Initialize()
     static bool initialized = false;
     if (initialized)
         return;
-    Skin1W = Skin1W_SSE;
-    Skin2W = Skin2W_SSE;
-    Skin3W = Skin3W_SSE;
-    Skin4W = Skin4W_SSE;
-    Skin4W_MTs = Skin4W_SSE;
+//    Skin1W = Skin1W_SSE;
+//    Skin2W = Skin2W_SSE;
+//    Skin3W = Skin3W_SSE;
+//    Skin4W = Skin4W_SSE;
+//    Skin4W_MTs = Skin4W_SSE;
     PLCCalc = PLCCalc_SSE;
-    if (ttapi_GetWorkerCount()>1)
-        Skin4W = Skin4W_MT;
+//    if (ttapi_GetWorkerCount()>1)
+//        Skin4W = Skin4W_MT;
     initialized = true;
 }
 

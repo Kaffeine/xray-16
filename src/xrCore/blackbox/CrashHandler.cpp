@@ -1157,7 +1157,7 @@ BOOL InternalSymGetLineFromAddr ( IN  HANDLE          hProcess        ,
 #endif
 }
 
-char g_application_path[256];
+extern char g_application_path[256];
 
 // Initializes the symbol engine if needed
 void InitSymEng ( void )

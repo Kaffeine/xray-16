@@ -8,6 +8,10 @@
 #include "malloc.h"
 #endif
 
+#ifdef CONFIG_USE_SDL
+#include <SDL2/SDL_messagebox.h>
+#endif
+
 extern BOOL LogExecCB = TRUE;
 static string_path logFName = "engine.log";
 static string_path log_file_name = "engine.log";
@@ -97,7 +101,7 @@ void __cdecl Msg(const char* format, ...)
     va_list mark;
     string2048 buf;
     va_start(mark, format);
-    int sz = _vsnprintf(buf, sizeof(buf) - 1, format, mark);
+    int sz = std::vsprintf(buf, format, mark);
     buf[sizeof(buf) - 1] = 0;
     va_end(mark);
     if (sz) Log(buf);
@@ -205,7 +209,11 @@ void CreateLog(BOOL nl)
         IWriter* f = FS.w_open(logFName);
         if (f == NULL)
         {
+#ifdef CONFIG_USE_SDL
+            SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", "Can't create log file.", 0);
+#else
             MessageBox(NULL, "Can't create log file.", "Error", MB_ICONERROR);
+#endif
             abort();
         }
         FS.w_close(f);

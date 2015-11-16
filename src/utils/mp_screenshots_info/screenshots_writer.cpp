@@ -40,11 +40,9 @@ void writer::set_player_cdkey_digest	(shared_str const & cdkeydigest)
 
 static char const * current_time(string64 & dest_time)
 {
-	time_t		tmp_curr_time;
-	
-	dest_time[0]	= 0;
-	_time64			(&tmp_curr_time);
-	tm* tmp_tm		= _localtime64(&tmp_curr_time);
+    // TODO: Use current_time from xrCore (Currently declared at xrCore/Crypto/xr_dsa_signer.h)
+	const time_t tmp_curr_time = std::time(nullptr);
+	tm *tmp_tm = std::localtime(&tmp_curr_time);
 
 	xr_sprintf(dest_time, sizeof(dest_time),
 		"%02d.%02d.%d_%02d:%02d:%02d",

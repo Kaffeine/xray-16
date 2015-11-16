@@ -34,7 +34,7 @@
 	#endif
 #endif
 
-#if defined(_LINUX) || defined(_MACOSX)
+#if defined(__linux__) || defined(_MACOSX)
 	#define _UNIX
 #endif
 

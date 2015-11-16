@@ -131,7 +131,7 @@ LPCSTR configs_verifyer::get_section_diff(CInifile::Sect* sect_ptr, CInifile & a
 						tmp_value.c_str(),
 						",right = ",
 						real_value.c_str());
-					strncpy_s(dst_diff, diff_str, sizeof(dst_diff) - 1);
+					xr_strcpy(dst_diff, sizeof(dst_diff) - 1, diff_str);
 					dst_diff[sizeof(dst_diff) - 1] = 0;
 					return dst_diff;
 				}
@@ -146,7 +146,7 @@ LPCSTR configs_verifyer::get_section_diff(CInifile::Sect* sect_ptr, CInifile & a
 				"::",
 				cit->first.c_str(),
 				" not found");
-			strncpy_s(dst_diff, diff_str, sizeof(dst_diff) - 1);
+			xr_strcpy(dst_diff, sizeof(dst_diff) - 1, diff_str);
 			dst_diff[sizeof(dst_diff) - 1] = 0;
 			return dst_diff;
 		}
@@ -162,7 +162,7 @@ LPCSTR configs_verifyer::get_section_diff(CInifile::Sect* sect_ptr, CInifile & a
 				tmp_value.c_str(),
 				",right = ",
 				real_value.c_str());
-			strncpy_s(dst_diff, diff_str, sizeof(dst_diff) - 1);
+			xr_strcpy(dst_diff, sizeof(dst_diff) - 1, diff_str);
 			dst_diff[sizeof(dst_diff) - 1] = 0;
 			return dst_diff;
 		}

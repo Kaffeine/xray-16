@@ -85,8 +85,11 @@ gsi_i8 * gsXxteaDecrypt(const gsi_i8 * iStr, gsi_i32 iLength, gsi_i8 key[XXTEA_K
 
 #ifndef max
 #define max(a,b)    (((a) > (b)) ? (a) : (b))
-#define min(a,b)    (((a) < (b)) ? (a) : (b))
 #endif
+
+//#ifndef min
+//#define min(a,b)    (((a) < (b)) ? (a) : (b))
+//#endif
 
 #if defined(_DEBUG)
 	void gsiCheckStack(void);

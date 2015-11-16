@@ -71,6 +71,8 @@ void screenshot_info(IReader* screenshot)
 
 int main(int argc, char ** argv)
 {
+    Core.InitializeArguments(argc, argv);
+
 	printf("Copyright (C) GSC Game World 2009\n");
 	if (argc < 2)
 	{

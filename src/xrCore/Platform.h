@@ -4,9 +4,13 @@
 
 #include "_types.h"
 
+#ifdef __GNUC__
+#define __cdecl //__attribute__((cdecl))
+#define _cdecl __cdecl
+#endif
+
 #ifdef _WIN32
 
->>>>>>> ai_cleanup
 #define VC_EXTRALEAN // Exclude rarely-used stuff from Windows headers
 #define WIN32_LEAN_AND_MEAN // Exclude rarely-used stuff from Windows headers
 #ifndef STRICT
@@ -102,7 +106,13 @@
 
 #elif defined(__linux__) || defined(__linux)
 
+#ifndef _alloca
+#include <alloca.h>
+#define _alloca alloca
+#endif
+
 #include <string>
+#include <unistd.h>
 
 #define XR_EXPORT __attribute__((visibility("default")))
 #define XR_IMPORT __attribute__((visibility("default")))
@@ -122,17 +132,57 @@
 
 #define ALIGN(a) __attribute__ ((aligned (a)))
 
-#define _cdecl
 #define _stdcall
 #define _fastcall
 
-#define __cdecl
 #define __stdcall
 #define __fastcall
 
 #define _copysign copysign
 
-char *itoa (int value, char *str, int base);
+inline void _splitpath (
+   const char *path,  // Path Input
+   char *drive,       // Drive     : Output
+   char *dir,         // Directory : Output
+   char *fname,       // Filename  : Output
+   char *ext          // Extension : Output
+) {
+    
+    
+    printf("%s\n", path);
+}
+
+#include <SDL2/SDL_filesystem.h>
+
+#define CONFIG_USE_SDL
+
+inline void GetCurrentDirectory(int bufferSize, char *buffer)
+{
+    getcwd(buffer, bufferSize);
+}
+
+inline void GetApplicationDirectory(int bufferSize, char *buffer)
+{    
+    char *basePath = SDL_GetBasePath();
+    strcpy(buffer, basePath);
+    SDL_free(basePath);
+}
+
+inline int GetModuleHandle(char *name) { return 0; }
+inline void GetModuleFileName(int handle, char *buffer, int size) { }
+inline void GetUserName(LPTSTR buffer, LPDWORD size) { }
+inline void GetComputerName(LPTSTR buffer, LPDWORD size) { }
+
+inline bool IsDebuggerPresent() { return false; }
+
+#define O_BINARY 0
+
+#define _write fwrite
+
+inline void *_expand(void *memblock, size_t size) { return nullptr; }
+inline int _msize(void *memblock) { return 0; }
+
+#define _M_AMD64
 
 #else
 #  error "The project is not ported to the target platform"

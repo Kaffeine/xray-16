@@ -2,7 +2,7 @@
 #define IOSTREAMS_PROXY_INCLUDED
 
 #include <stdio.h>
-#include <conio.h>
+//#include <conio.h>
 
 #ifndef _STLP_NO_IOSTREAMS
 #	include <iostream>

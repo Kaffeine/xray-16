@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "stream_reader.h"
+#include "Stream_Reader.h"
 
 void CStreamReader::construct(
     const HANDLE& file_mapping_handle,
@@ -44,14 +44,14 @@ void CStreamReader::map(const u32& new_offset)
         end_offset = m_archive_size;
 
     m_current_window_size = end_offset - start_offset;
-    m_current_map_view_of_file = (u8*)
-                                 MapViewOfFile(
-                                     m_file_mapping_handle,
-                                     FILE_MAP_READ,
-                                     0,
-                                     start_offset,
-                                     m_current_window_size
-                                 );
+//    m_current_map_view_of_file = (u8*)
+//                                 MapViewOfFile(
+//                                     m_file_mapping_handle,
+//                                     FILE_MAP_READ,
+//                                     0,
+//                                     start_offset,
+//                                     m_current_window_size
+//                                 );
     m_current_pointer = m_current_map_view_of_file;
 
     u32 difference = pure_start_offset - start_offset;
