@@ -50,37 +50,7 @@ SET(SOURCES
 #    cf_dynamic_mesh.cpp
     defines.cpp
 #    device.cpp
-#    edit_actions.cpp
-#    editor_environment_ambients_ambient.cpp
-#    editor_environment_ambients_effect_id.cpp
-#    editor_environment_ambients_manager.cpp
-#    editor_environment_ambients_sound_id.cpp
-#    editor_environment_detail.cpp
-#    editor_environment_effects_effect.cpp
-#    editor_environment_effects_manager.cpp
-#    editor_environment_levels_manager.cpp
-#    editor_environment_manager.cpp
-#    editor_environment_manager_properties.cpp
-#    editor_environment_sound_channels_channel.cpp
-#    editor_environment_sound_channels_manager.cpp
-#    editor_environment_sound_channels_source.cpp
-#    editor_environment_suns_blend.cpp
-#    editor_environment_suns_flare.cpp
-#    editor_environment_suns_flares.cpp
-#    editor_environment_suns_gradient.cpp
-#    editor_environment_suns_manager.cpp
-#    editor_environment_suns_sun.cpp
-#    editor_environment_thunderbolts_collection.cpp
-#    editor_environment_thunderbolts_gradient.cpp
-#    editor_environment_thunderbolts_manager.cpp
-#    editor_environment_thunderbolts_thunderbolt.cpp
-#    editor_environment_thunderbolts_thunderbolt_id.cpp
-#    editor_environment_weathers_manager.cpp
-#    editor_environment_weathers_time.cpp
-#    editor_environment_weathers_weather.cpp
 #    engine_impl.cpp
-#    line_edit_control.cpp
-#    line_editor.cpp
     mailSlot.cpp
     perlin.cpp
     phdebug.cpp
