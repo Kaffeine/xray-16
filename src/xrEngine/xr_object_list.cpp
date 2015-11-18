@@ -13,6 +13,12 @@
 #include "GameFont.h"
 #include "PerformanceAlert.hpp"
 
+#ifndef _WIN32
+#include <alloca.h>
+
+#define _alloca alloca
+#endif
+
 class fClassEQ
 {
     CLASS_ID cls;
