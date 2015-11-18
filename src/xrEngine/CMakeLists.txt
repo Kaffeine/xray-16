@@ -47,7 +47,7 @@ SET(SOURCES
 #    XR_IOConsole_control.cpp
 #    XR_IOConsole_get.cpp
 #    Xr_input.cpp
-#    cf_dynamic_mesh.cpp
+    cf_dynamic_mesh.cpp
     defines.cpp
 #    device.cpp
 #    engine_impl.cpp
@@ -62,7 +62,7 @@ SET(SOURCES
 #    x_ray.cpp
     xrHemisphere.cpp
     xrImage_Resampler.cpp
-#    xrLoadSurface.cpp
+    xrLoadSurface.cpp
 #    xrSASH.cpp
     xrSheduler.cpp
     xrTheora_Stream.cpp
@@ -72,7 +72,7 @@ SET(SOURCES
 #    xr_efflensflare.cpp
 #    xr_input_xinput.cpp
 #    xr_ioc_cmd.cpp
-#    xr_object.cpp
+    xr_object.cpp
 #    xr_object_list.cpp
 )
 
