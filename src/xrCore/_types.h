@@ -3,6 +3,7 @@
 
 #ifdef __linux__
 #include <linux/limits.h>
+#include <pthread.h>
 
 #define _MAX_PATH PATH_MAX
 #endif
@@ -30,6 +31,12 @@ typedef double f64;
 
 typedef char* pstr;
 typedef const char* pcstr;
+
+#if defined(_WIN32)
+typedef u32 threadId_t;
+#else
+typedef pthread_t threadId_t;
+#endif
 
 // windoze stuff
 #ifndef _WINDOWS_
