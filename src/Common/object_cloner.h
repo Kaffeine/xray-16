@@ -9,22 +9,6 @@
 #pragma once
 
 struct CCloner {
-	template <typename T>
-	struct CHelper {
-		template <bool a>
-		IC	static void clone(const T &_1, T &_2)
-		{
-			_2				= _1;
-		}
-
-		template <>
-		IC	static void clone<true>(const T &_1, T &_2)
-		{
-			_2				= xr_new<object_type_traits::remove_pointer<T>::type>(*_1);
-			CCloner::clone	(*_1,*_2);
-		}
-	};
-
 	IC	static void clone(LPCSTR _1, LPCSTR &_2)
 	{
 		_2							= _1;
@@ -43,7 +27,7 @@ struct CCloner {
 	template <typename T1, typename T2>
 	IC	static void clone(const std::pair<T1,T2> &_1, std::pair<T1,T2> &_2)
 	{
-		clone(const_cast<object_type_traits::remove_const<T1>::type&>(_1.first),const_cast<object_type_traits::remove_const<T1>::type&>(_2.first));
+                clone(const_cast<typename object_type_traits::remove_const<T1>::type&>(_1.first),const_cast<typename object_type_traits::remove_const<T1>::type&>(_2.first));
 		clone(_1.second,_2.second);
 	}
 
@@ -51,9 +35,9 @@ struct CCloner {
 	IC	static void clone(const svector<T,size> &_1, svector<T,size> &_2)
 	{
 		_2.resize						(_1.size());
-		svector<T,size>::iterator		J = _2.begin();
-		svector<T,size>::const_iterator	I = _1.begin(); 
-		svector<T,size>::const_iterator	E = _1.end();
+                typename svector<T,size>::iterator		J = _2.begin();
+                typename svector<T,size>::const_iterator	I = _1.begin();
+                typename svector<T,size>::const_iterator	E = _1.end();
 		for ( ; I != E; ++I, ++J)
 			clone						(*I,*J);
 	}
@@ -71,7 +55,7 @@ struct CCloner {
 			__2.pop();
 
 		for ( ; !_2.empty(); _2.pop()) {
-			std::queue<T1,T2>::value_type	t;
+                        typename std::queue<T1,T2>::value_type	t;
 			CCloner::clone			(_2.front(),t);
 			__2.push				(t);
 		}
@@ -90,7 +74,7 @@ struct CCloner {
 			__2.pop();
 
 		for ( ; !_2.empty(); _2.pop()) {
-			T1<T2,T3>::value_type	t;
+                        typename T1<T2,T3>::value_type	t;
 			CCloner::clone			(_2.top(),t);
 			__2.push				(t);
 		}
@@ -109,7 +93,7 @@ struct CCloner {
 			__2.pop();
 
 		for ( ; !_2.empty(); _2.pop()) {
-			T1<T2,T3,T4>::value_type	t;
+                        typename T1<T2,T3,T4>::value_type	t;
 			CCloner::clone			(_2.top(),t);
 			__2.push				(t);
 		}
@@ -127,7 +111,7 @@ struct CCloner {
 		return					(clone(_1,_2,true));
 	}
 
-	struct CHelper3 {
+        struct CHelperCloneStlContainer {
 		template <template <typename _1> class T1, typename T2>
 		IC	static void add(T1<T2> &data, typename T1<T2>::value_type &value)
 		{
@@ -135,7 +119,7 @@ struct CCloner {
 		}
 
 		template <typename T1, typename T2>
-		IC	static void add(T1 &data, typename T2 &value)
+                IC	static void add(T1 &data, T2 &value)
 		{
 			data.insert			(value);
 		}
@@ -144,35 +128,31 @@ struct CCloner {
 		IC	static void clone(const T &_1, T &_2)
 		{
 			_2.clear			();
-			T::const_iterator	I = _1.begin();
-			T::const_iterator	E = _1.end();
+                        typename T::const_iterator	I = _1.begin();
+                        typename T::const_iterator	E = _1.end();
 			for ( ; I != E; ++I) {
-				T::value_type	t;
-				CCloner::clone	(*I,t);
-				add				(_2,t);
+                                typename T::value_type	t;
+                                CCloner::clone(*I,t);
+                                add(_2,t);
 			}
-		}
-	};
-
-	template <typename T>
-	struct CHelper4 {
-		template <bool a>
-		IC	static void clone(const T &_1, T &_2)
-		{
-			CHelper<T>::clone<object_type_traits::is_pointer<T>::value>(_1,_2);
-		}
-
-		template <>
-		IC	static void clone<true>(const T &_1, T &_2)
-		{
-			CHelper3::clone(_1,_2);
 		}
 	};
 
 	template <typename T>
 	IC	static void clone(const T &_1, T &_2)
 	{
-		CHelper4<T>::clone<object_type_traits::is_stl_container<T>::value>(_1,_2);
+            constexpr bool isStl = object_type_traits::is_stl_container<T>::value;
+            constexpr bool isPointer = !isStl && object_type_traits::is_pointer<T>::value;
+
+            if (isStl)
+                CHelperCloneStlContainer::clone(_1,_2);
+            else if (isPointer)
+            {
+                _2 = xr_new<object_type_traits::remove_pointer<T>::type>(*_1);
+                CCloner::clone(*_1,*_2);
+            }
+            else
+                _2 = _1;
 	}
 };
 

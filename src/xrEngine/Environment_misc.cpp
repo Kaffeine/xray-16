@@ -6,7 +6,10 @@
 #include "thunderbolt.h"
 #include "Rain.h"
 
+#include <queue>
+
 #include "IGame_Level.h"
+//#include "Common/object_type_traits.h"
 #include "Common/object_broker.h"
 #include "xrServerEntities/LevelGameDef.h"
 

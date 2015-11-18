@@ -11,7 +11,7 @@
 #ifdef INGAME_EDITOR
 #include "engine_impl.hpp"
 #include "XR_IOConsole.h"
-#include "xr_input.h"
+//#include "xr_input.h"
 #include "IGame_Persistent.h"
 #include "IGame_Level.h"
 #include "editor_environment_weathers_time.hpp"
@@ -389,7 +389,7 @@ char const* engine_impl::weather_current_time() const
 void engine_impl::weather_current_time(char const* time)
 {
     u32 hours, minutes, seconds;
-    sscanf_s(time, "%d:%d:%d", &hours, &minutes, &seconds);
+    sscanf(time, "%d:%d:%d", &hours, &minutes, &seconds);
     bool paused = g_pGamePersistent->Environment().m_paused;
 
     g_pGamePersistent->Environment().m_paused = false;

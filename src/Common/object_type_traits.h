@@ -9,6 +9,8 @@
 #define object_type_traits_h_included
 #pragma once
 
+#include <type_traits>
+
 //#define USE_BOOST
 
 #ifdef USE_BOOST
@@ -26,56 +28,14 @@
 			enum { value = sizeof(detail::yes) == sizeof(select<T>(0)) };\
 		};
 
-template<bool expr, typename T1, typename T2>
-struct _if
-{
-    template<bool, bool>
-    struct _selector;
-    template<bool sExpr>
-    using selector = _selector<sExpr, sExpr>;
-    using result = typename selector<expr>::result;
-};
-template<bool expr, typename T1, typename T2>
-template<bool dummy, bool sExpr>
-struct _if<expr, T1, T2>::_selector
-{
-    using result = T2;
-};
-template<bool expr, typename T1, typename T2>
-template<bool dummy>
-struct _if<expr, T1, T2>::_selector<dummy, true>
-{
-    using result = T1;
-};
-
-//	template <bool expression, typename T1, typename T2>
-//	struct _if {
-//		template <bool>
-//		struct selector {
-//			typedef T2 result;
-//		};
-
-//		template <>
-//		struct selector<true> {
-//			typedef T1 result;
-//		};
-
-//		typedef typename selector<expression>::result result;
-//	};
+	template <bool expression, typename T1, typename T2>
+        struct _if {
+                using result = typename std::conditional<expression, T1, T2>::type;
+	};
 
 	template <typename T1, typename T2>
 	struct is_type {
-		template <typename T>
-		struct selector {
-			enum { value = false, };
-		};
-
-		template <>
-		struct selector<T1> {
-			enum { value = true, };
-		};
-
-		enum { value = selector<T2>::value, };
+                enum { value = std::is_same<T1,T2>::value, };
 	};
 
 	template <typename T>
@@ -123,14 +83,8 @@ struct _if<expr, T1, T2>::_selector<dummy, true>
 		};
 
 		template <typename T>
-		struct is_void {
-			template <typename P>
-			struct select		{enum { value = false}; };
-			
-			template <>
-			struct select<void> {enum { value = true}; };
-			
-			enum { value = select<T>::value};
+                struct is_void {
+                        enum { value = std::is_same<void,T>::value };
 		};
 
 		template <typename T> struct is_const{
