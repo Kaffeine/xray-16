@@ -41,8 +41,15 @@ void CObject::MakeMeCrow()
     u32 const device_frame_id = Device.dwFrame;
     u32 const object_frame_id = dwFrame_AsCrow;
     if (
+#if defined (_MSC_VER)
         (u32)_InterlockedCompareExchange(
             (long*)&dwFrame_AsCrow,
+#elif defined (__GNUC__) || defined (__clang__)
+            __sync_val_compare_and_swap(
+                &dwFrame_AsCrow,
+#else
+#error "The project is not ported to target platform."
+#endif
             device_frame_id,
             object_frame_id
         ) == device_frame_id
