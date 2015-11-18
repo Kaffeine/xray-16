@@ -133,6 +133,11 @@
 
 char *itoa (int value, char *str, int base);
 
+inline threadId_t GetCurrentThreadId()
+{
+    return pthread_self();
+}
+
 #else
 #  error "The project is not ported to the target platform"
 #endif
