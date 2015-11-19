@@ -25,7 +25,7 @@ SET(SOURCES
 #    GameMtlLib_Engine.cpp
     ICollidable.cpp
     IGame_Level.cpp
-#    IGame_Level_check_textures.cpp
+    IGame_Level_check_textures.cpp
     IGame_ObjectPool.cpp
     IGame_Persistent.cpp
 #    IInputReceiver.cpp
@@ -73,7 +73,7 @@ SET(SOURCES
 #    xr_input_xinput.cpp
 #    xr_ioc_cmd.cpp
     xr_object.cpp
-#    xr_object_list.cpp
+    xr_object_list.cpp
 )
 
 SET(HEADERS
