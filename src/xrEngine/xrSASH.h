@@ -2,7 +2,7 @@
 #define xrSASH_included
 #pragma once
 
-#include <OpenAutomate.h>
+//#include <OpenAutomate.h>
 
 //struct oaOptionDependencyStruct;
 //typedef struct oaOptionDependencyStruct oaOptionDependency;
@@ -51,15 +51,15 @@ private:
     void ReleaseEngine();
 
     // OA option handling
-    void DescribeOption(char* pszOptionName, const oaOptionDependency& Dependency);
-    oaOptionDataType
-    GetOptionType(char* pszOptionName);
-    void GetOption(char* pszOptionName);
-    void SetOption(oaNamedOption* pOption);
+//    void DescribeOption(char* pszOptionName, const oaOptionDependency& Dependency);
+//    oaOptionDataType
+//    GetOptionType(char* pszOptionName);
+//    void GetOption(char* pszOptionName);
+//    void SetOption(oaNamedOption* pOption);
 
-    // OA Error report
-    void Message(oaErrorType MessageType, const char* pszMsg);
-    void Message(oaErrorType MessageType, const char* pszMsg, va_list& mark);
+//    // OA Error report
+//    void Message(oaErrorType MessageType, const char* pszMsg);
+//    void Message(oaErrorType MessageType, const char* pszMsg, va_list& mark);
 
 private:
     // States
