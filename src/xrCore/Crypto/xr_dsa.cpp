@@ -3,11 +3,6 @@
 #include "crypto.h"
 #include <openssl/dsa.h>
 
-#ifndef _WIN32
-#include <alloca.h>
-#define _alloca alloca
-#endif
-
 namespace crypto
 {
 

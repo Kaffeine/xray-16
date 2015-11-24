@@ -102,6 +102,9 @@
 #elif defined(__linux__) || defined(__linux)
 
 #include <string>
+#include <alloca.h>
+
+#define _alloca alloca
 
 #define XR_EXPORT __attribute__((visibility("default")))
 #define XR_IMPORT __attribute__((visibility("default")))

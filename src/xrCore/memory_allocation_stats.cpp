@@ -8,11 +8,6 @@
 
 # include <boost/crc.hpp>
 
-#ifndef _WIN32
-#include <alloca.h>
-#define _alloca alloca
-#endif
-
 extern void BuildStackTrace ();
 
 extern char g_stackTrace[100][4096];

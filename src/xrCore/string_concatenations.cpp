@@ -1,12 +1,6 @@
 #include "stdafx.h"
 #include "string_concatenations.h"
 
-#ifndef _WIN32
-#include <alloca.h>
-
-#define _alloca alloca
-#endif
-
 namespace xray
 {
 
