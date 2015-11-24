@@ -154,7 +154,9 @@ void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
     {
         g_SASH.EndBenchmark();
 
+#ifdef _WIN32
         PostQuitMessage(0);
+#endif
 
         for (u32 i = 0; i < Levels.size(); i++)
         {
