@@ -379,7 +379,7 @@ public:
 
     virtual void Execute(LPCSTR args)
     {
-        strncpy_s(value, size, args, size - 1);
+        xr_strcpy(value, size, args);
     }
     virtual void Status(TStatus& S)
     {
