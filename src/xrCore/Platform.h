@@ -37,7 +37,7 @@
 # define ICN __declspec (noinline)
 #endif
 
-#include <time.h>
+#include <ctime>
 // work-around dumb borland compiler
 #ifdef __BORLANDC__
 #define ALIGN(a)
