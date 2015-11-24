@@ -45,7 +45,7 @@ SET(SOURCES
 #    XR_IOConsole.cpp
 #    XR_IOConsole_callback.cpp
 #    XR_IOConsole_control.cpp
-#    XR_IOConsole_get.cpp
+    XR_IOConsole_get.cpp
 #    Xr_input.cpp
     cf_dynamic_mesh.cpp
     defines.cpp
@@ -56,10 +56,10 @@ SET(SOURCES
     phdebug.cpp
     pure.cpp
     pure_relcase.cpp
-#    stdafx.cpp
+    stdafx.cpp
     thunderbolt.cpp
 #    tntQAVI.cpp
-#    x_ray.cpp
+    x_ray.cpp
     xrHemisphere.cpp
     xrImage_Resampler.cpp
     xrLoadSurface.cpp
