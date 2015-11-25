@@ -136,8 +136,6 @@
 
 #define _copysign copysign
 
-char *itoa (int value, char *str, int base);
-
 inline threadId_t GetCurrentThreadId()
 {
     return pthread_self();
