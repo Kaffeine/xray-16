@@ -39,6 +39,23 @@
 #ifndef __WIN32
 #define stricmp strcasecmp
 #define strnicmp strncasecmp
+
+inline char *itoa(int value, char *str, int base)
+{
+    switch (base) {
+    case 8:
+        sprintf(str, "%o", value);
+        break;
+    default:
+    case 10:
+        sprintf(str, "%d", value);
+        break;
+    case 16:
+        sprintf(str, "%x", value);
+        break;
+    }
+    return str;
+}
 #endif
 
 #ifdef _EDITOR
