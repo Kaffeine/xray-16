@@ -22,7 +22,6 @@ SET(SOURCES
     dump_string.cpp
 #    file_stream_reader.cpp
 #    log.cpp
-#    lzo1x_d3.cpp
     lzo_compressor.cpp
     memory_allocation_stats.cpp
     memory_monitor.cpp
@@ -32,12 +31,12 @@ SET(SOURCES
 #    rt_compressor.cpp
 #    rt_compressor9.cpp
 #    rt_lzo.cpp
-#    rt_lzo1x_1.cpp
-#    rt_lzo1x_9x.cpp
-#    rt_lzo1x_d1.cpp
-#    rt_lzo1x_d2.cpp
-#    rt_lzo1x_d3.cpp
-#    rt_lzo_init.cpp
+    rt_lzo1x_1.cpp
+    rt_lzo1x_9x.cpp
+    rt_lzo1x_d1.cpp
+    rt_lzo1x_d2.cpp
+    rt_lzo1x_d3.cpp
+    rt_lzo_init.cpp
     stdafx.cpp
 #    stream_reader.cpp
     string_concatenations.cpp
@@ -46,7 +45,7 @@ SET(SOURCES
     xrMemory.cpp
     xrMemory_POOL.cpp
 #    xrMemory_align.cpp
-#    xrMemory_debug.cpp
+    xrMemory_debug.cpp
 #    xrMemory_pso_Copy.cpp
     xrMemory_pso_Fill.cpp
     xrMemory_pso_Fill32.cpp
