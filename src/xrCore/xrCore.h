@@ -247,12 +247,13 @@ public:
     string_path WorkingPath;
     string64 UserName;
     string64 CompName;
-    char* Params;
+    const char *Params;
     DWORD dwFrame;
     bool PluginMode;
 public:
     void _initialize(LPCSTR ApplicationName, LogCallback cb = 0, BOOL init_fs = TRUE, LPCSTR fs_fname = 0, bool plugin = false);
     void _destroy();
+    void InitializeArguments(int argc, char *argv[]);
 };
 
 extern XRCORE_API xrCore Core;
