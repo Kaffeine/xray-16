@@ -38,7 +38,9 @@ void xrCore::_initialize(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs, 
         PluginMode = plugin;
         // Init COM so we can use CoCreateInstance
         // HRESULT co_res =
+#ifdef __WIN32
         Params = xr_strdup(GetCommandLine());
+#endif
         if (!strstr(Params, "-editor"))
             CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
@@ -150,6 +152,23 @@ void xrCore::_destroy()
         xr_free(Params);
         Memory._destroy();
     }
+}
+
+void xrCore::InitializeArguments(int argc, char *argv[])
+{
+    static string4096 params;
+    xr_strcpy(params, argv[0]);
+
+    int currentLength = xr_strlen(params);
+    for (int i = 1; i<argc; i++)
+    {
+        params[currentLength] = ' ';
+        ++currentLength;
+        params[currentLength] = 0;
+        xr_strcpy(params + currentLength, sizeof(params) - currentLength, argv[i]);
+        currentLength += xr_strlen(argv[i]);
+    }
+    Core.Params = params;
 }
 
 //. why ???
