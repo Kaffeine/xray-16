@@ -101,6 +101,8 @@
 
 #elif defined(__linux__) || defined(__linux)
 
+#define CONFIG_USE_SDL
+
 #include <string>
 #include <alloca.h>
 
