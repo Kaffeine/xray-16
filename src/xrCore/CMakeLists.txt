@@ -26,6 +26,7 @@ SET(SOURCES
     memory_allocation_stats.cpp
     memory_monitor.cpp
 #    memory_usage.cpp
+    ModuleLookup.cpp
     os_clipboard.cpp
 #    ppmd_compressor.cpp
 #    rt_compressor.cpp
@@ -205,6 +206,7 @@ SET(HEADERS
     memory_allocator_options.h
     memory_monitor.h
     net_utils.h
+    ModuleLookup.hpp
     os_clipboard.h
     ppmd_compressor.h
     resource.h
