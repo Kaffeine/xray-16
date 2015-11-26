@@ -31,7 +31,6 @@ SET(SOURCES
 #    ppmd_compressor.cpp
 #    rt_compressor.cpp
 #    rt_compressor9.cpp
-#    rt_lzo.cpp
     rt_lzo1x_1.cpp
     rt_lzo1x_9x.cpp
     rt_lzo1x_d1.cpp
@@ -212,7 +211,6 @@ SET(HEADERS
     resource.h
     rt_compressor.h
     rt_config1x.h
-    rt_lzo.h
     rt_lzo1_d.ch
     rt_lzo1x.h
     rt_lzo1x_c.ch
