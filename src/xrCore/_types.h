@@ -42,7 +42,10 @@ typedef pthread_t threadId_t;
 #ifndef _WINDOWS_
 typedef int BOOL;
 typedef pstr LPSTR;
+typedef pstr PSTR;
+typedef pstr LPTSTR;
 typedef pcstr LPCSTR;
+typedef pcstr LPCTSTR;
 typedef unsigned char BYTE;
 typedef unsigned int UINT;
 
