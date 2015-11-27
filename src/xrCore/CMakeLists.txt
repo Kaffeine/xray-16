@@ -14,14 +14,14 @@ SET(SOURCES
     _compressed_normal.cpp
 #    _math.cpp
     _sphere.cpp
-#    _std_extensions.cpp
+    _std_extensions.cpp
 #    clsid.cpp
 #    cpuid.cpp
     crc32.cpp
     doug_lea_allocator.cpp
     dump_string.cpp
 #    file_stream_reader.cpp
-#    log.cpp
+    log.cpp
     lzo_compressor.cpp
     memory_allocation_stats.cpp
     memory_monitor.cpp
@@ -41,7 +41,7 @@ SET(SOURCES
 #    stream_reader.cpp
     string_concatenations.cpp
 #    xrCore.cpp
-#    xrDebugNew.cpp
+    xrDebugNew.cpp
     xrMemory.cpp
     xrMemory_POOL.cpp
 #    xrMemory_align.cpp
