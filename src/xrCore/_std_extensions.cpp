@@ -16,6 +16,7 @@ int xr_strcmp(const char* S1, const char* S2)
 
 char* timestamp(string64& dest)
 {
+#ifdef __WIN32
     string64 temp;
 
     /* Set time zone from TZ environment variable. If TZ is not set,
@@ -36,6 +37,13 @@ char* timestamp(string64& dest)
     for (it = 0; it < xr_strlen(temp); it++)
         if (':' == temp[it]) temp[it] = '-';
     xr_strcat(dest, sizeof(dest), temp);
+#else
+    std::time_t timestamp = std::time(nullptr);
+    std::tm localTm;
+    localtime_r(&timestamp, &localTm);
+
+    std::strftime(dest, sizeof(dest), "%m-%d-%y_%H-%M-%S", &localTm);
+#endif
     return dest;
 }
 
