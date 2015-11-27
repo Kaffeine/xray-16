@@ -1,8 +1,15 @@
 #include "stdafx.h"
 #pragma hdrstop
 
-#include "xrdebug.h"
+#include "xrDebug.h"
+
 #include "os_clipboard.h"
+
+#ifdef CONFIG_USE_SDL
+#include <SDL2/SDL_messagebox.h>
+#endif
+
+#ifdef __WIN32
 #include "Debug/dxerr.h"
 
 #pragma warning(push)
@@ -43,6 +50,16 @@ static BOOL bException = FALSE;
 #endif // USE_BUG_TRAP
 
 #include <new.h> // for _set_new_mode
+#else // Unix code
+#define DEBUG_INVOKE raise(SIGINT)
+
+#include <cwchar>
+
+#define wcslen std::wcslen
+
+static bool shared_str_initialized = true;
+
+#endif // __WIN32
 #include <signal.h> // for signals
 
 #ifdef DEBUG
@@ -55,9 +72,16 @@ XRCORE_API xrDebug Debug;
 
 static bool error_after_dialog = false;
 
+#ifdef __WIN32
 extern void BuildStackTrace();
 extern char g_stackTrace[100][4096];
 extern int g_stackTraceCount;
+#else
+char g_stackTrace[100][4096];
+int g_stackTraceCount;
+void BuildStackTrace() { g_stackTraceCount = 0; }
+bool IsDebuggerPresent() { return false; }
+#endif // __WIN32
 
 void LogStackTrace(LPCSTR header)
 {
@@ -137,7 +161,7 @@ void xrDebug::gather_info(const char* expression, const char* description, const
     memory_monitor::flush_each_time(false);
 #endif // USE_MEMORY_MONITOR
 
-    if (!IsDebuggerPresent() && !strstr(GetCommandLine(), "-no_call_stack_assert"))
+    if (!IsDebuggerPresent() && !strstr(Core.Params, "-no_call_stack_assert"))
     {
         if (shared_str_initialized)
             Msg("stack trace:\n");
@@ -168,8 +192,16 @@ void xrDebug::gather_info(const char* expression, const char* description, const
 void xrDebug::do_exit(const std::string& message)
 {
     FlushLog();
+#ifdef CONFIG_USE_SDL
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Error", message.c_str(), 0);
+#else
     MessageBox(NULL, message.c_str(), "Error", MB_OK | MB_ICONERROR | MB_SYSTEMMODAL);
+#endif
+#ifdef __WIN32
     TerminateProcess(GetCurrentProcess(), 1);
+#else
+    abort();
+#endif
 }
 
 void xrDebug::backend(const char* expression, const char* description, const char* argument0, const char* argument1, const char* file, int line, const char* function, bool& ignore_always)
@@ -205,7 +237,11 @@ void xrDebug::backend(const char* expression, const char* description, const cha
     FlushLog();
 
     if (Core.PluginMode)
+#ifdef CONFIG_USE_SDL
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "X-Ray error", assertion_info, nullptr);
+#else
         MessageBox (NULL,assertion_info,"X-Ray error",MB_OK|MB_ICONERROR|MB_SYSTEMMODAL);
+#endif
     else
     {
 #ifdef USE_OWN_ERROR_MESSAGE_WINDOW
@@ -244,6 +280,8 @@ void xrDebug::backend(const char* expression, const char* description, const cha
 #else // USE_OWN_ERROR_MESSAGE_WINDOW
 #ifdef USE_BUG_TRAP
         BT_SetUserMessage (assertion_info);
+#elif defined __linux
+        SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "X-Ray error", assertion_info, nullptr);
 #endif // USE_BUG_TRAP
         DEBUG_INVOKE;
 #endif // USE_OWN_ERROR_MESSAGE_WINDOW
@@ -259,6 +297,7 @@ LPCSTR xrDebug::error2string(long code)
     LPCSTR result = 0;
     static string1024 desc_storage;
 
+#ifdef __WIN32
 #ifdef _M_AMD64
 #else
     DXGetErrorDescription(code, desc_storage, sizeof(desc_storage));
@@ -268,6 +307,9 @@ LPCSTR xrDebug::error2string(long code)
         FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, 0, code, 0, desc_storage, sizeof(desc_storage) - 1, 0);
         result = desc_storage;
     }
+#else // __WIN32
+    xr_sprintf(desc_storage, "Error %s", code);
+#endif // __WIN32
     return result;
 }
 
@@ -345,6 +387,7 @@ extern LPCSTR log_name();
 
 XRCORE_API string_path g_bug_report_file;
 
+#ifdef __WIN32
 void CALLBACK PreErrorHandler(INT_PTR)
 {
 #ifdef USE_BUG_TRAP
@@ -387,7 +430,7 @@ void SetupExceptionHandler(const bool& dedicated)
 {
     BT_InstallSehFilter();
 #if 1//ndef USE_OWN_ERROR_MESSAGE_WINDOW
-    if (!dedicated && !strstr(GetCommandLine(), "-silent_error_mode"))
+    if (!dedicated && !strstr(Core.Params, "-silent_error_mode"))
         BT_SetActivityType(BTA_SHOWUI);
     else
         BT_SetActivityType(BTA_SAVEREPORT);
@@ -619,7 +662,7 @@ LONG WINAPI UnhandledFilter(_EXCEPTION_POINTERS* pExceptionInfo)
     string256 error_message;
     format_message(error_message, sizeof(error_message));
 
-    if (!error_after_dialog && !strstr(GetCommandLine(), "-no_call_stack_assert"))
+    if (!error_after_dialog && !strstr(Core.Params, "-no_call_stack_assert"))
     {
         CONTEXT save = *pExceptionInfo->ContextRecord;
         BuildStackTrace(pExceptionInfo);
@@ -699,6 +742,7 @@ LONG WINAPI UnhandledFilter(_EXCEPTION_POINTERS* pExceptionInfo)
     return (EXCEPTION_CONTINUE_SEARCH);
 }
 #endif
+#endif // __WIN32
 
 //////////////////////////////////////////////////////////////////////
 #ifdef M_BORLAND
@@ -723,7 +767,7 @@ void xrDebug::_initialize (const bool& dedicated)
 #ifndef USE_BUG_TRAP
 void _terminate ()
 {
-    if (strstr(GetCommandLine(),"-silent_error_mode"))
+    if (strstr(Core.Params,"-silent_error_mode"))
         exit (-1);
 
     string4096 assertion_info;
@@ -749,16 +793,24 @@ void _terminate ()
         assertion_info
     );
 
-    LPCSTR endline = "\r\n";
-    LPSTR buffer = assertion_info + xr_strlen(assertion_info);
-    buffer += xr_sprintf(buffer,"Press OK to abort execution%s",endline);
+    xr_strcat(assertion_info, "Press OK to abort execution"
+#ifdef __WIN32
+    "\n\r"
+#else
+    "\n"
+#endif
+    );
 
+#ifdef CONFIG_USE_SDL
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR, "Fatal Error", assertion_info, 0);
+#else
     MessageBox (
         GetTopWindow(NULL),
         assertion_info,
         "Fatal Error",
         MB_OK|MB_ICONERROR|MB_SYSTEMMODAL
     );
+#endif // CONFIG_USE_SDL
 
     exit (-1);
     // FATAL ("Unexpected application termination");
@@ -886,6 +938,7 @@ void debug_on_thread_spawn()
     //std::set_terminate (_terminate);
 #endif // USE_BUG_TRAP
 
+#ifdef __WIN32
     _set_abort_behavior(0, _WRITE_ABORT_MSG | _CALL_REPORTFAULT);
     signal(SIGABRT, abort_handler);
     signal(SIGABRT_COMPAT, abort_handler);
@@ -906,6 +959,7 @@ void debug_on_thread_spawn()
 #if 0// should be if we use exceptions
     std::set_unexpected (_terminate);
 #endif
+#endif // __WIN32
 }
 
 void xrDebug::_initialize(const bool& dedicated)
@@ -919,7 +973,9 @@ void xrDebug::_initialize(const bool& dedicated)
 #ifdef USE_BUG_TRAP
     SetupExceptionHandler(is_dedicated);
 #endif // USE_BUG_TRAP
+#ifdef __WIN32
     previous_filter = ::SetUnhandledExceptionFilter(UnhandledFilter); // exception handler to all "unhandled" exceptions
+#endif // __WIN32
 
 #if 0
     struct foo
