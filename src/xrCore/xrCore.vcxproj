@@ -297,6 +297,7 @@
     <ClCompile Include="Crypto\xr_dsa_signer.cpp" />
     <ClCompile Include="Crypto\xr_dsa_verifyer.cpp" />
     <ClCompile Include="Crypto\xr_sha.cpp" />
+    <ClCompile Include="IO\DirectoryLookup_win.cpp" />
     <ClCompile Include="Debug\dxerr.cpp" />
     <ClCompile Include="doug_lea_allocator.cpp" />
     <ClCompile Include="dump_string.cpp" />
@@ -447,6 +448,7 @@
     <ClInclude Include="Crypto\xr_dsa_signer.h" />
     <ClInclude Include="Crypto\xr_dsa_verifyer.h" />
     <ClInclude Include="Crypto\xr_sha.h" />
+    <ClInclude Include="IO\DirectoryLookup.hpp" />
     <ClInclude Include="Debug\dxerr.h" />
     <ClInclude Include="Debug\DXGetErrorDescription.inl">
       <FileType>CppHeader</FileType>
