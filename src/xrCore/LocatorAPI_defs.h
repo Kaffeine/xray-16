@@ -38,7 +38,7 @@ public:
     void __stdcall rescan_path_cb();
 };
 
-#ifdef _EDITOR
+#if defined (_EDITOR) || defined(__linux__)
 namespace std
 {
 struct _finddata_t;

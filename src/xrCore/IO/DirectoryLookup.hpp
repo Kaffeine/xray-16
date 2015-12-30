@@ -13,15 +13,18 @@ struct XRCORE_API DirectoryEntry
     EntryType Type;
     bool Hidden;
     time_t TimeWrite;
+    size_t Size;
 };
 
 class XRCORE_API DirectoryLookup
 {
 public:
-    DirectoryLookup(const char *path);
+    DirectoryLookup(const char *path = nullptr);
     ~DirectoryLookup();
+    bool OpenPath(const char *path);
+    void Close();
     bool ReadNext(DirectoryEntry *entry);
-    bool HaveNext();
+    bool HaveNext() const;
 private:
     DirectoryLookupPrivate *impl;
 };

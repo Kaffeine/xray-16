@@ -2,12 +2,22 @@
 #pragma hdrstop
 
 #include "LocatorAPI_defs.h"
-#pragma warning(disable:4995)
-#include <io.h>
-#include <direct.h>
+//#pragma warning(disable:4995)
+//#include <io.h>
+//#include <direct.h>
 #include <fcntl.h>
-#include <sys\stat.h>
-#pragma warning(default:4995)
+//#include <sys\stat.h>
+//#pragma warning(default:4995)
+
+struct std::_finddata_t
+{
+    char *name;
+    int attrib;
+    time_t time_write;
+    unsigned long size;
+};
+
+#define _A_SUBDIR 1
 
 //////////////////////////////////////////////////////////////////////
 // FS_File

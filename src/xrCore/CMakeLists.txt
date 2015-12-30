@@ -4,9 +4,9 @@ SET(SOURCES
     FTimer.cpp
 #    FileSystem.cpp
 #    FileSystem_borland.cpp
-#    LocatorAPI.cpp
+    LocatorAPI.cpp
     LocatorAPI_auth.cpp
-#    LocatorAPI_defs.cpp
+    LocatorAPI_defs.cpp
 #    LzHuf.cpp
     Model.cpp
     NET_utils.cpp
@@ -92,6 +92,15 @@ set(CRYPTO_HEADERS
     Crypto/xr_dsa_verifyer.h
     Crypto/xr_dsa.h
     Crypto/xr_sha.h
+)
+
+set(IO_SOURCES
+    IO/DirectoryLookup_posix.cpp
+#    IO/DirectoryLookup_win.cpp
+)
+
+set(IO_HEADERS
+    IO/DirectoryLookup.hpp
 )
 
 set(MATH_SOURCES
@@ -252,6 +261,7 @@ SET(HEADERS
 add_library(xrCore SHARED ${SOURCES}  ${HEADERS}
     ${ANIMATION_SOURCES}
     ${CRYPTO_SOURCES}
+    ${IO_SOURCES}
     ${MATH_SOURCES}
     ${MEDIA_SOURCES}
     ${POST_PROCESS_SOURCES}
