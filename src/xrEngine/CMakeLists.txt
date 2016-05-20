@@ -81,7 +81,6 @@ SET(HEADERS
     CameraDebug.h
     CameraDefs.h
     CameraManager.h
-    CopyProtection.h
     CustomHUD.h
     Effector.h
     EffectorPP.h
@@ -170,7 +169,6 @@ SET(HEADERS
     stdafx.h
     thunderbolt.h
     tntQAVI.h
-    trivial_encryptor.h
     vis_common.h
     x_ray.h
     xrHemisphere.h

@@ -29,26 +29,15 @@ SET(SOURCES
     ModuleLookup.cpp
     os_clipboard.cpp
 #    ppmd_compressor.cpp
-#    rt_compressor.cpp
-#    rt_compressor9.cpp
-    rt_lzo1x_1.cpp
-    rt_lzo1x_9x.cpp
-    rt_lzo1x_d1.cpp
-    rt_lzo1x_d2.cpp
-    rt_lzo1x_d3.cpp
-    rt_lzo_init.cpp
     stdafx.cpp
 #    stream_reader.cpp
     string_concatenations.cpp
 #    xrCore.cpp
-    xrDebugNew.cpp
     xrMemory.cpp
     xrMemory_POOL.cpp
 #    xrMemory_align.cpp
     xrMemory_debug.cpp
 #    xrMemory_pso_Copy.cpp
-    xrMemory_pso_Fill.cpp
-    xrMemory_pso_Fill32.cpp
 #    xrMemory_subst_borland.cpp
     xrMemory_subst_msvc.cpp
     xr_shared.cpp
@@ -209,22 +198,6 @@ SET(HEADERS
     os_clipboard.h
     ppmd_compressor.h
     resource.h
-    rt_compressor.h
-    rt_config1x.h
-    rt_lzo1_d.ch
-    rt_lzo1x.h
-    rt_lzo1x_c.ch
-    rt_lzo1x_d.ch
-    rt_lzo_conf.h
-    rt_lzo_config.h
-    rt_lzo_dict.h
-    rt_lzo_dll.ch
-    rt_lzo_mchw.ch
-    rt_lzo_ptr.h
-    rt_lzo_swd.ch
-    rt_lzoconf.h
-    rt_lzodefs.h
-    rt_miniacc.h
     stdafx.h
     Stream_Reader.h
     stream_reader_inline.h
@@ -232,13 +205,11 @@ SET(HEADERS
     string_concatenations_inline.h
     vector.h
     xrCore.h
-    Platform.h
     xrDebug.h
     xrDebug_macros.h
     xrMemory_POOL.h
     xrMemory.h
     xrMemory_align.h
-    xrMemory_pso.h
     xrMemory_pure.h
     xrPool.h
     xr_ini.h
