@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 2.8.7)
 add_definitions(-std=c++11)
 add_definitions(-D_MT)
 add_definitions(-D_CPPUNWIND)
+add_definitions(-DPURE_DYNAMIC_CAST)
 
 #find_package(Lua51 REQUIRED)
 
@@ -33,4 +34,3 @@ add_subdirectory(xrEngine)
 # add_subdirectory(xrServerEntities)
 # add_subdirectory(xrSound)
 # add_subdirectory(xrXMLParser)
-
