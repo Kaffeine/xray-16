@@ -13,6 +13,7 @@
 #include "inventory_item.h"
 #include "weapon.h"
 #include "script_game_object.h"
+#include "script_game_object_impl.h"
 #include "Inventory.h"
 #include "alife_simulator.h"
 #include "alife_object_registry.h"
@@ -24,7 +25,7 @@
 #include "detail_path_manager_space.h"
 #include "game_location_selector.h"
 #include "sight_manager.h"
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location.h"
 #include "stalker_movement_manager_smart_cover.h"
 #include "ai/stalker/ai_stalker_space.h"
 #include "ai_space.h"
@@ -91,7 +92,7 @@ void CStalkerActionSolveZonePuzzle::initialize	()
 		object().movement().set_desired_direction	(0);
 		object().movement().set_path_type			(MovementManager::ePathTypePatrolPath);
 		object().movement().set_detail_path_type	(DetailPathManager::eDetailPathTypeSmooth);
-		object().movement().patrol().set_path		("test_sight",PatrolPathManager::ePatrolStartTypeNearest,PatrolPathManager::ePatrolRouteTypeContinue);
+		object().movement().patrol().set_path		("test_sight",ePatrolStartTypeNearest,PatrolPathManager::ePatrolRouteTypeContinue);
 //		object().movement().set_nearest_accessible_position();
 		object().sight().setup						(CSightAction(SightManager::eSightTypePathDirection));
 		//		object().CObjectHandler::set_goal			(eObjectActionFire1,object().inventory().ItemFromSlot(GRENADE_SLOT),0,1,2500,3000);

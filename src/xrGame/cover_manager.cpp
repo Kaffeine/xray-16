@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "level_graph.h"
+#include "xrAICore/Navigation/level_graph.h"
 #include "cover_manager.h"
 #include "ai_space.h"
 #include "cover_point.h"
@@ -85,11 +85,12 @@ void CCoverManager::compute_static_cover	()
 {
 	clear					();
 	xr_delete				(m_covers);
-	m_covers				= xr_new<CPointQuadTree>(ai().level_graph().header().box(),ai().level_graph().header().cell_size()*.5f,8*65536,4*65536);
+	m_covers				= new CPointQuadTree(ai().level_graph().header().box(),ai().level_graph().header().cell_size()*.5f,8*65536,4*65536);
 	m_temp.resize			(ai().level_graph().header().vertex_count());
 
 	CLevelGraph const		&graph = ai().level_graph();
-	for (u32 i=0, n = ai().level_graph().header().vertex_count(); i<n; ++i) {
+    u32 levelVertexCount = ai().level_graph().header().vertex_count();
+	for (u32 i=0; i<levelVertexCount; ++i) {
 		CLevelGraph::CVertex const &vertex = *graph.vertex(i);
 		if (vertex.high_cover(0) + vertex.high_cover(1) + vertex.high_cover(2) + vertex.high_cover(3)) {
 			m_temp[i]		= edge_vertex(i);
@@ -104,12 +105,12 @@ void CCoverManager::compute_static_cover	()
 		m_temp[i]			= false;
 	}
 
-	for (u32 i=0; i<n; ++i)
+	for (u32 i=0; i<levelVertexCount; ++i)
 		if (m_temp[i] && critical_cover(i))
-			m_covers->insert(xr_new<CCoverPoint>(ai().level_graph().vertex_position(ai().level_graph().vertex(i)),i));
+			m_covers->insert(new CCoverPoint(ai().level_graph().vertex_position(ai().level_graph().vertex(i)),i));
 
 	VERIFY					(!m_smart_covers_storage);
-	m_smart_covers_storage	= xr_new<smart_cover::storage>();
+	m_smart_covers_storage	= new smart_cover::storage();
 }
 
 void CCoverManager::clear_covers			(PointVector &covers)
@@ -187,10 +188,10 @@ void CCoverManager::remove_nearby_covers	(smart_cover::cover const &cover, smart
 	}
 }
 
-CCoverManager::Cover const *CCoverManager::add_smart_cover	(LPCSTR table_name, smart_cover::object const &object, bool const &is_combat_cover, bool const &can_fire, luabind::object const &loopholes) const
+CCoverManager::Cover const *CCoverManager::add_smart_cover	(LPCSTR table_name, smart_cover::object const &object, bool const &is_combat_cover, bool const &can_fire, luabind::adl::object const &loopholes) const
 {
 	Cover					*smart_cover = 
-		xr_new<Cover>(
+		new Cover(
 			object,
 			m_smart_covers_storage->description(table_name),
 			is_combat_cover,

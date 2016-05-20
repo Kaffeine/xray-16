@@ -29,7 +29,7 @@ struct CRemoveExplosivesPredicate {
 	}
 };
 
-void CAgentExplosiveManager::remove_links	(CObject *object)
+void CAgentExplosiveManager::remove_links	(IGameObject *object)
 {
 	TO_BE_DESTROYED::iterator		I = std::find(m_explosives_to_remove.begin(),m_explosives_to_remove.end(),object->ID());
 	if (I != m_explosives_to_remove.end())
@@ -61,7 +61,7 @@ void CAgentExplosiveManager::register_explosive	(const CExplosive *explosive, co
 	if (missile && (missile->destroy_time() > Device.dwTimeGlobal))
 		interval						= missile->destroy_time() - Device.dwTimeGlobal + AFTER_GRENADE_DESTROYED_INTERVAL;
 
-	object().location().add				(xr_new<CDangerObjectLocation>(game_object,Device.dwTimeGlobal,interval,GRENADE_RADIUS));
+	object().location().add				(new CDangerObjectLocation(game_object,Device.dwTimeGlobal,interval,GRENADE_RADIUS));
 }
 
 bool CAgentExplosiveManager::process_explosive			(CMemberOrder &member)

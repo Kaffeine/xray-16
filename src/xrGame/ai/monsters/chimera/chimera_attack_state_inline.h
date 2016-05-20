@@ -107,7 +107,7 @@ bool   ChimeraAttackState<Object>::check_if_jump_possible (Fvector const& target
 	if ( !ai().level_graph().valid_vertex_position(target) )
 		return									false;
 
-	if ( object->com_man().get_jump_control()->jump_intersect_geometry(target, (CObject*)object->EnemyMan.get_enemy()) )
+	if ( object->com_man().get_jump_control()->jump_intersect_geometry(target, (IGameObject*)object->EnemyMan.get_enemy()) )
 		return									false;
 
 	return										true;
@@ -185,10 +185,8 @@ bool   ChimeraAttackState<Object>::select_target_for_move ()
 
 		float	const	move_scan_points	=	8;
 		float	const	move_scan_angle		=	deg2rad(360.f) / move_scan_points;
-
-		for (			u32	index			=	0; 
-							index			<	move_scan_points; 
-						  ++index	)
+        u32	index = 0;
+        for (; index<move_scan_points; index++)
 		{
 			float	const	angle			=	move_scan_angle * 
 												(index+1) * 

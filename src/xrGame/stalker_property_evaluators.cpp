@@ -11,6 +11,7 @@
 #include "ai/stalker/ai_stalker.h"
 #include "stalker_decision_space.h"
 #include "script_game_object.h"
+#include "script_game_object_impl.h"
 #include "ai/ai_monsters_misc.h"
 #include "Inventory.h"
 #include "alife_simulator.h"
@@ -31,9 +32,7 @@
 #include "agent_enemy_manager.h"
 #include "agent_member_manager.h"
 #include "cover_point.h"
-#include "level_graph.h"
-#include "cover_point.h"
-#include "level_graph.h"
+#include "xrAICore/Navigation/level_graph.h"
 #include "stalker_animation_manager.h"
 #include "weapon.h"
 

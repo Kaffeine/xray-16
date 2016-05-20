@@ -51,7 +51,7 @@ void CBuild::PreOptimize()
 			for (int iy=0; iy<HDIM_Y+1; iy++)
 				for (int iz=0; iz<HDIM_Z+1; iz++)
 				{
-					HASH[ix][iy][iz] = xr_new<vecVertex> ();
+					HASH[ix][iy][iz] = new vecVertex ();
 					HASH[ix][iy][iz]->reserve	(_average);
 				}
 	}
@@ -134,7 +134,7 @@ void CBuild::PreOptimize()
 	if (InvalideFaces())	
 	{
 		err_save		();
-		Debug.fatal		(DEBUG_INFO,"* FATAL: %d invalid faces. Compilation aborted",InvalideFaces());
+		xrDebug::Fatal		(DEBUG_INFO,"* FATAL: %d invalid faces. Compilation aborted",InvalideFaces());
 	}
 
     Logger.Status("Adjacency check...");

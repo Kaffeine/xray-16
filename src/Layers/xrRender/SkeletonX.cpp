@@ -49,7 +49,7 @@ void CSkeletonX::_Copy		(CSkeletonX *B)
 	RMS_boneid				= B->RMS_boneid;
 	RMS_bonecount			= B->RMS_bonecount;
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
 	m_Indices				= B->m_Indices;
 #endif	//	USE_DX10
 }
@@ -337,7 +337,7 @@ void CSkeletonX::_Load	(const char* N, IReader *data, u32& dwVertCount)
 			}
 		}break;
 	default:
-		Debug.fatal	(DEBUG_INFO,"Invalid vertex type in skinned model '%s'",N);
+		xrDebug::Fatal	(DEBUG_INFO,"Invalid vertex type in skinned model '%s'",N);
 		break;
 	}
 #ifdef _EDITOR
@@ -555,7 +555,7 @@ void CSkeletonX::_FillVerticesSoft2W(const Fmatrix& view, CSkeletonWallmark& wm,
 	}
 }
 
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
 void CSkeletonX::_DuplicateIndices(const char* N, IReader *data)
 {
 	//	We will have trouble with container since don't know were to take readable indices

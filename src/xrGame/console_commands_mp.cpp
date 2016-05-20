@@ -20,7 +20,7 @@
 #include "xrGameSpy/xrGameSpy_MainDefs.h"
 #include "DemoPlay_Control.h"
 #include "account_manager_console.h"
-#include "gamespy/GameSpy_GP.h"
+#include "xrGameSpy/GameSpy_GP.h"
 
 EGameIDs	ParseStringToGameType	(LPCSTR str);
 LPCSTR		GameTypeToString		(EGameIDs gt, bool bShort);
@@ -155,12 +155,13 @@ public:
 	{
 		if (IsGameTypeSingle())		
 										return;
-		
+        if (!g_pGameLevel)
+            return;
 		if (Game().local_player && 
 			Game().local_player->testFlag(GAME_PLAYER_FLAG_VERY_VERY_DEAD)) 
 										return;
 		
-		CObject *l_pObj					= Level().CurrentControlEntity();
+		IGameObject *l_pObj					= Level().CurrentControlEntity();
 		CActor *l_pPlayer				= smart_cast<CActor*>(l_pObj);
 		if(l_pPlayer) 
 		{
@@ -222,7 +223,7 @@ public:
 
 		u32 CLObjNum	= Level().Objects.o_count();
 		xr_vector<u16>	CObjID;
-		for (i=0; i<CLObjNum; i++)
+		for (u32 i=0; i<CLObjNum; i++)
 		{
 			CObjID.push_back(Level().Objects.o_get_by_iterator(i)->ID());
 		};
@@ -236,7 +237,7 @@ public:
 			if (CO < CLObjNum && CO < SVObjNum)
 			{
 				CSE_Abstract* pEntity = Level().Server->ID_to_entity(SObjID[CO]);
-				CObject* pObj = Level().Objects.net_Find(CObjID[CO]);
+				IGameObject* pObj = Level().Objects.net_Find(CObjID[CO]);
 				char color = (pObj->ID() == pEntity->ID) ? '-' : '!';
 
 				Msg("%c%4d: Client - %20s[%5d] <===> Server - %s [%d]", color, CO+1, 
@@ -247,7 +248,7 @@ public:
 			{
 				if (CO<CLObjNum)
 				{
-					CObject* pObj = Level().Objects.net_Find(CObjID[CO]);
+					IGameObject* pObj = Level().Objects.net_Find(CObjID[CO]);
 					Msg("! %2d: Client - %s [%d] <===> Server - -----------------", CO+1, 
 						*(pObj->cNameSect()), pObj->ID());
 				}

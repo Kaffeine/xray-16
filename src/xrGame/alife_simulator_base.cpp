@@ -19,7 +19,7 @@
 #include "alife_group_registry.h"
 #include "alife_registry_container.h"
 #include "xrserver.h"
-#include "level_graph.h"
+#include "xrAICore/Navigation/level_graph.h"
 #include "inventory_upgrade_manager.h"
 #include "Level.h"
 
@@ -81,17 +81,17 @@ void CALifeSimulatorBase::unload			()
 
 void CALifeSimulatorBase::reload			(LPCSTR section)
 {
-	m_header					= xr_new<CALifeSimulatorHeader>		(section);
-	m_time_manager				= xr_new<CALifeTimeManager>			(section);
-	m_spawns					= xr_new<CALifeSpawnRegistry>		(section);
-	m_objects					= xr_new<CALifeObjectRegistry>		(section);
-	m_graph_objects				= xr_new<CALifeGraphRegistry>		();
-	m_scheduled					= xr_new<CALifeScheduleRegistry>	();
-	m_story_objects				= xr_new<CALifeStoryRegistry>		();
-	m_smart_terrains			= xr_new<CALifeSmartTerrainRegistry>();
-	m_groups					= xr_new<CALifeGroupRegistry>		();
-	m_registry_container		= xr_new<CALifeRegistryContainer>	();
-	m_upgrade_manager			= xr_new<inventory::upgrade::Manager>();
+	m_header					= new CALifeSimulatorHeader		(section);
+	m_time_manager				= new CALifeTimeManager			(section);
+	m_spawns					= new CALifeSpawnRegistry		(section);
+	m_objects					= new CALifeObjectRegistry		(section);
+	m_graph_objects				= new CALifeGraphRegistry		();
+	m_scheduled					= new CALifeScheduleRegistry	();
+	m_story_objects				= new CALifeStoryRegistry		();
+	m_smart_terrains			= new CALifeSmartTerrainRegistry();
+	m_groups					= new CALifeGroupRegistry		();
+	m_registry_container		= new CALifeRegistryContainer	();
+	m_upgrade_manager			= new inventory::upgrade::Manager();
 	m_initialized				= true;
 }
 

@@ -33,7 +33,7 @@
 #include "xrGameSpy/xrGameSpy_MainDefs.h"
 #include "screenshot_server.h"
 #include "xrCore/ppmd_compressor.h"
-#include "xrCore/rt_compressor.h"
+#include "xrCore/Compression/rt_compressor.h"
 #include "game_cl_mp_snd_messages.h"
 #include "xrCore/Crypto/crypto.h"
 
@@ -87,7 +87,7 @@ game_cl_mp::game_cl_mp()
 	buffer_for_compress_size = 0;
 	//-----------------------------------------------------------
 	//-----------------------------------------------------------
-/*	pBuySpawnMsgBox		= xr_new<CUIMessageBoxEx>();
+/*	pBuySpawnMsgBox		= new CUIMessageBoxEx();
 	//.	pBuySpawnMsgBox->SetWorkPhase(GAME_PHASE_INPROGRESS);
 	pBuySpawnMsgBox->Init("message_box_buy_spawn");
 	pBuySpawnMsgBox->AddCallback("msg_box", MESSAGE_BOX_YES_CLICKED, CUIWndCallback::void_function(this, &game_cl_mp::OnBuySpawn));
@@ -182,7 +182,7 @@ bool game_cl_mp::OnKeyboardPress(int key)
 	{
 		bool b_need_to_send_ready = false;
 
-		CObject* curr = Level().CurrentControlEntity();
+		IGameObject* curr = Level().CurrentControlEntity();
 		if (!curr) return(false);
 
 		bool is_actor		= !!smart_cast<CActor*>(curr);
@@ -252,7 +252,7 @@ bool game_cl_mp::OnKeyboardPress(int key)
 		case kSHOW_ADMIN_MENU:
 			{
 				if(!m_pAdminMenuWindow)
-					m_pAdminMenuWindow = xr_new<CUIMpAdminMenu>();
+					m_pAdminMenuWindow = new CUIMpAdminMenu();
 
 				if(local_player && local_player->testFlag(GAME_PLAYER_HAS_ADMIN_RIGHTS))
 					m_pAdminMenuWindow->ShowDialog(true);
@@ -318,7 +318,7 @@ bool game_cl_mp::OnKeyboardPress(int key)
 void	game_cl_mp::VotingBegin()
 {
 	if(!m_pVoteStartWindow)
-		m_pVoteStartWindow		= xr_new<CUIVotingCategory>();
+		m_pVoteStartWindow		= new CUIVotingCategory();
 
 	m_pVoteStartWindow->ShowDialog(true);
 }
@@ -326,7 +326,7 @@ void	game_cl_mp::VotingBegin()
 void	game_cl_mp::Vote()
 {
 	if(!m_pVoteRespondWindow)
-		m_pVoteRespondWindow	= xr_new<CUIVote>();
+		m_pVoteRespondWindow	= new CUIVote();
 
 	m_pVoteRespondWindow->ShowDialog(true);
 }
@@ -822,8 +822,8 @@ void game_cl_mp::OnPlayerKilled			(NET_Packet& P)
 	if (m_reward_generator)
 		m_reward_generator->OnPlayerKilled(KillerID, KilledID, WeaponID, std::make_pair(KillType, SpecialKill));
 	//-----------------------------------------------------------
-	CObject* pOKiller = Level().Objects.net_Find(KillerID);
-	CObject* pWeapon = Level().Objects.net_Find(WeaponID);
+	IGameObject* pOKiller = Level().Objects.net_Find(KillerID);
+	IGameObject* pWeapon = Level().Objects.net_Find(WeaponID);
 
 	game_PlayerState* pPlayer = GetPlayerByGameID(KilledID);
 	if (!pPlayer)
@@ -1069,7 +1069,7 @@ void	game_cl_mp::OnPlayerChangeName		(NET_Packet& P)
 	if(CurrentGameUI()) CurrentGameUI()->CommonMessageOut(resStr);
 	Msg( NewName );
 	//-------------------------------------------
-	CObject* pObj = Level().Objects.net_Find(ObjID);
+	IGameObject* pObj = Level().Objects.net_Find(ObjID);
 	if (pObj)
 	{
 		pObj->cName_set(NewName);
@@ -1265,7 +1265,7 @@ void	game_cl_mp::OnEventMoneyChanged			(NET_Packet& P)
 
 void	game_cl_mp::OnSpectatorSelect		()
 {
-	CObject *l_pObj = Level().CurrentEntity();
+	IGameObject *l_pObj = Level().CurrentEntity();
 
 	CGameObject *l_pPlayer = smart_cast<CGameObject*>(l_pObj);
 	if(!l_pPlayer) return;
@@ -1422,7 +1422,7 @@ void game_cl_mp::OnRadminMessage(u16 type, NET_Packet* P)
 				if (!g_dedicated_server)
 				{
 					if(!m_pAdminMenuWindow)
-						m_pAdminMenuWindow = xr_new<CUIMpAdminMenu>();
+						m_pAdminMenuWindow = new CUIMpAdminMenu();
 
 					if(0==stricmp(buff,"Access permitted."))
 						m_pAdminMenuWindow->ShowDialog(true);
@@ -1923,7 +1923,7 @@ void game_cl_mp::extract_server_info(u8* data_ptr, u32 data_size)
 
 void game_cl_mp::AddRewardTask(u32 const award_id)
 {
-	CObject* tmp_view_entity = Level().CurrentViewEntity();
+	IGameObject* tmp_view_entity = Level().CurrentViewEntity();
 	if ((tmp_view_entity && local_player) &&
 		(tmp_view_entity->ID() == local_player->GameID))
 	{
@@ -1935,8 +1935,8 @@ void game_cl_mp::ReInitRewardGenerator(game_PlayerState* local_ps)
 {
 	if (!m_reward_generator)
 	{
-		m_reward_generator	= xr_new<award_system::reward_event_generator>(u32(-1));
-		m_reward_manager	= xr_new<award_system::reward_manager>(this);
+		m_reward_generator	= new award_system::reward_event_generator(u32(-1));
+		m_reward_manager	= new award_system::reward_manager(this);
 	}
 	m_reward_generator->init_player(local_ps);
 }

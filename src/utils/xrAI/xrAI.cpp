@@ -24,6 +24,7 @@
 #pragma comment(lib,"MagicFM.LIB")
 #pragma comment(lib,"xrCore.LIB")
 #pragma comment(lib, "xrLCUtil.lib")
+#pragma comment(lib, "xrAICore.lib")
 
 #include "utils/xrLCUtil/LevelCompilerLoggerWindow.hpp"
 #include "xrCore/cdecl_cast.hpp"
@@ -54,8 +55,6 @@ CThreadManager::ReportProgressFunc ProxyProgress = cdecl_cast(
     [](float progress)
     { Logger.Progress(progress); }
 );
-
-extern LPCSTR LEVEL_GRAPH_NAME;
 
 extern void xrCompiler          (LPCSTR name, bool draft_mode, bool pure_covers, LPCSTR out_name);
 extern void test_smooth_path    (LPCSTR name);
@@ -196,7 +195,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
                      LPSTR     lpCmdLine,
                      int       nCmdShow)
 {
-    Debug._initialize       (false);
+    xrDebug::Initialize       (false);
     Core._initialize        ("xrai",0);
     HMODULE                 hFactory;
     LPCSTR                  g_name  = "xrSE_Factory";

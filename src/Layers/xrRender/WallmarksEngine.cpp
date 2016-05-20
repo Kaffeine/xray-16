@@ -37,7 +37,7 @@ CWallmarksEngine::wm_slot* CWallmarksEngine::FindSlot	(ref_shader shader)
 }
 CWallmarksEngine::wm_slot* CWallmarksEngine::AppendSlot	(ref_shader shader)
 {
-	marks.push_back				(xr_new<wm_slot>(shader));
+	marks.push_back				(new wm_slot(shader));
 	return marks.back			();
 }
 
@@ -45,10 +45,11 @@ CWallmarksEngine::wm_slot* CWallmarksEngine::AppendSlot	(ref_shader shader)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CWallmarksEngine::CWallmarksEngine	()
+CWallmarksEngine::CWallmarksEngine	() :
 #ifdef CONFIG_PROFILE_LOCKS
-	:lock(MUTEX_PROFILE_ID(CWallmarksEngine))
+	lock(MUTEX_PROFILE_ID(CWallmarksEngine)),
 #endif // CONFIG_PROFILE_LOCKS
+    xrc("wallmarks") // XXX stats: add to statistics
 {
 	static_pool.reserve		(256);
 	marks.reserve			(256);
@@ -82,7 +83,7 @@ void CWallmarksEngine::clear()
 CWallmarksEngine::static_wallmark*	CWallmarksEngine::static_wm_allocate		()
 {
 	static_wallmark*	W = 0;
-	if (static_pool.empty())  W = xr_new<static_wallmark> ();
+	if (static_pool.empty())  W = new static_wallmark ();
 	else					{ W = static_pool.back(); static_pool.pop_back(); }
 
 	W->ttl				= ps_r__WallmarkTTL;
@@ -151,7 +152,7 @@ void CWallmarksEngine::RecurseTri(u32 t, Fmatrix &mView, CWallmarksEngine::stati
 		}
 		
 		// recurse
-		for (i=0; i<3; i++)
+		for (u32 i=0; i<3; i++)
 		{
 			u32 adj					= sml_adjacency[3*t+i];
 			if (0xffffffff==adj)	continue;

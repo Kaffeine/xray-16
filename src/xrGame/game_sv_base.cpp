@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "LevelGameDef.h"
+#include "Common/LevelGameDef.h"
 #include "xrScriptEngine/script_process.hpp"
 #include "xrServer_Objects_ALife_Monsters.h"
 #include "xrScriptEngine/script_engine.hpp"
@@ -444,7 +444,7 @@ void game_sv_GameState::Create					(shared_str &options)
         scriptEngine.remove_script_process(ScriptProcessor::Game);
 		string_path					S;
 		FS.update_path				(S,"$game_config$","script.ltx");
-		CInifile					*l_tpIniFile = xr_new<CInifile>(S);
+		CInifile					*l_tpIniFile = new CInifile(S);
 		R_ASSERT					(l_tpIniFile);
 
         if (l_tpIniFile->section_exist(type_name()))
@@ -462,7 +462,7 @@ void game_sv_GameState::Create					(shared_str &options)
 	//---------------------------------------------------------------------
 	ConsoleCommands_Create();
 	//---------------------------------------------------------------------
-//	CCC_LoadCFG_custom*	pTmp = xr_new<CCC_LoadCFG_custom>("sv_");
+//	CCC_LoadCFG_custom*	pTmp = new CCC_LoadCFG_custom("sv_");
 //	pTmp->Execute				(Console->ConfigFile);
 //	xr_delete					(pTmp);
 	//---------------------------------------------------------------------
@@ -671,7 +671,7 @@ game_sv_GameState::game_sv_GameState()
 {
 	VERIFY(g_pGameLevel);
 	m_server					= Level().Server;
-	m_event_queue = xr_new<GameEventQueue>();
+	m_event_queue = new GameEventQueue();
 
 	m_bMapRotation = false;
 	m_bMapSwitched = false;
@@ -1182,7 +1182,7 @@ void		game_sv_GameState::OnRender				()
 					game_PlayerState* PS		=	get_it			(p_it);
 					if (!PS) continue;
 					if (PS->testFlag(GAME_PLAYER_FLAG_VERY_VERY_DEAD)) continue;
-					CObject* pPlayer = Level().Objects.net_Find(PS->GameID);
+					IGameObject* pPlayer = Level().Objects.net_Find(PS->GameID);
 					if (!pPlayer) continue;
 
 					if (rp.P.distance_to(pPlayer->Position())<=0.4f)
@@ -1222,7 +1222,7 @@ void		game_sv_GameState::OnRender				()
 			game_PlayerState* PS		=	get_it			(p_it);
 			if (!PS) continue;
 			if (PS->testFlag(GAME_PLAYER_FLAG_VERY_VERY_DEAD)) continue;
-			CObject* pPlayer = Level().Objects.net_Find(PS->GameID);
+			IGameObject* pPlayer = Level().Objects.net_Find(PS->GameID);
 			if (!pPlayer) continue;
 
 			float r = .4f;

@@ -89,7 +89,7 @@ CCharacterPhysicsSupport::CCharacterPhysicsSupport( EType atype, CEntityAlive* a
 	mXFORM( aentity->XFORM( ) ),
 	m_ph_sound_player( aentity ),
 	m_interactive_motion( 0 ),
-	m_PhysicMovementControl( xr_new<CPHMovementControl>( aentity ) ),
+	m_PhysicMovementControl( new CPHMovementControl( aentity ) ),
 	m_eType( atype ),
 	m_eState( esAlive ),
 	m_physics_skeleton( NULL ),
@@ -164,7 +164,7 @@ void CCharacterPhysicsSupport::in_Load( LPCSTR section )
 void CCharacterPhysicsSupport::run_interactive	( CBlend* B )
 {
 	VERIFY( !m_interactive_animation );
-	m_interactive_animation = xr_new<interactive_animation>( &m_EntityAlife, B );
+	m_interactive_animation = new interactive_animation( &m_EntityAlife, B );
 }
 
 void CCharacterPhysicsSupport::update_interactive_anims	()
@@ -335,7 +335,7 @@ void		CCharacterPhysicsSupport::					SpawnCharacterCreate			( )
 	//else
 	//{
 	//	VERIFY( !m_collision_activating_delay );
-	//	m_collision_activating_delay = xr_new<activating_character_delay>(this);
+	//	m_collision_activating_delay = new activating_character_delay(this);
 	//}
 		
 }
@@ -485,9 +485,9 @@ void CCharacterPhysicsSupport::KillHit( SHit &H )
 	{
 		destroy( m_interactive_motion );
 		if( false && b_death_anim_velocity )
-			m_interactive_motion = xr_new<imotion_velocity>( );
+			m_interactive_motion = new imotion_velocity( );
 		else
-			m_interactive_motion = xr_new<imotion_position>( );
+			m_interactive_motion = new imotion_position( );
 		m_interactive_motion->setup( m ,m_pPhysicsShell, hit_angle );
 	} else 
 		DestroyIKController( );
@@ -575,9 +575,9 @@ IC		void	CCharacterPhysicsSupport::						UpdateDeathAnims				()
 	}
 }
 #ifdef DEBUG
-void	DBG_PhysBones( CObject &O );
-void	DBG_DrawBones( CObject &O );
-void	DBG_DrawBind ( CObject &O );
+void	DBG_PhysBones( IGameObject &O );
+void	DBG_DrawBones( IGameObject &O );
+void	DBG_DrawBind ( IGameObject &O );
 BOOL dbg_draw_character_bones			=false;
 BOOL dbg_draw_character_physics			=false;
 BOOL dbg_draw_character_binds			=false;
@@ -843,7 +843,7 @@ void CCharacterPhysicsSupport::create_animation_collision		( )
 	m_physics_shell_animated_time_destroy = Device.dwTimeGlobal + physics_shell_animated_destroy_delay;
 	if( m_physics_shell_animated )
 		return;
-	m_physics_shell_animated = xr_new<physics_shell_animated>( &m_EntityAlife, true );
+	m_physics_shell_animated = new physics_shell_animated( &m_EntityAlife, true );
 }
 
 void CCharacterPhysicsSupport::update_animation_collision		( )
@@ -859,7 +859,7 @@ void CCharacterPhysicsSupport::update_animation_collision		( )
 #ifdef	DEBUG
 BOOL dbg_draw_ragdoll_spawn = FALSE;
 #endif
-void CCharacterPhysicsSupport::ActivateShell			( CObject* who )
+void CCharacterPhysicsSupport::ActivateShell			( IGameObject* who )
 {
 	R_ASSERT( _valid(m_EntityAlife.Position( )) );
 	Fvector start;start.set( m_EntityAlife.Position( ) );
@@ -979,7 +979,7 @@ void CCharacterPhysicsSupport::bone_chain_disable(u16 bone, u16 r_bone, IKinemat
 		CBoneData	&bd =	K.LL_GetData( bid );
 		if( K.LL_GetBoneInstance( bid ).callback() != anim_bone_fix::callback )
 		{
-			m_weapon_bone_fixes.push_back( xr_new<anim_bone_fix>() );
+			m_weapon_bone_fixes.push_back( new anim_bone_fix() );
 			m_weapon_bone_fixes.back()->fix( bid, K );
 		}
 		bid =	bd.GetParentID();
@@ -1061,7 +1061,7 @@ void	CCharacterPhysicsSupport::	AddActiveWeaponCollision		()
 	//DBG_ClosedCashedDraw( 50000 );
 }
 
-void	CCharacterPhysicsSupport::	CreateShell						( CObject* who, Fvector& dp, Fvector & velocity  )
+void	CCharacterPhysicsSupport::	CreateShell						( IGameObject* who, Fvector& dp, Fvector & velocity  )
 {
 	xr_delete( m_collision_activating_delay );
 	xr_delete( m_interactive_animation );
@@ -1174,7 +1174,7 @@ void	CCharacterPhysicsSupport::	CreateShell						( CObject* who, Fvector& dp, Fv
 	m_pPhysicsShell->SetIgnoreSmall();
 	AddActiveWeaponCollision();
 }
-void	CCharacterPhysicsSupport::	EndActivateFreeShell			( CObject* who, const Fvector& inital_entity_position, const Fvector& dp, const Fvector & velocity )
+void	CCharacterPhysicsSupport::	EndActivateFreeShell			( IGameObject* who, const Fvector& inital_entity_position, const Fvector& dp, const Fvector & velocity )
 {
 	VERIFY ( m_pPhysicsShell );
 	VERIFY( m_eState==esDead );
@@ -1318,7 +1318,7 @@ void CCharacterPhysicsSupport::CreateIKController()
 {
 
 	VERIFY(!m_ik_controller);
-	m_ik_controller=xr_new<CIKLimbsController>();
+	m_ik_controller=new CIKLimbsController();
 	m_ik_controller->Create(&m_EntityAlife);
 	
 }
@@ -1329,7 +1329,7 @@ void CCharacterPhysicsSupport::DestroyIKController()
 	xr_delete(m_ik_controller);
 }
 
-void		 CCharacterPhysicsSupport::in_NetRelcase(CObject* O)																													
+void		 CCharacterPhysicsSupport::in_NetRelcase(IGameObject* O)																													
 {
 	m_PhysicMovementControl->NetRelcase( O );
 

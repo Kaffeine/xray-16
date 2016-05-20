@@ -110,7 +110,7 @@ void xrMemory::mem_free(void *P)
     }
 #ifdef DEBUG_MEMORY_MANAGER
     if (g_globalCheckAddr==P)
-        __asm int 3;
+        DEBUG_BREAK;
     if (mem_initialized)
         debug_cs.Enter();
 #endif
@@ -163,16 +163,16 @@ void* xrMemory::mem_realloc(void* P, size_t size)
     }
 #ifdef DEBUG_MEMORY_MANAGER
     if (g_globalCheckAddr==P)
-        __asm int 3;
+        DEBUG_BREAK;
     if (mem_initialized)
         debug_cs.Enter();
 #endif
     u32 p_current = get_header(P);
-    u32 p_new = get_pool(1 + size + (debug_mode ? 4 : 0));
+    u32 newPool = get_pool(1 + size + (debug_mode ? 4 : 0));
     u32 p_mode;
     if (mem_generic==p_current)
     {
-        if (p_new < p_current)
+        if (newPool < p_current)
             p_mode = 2;
         else
             p_mode = 0;
@@ -218,7 +218,7 @@ void* xrMemory::mem_realloc(void* P, size_t size)
 #endif
         // Igor: Reserve 1 byte for xrMemory header
         // Don't bother in this case?
-        mem_copy(p_new, p_old, _min(s_current - 1, s_dest));
+        memcpy(p_new, p_old, _min(s_current - 1, s_dest));
         mem_free(p_old);
         _ptr = p_new;
     }
@@ -231,7 +231,7 @@ void* xrMemory::mem_realloc(void* P, size_t size)
 #else
         void *p_new = mem_alloc(size);
 #endif
-        mem_copy(p_new, p_old, (u32)size);
+        memcpy(p_new, p_old, (u32)size);
         mem_free(p_old);
         _ptr = p_new;
     }
@@ -239,7 +239,7 @@ void* xrMemory::mem_realloc(void* P, size_t size)
     if (mem_initialized)
         debug_cs.Leave();
     if (g_globalCheckAddr==_ptr)
-        __asm int 3;
+        DEBUG_BREAK;
 #endif
     return _ptr;
 }

@@ -79,7 +79,7 @@ void SimplifyCFORM		(CDB::CollectorPacked& CL)
 	}
 
 	// prepare model
-	MxStdModel* mdl			= xr_new<MxStdModel>(base_verts_cnt,base_faces_cnt);
+	MxStdModel* mdl			= new MxStdModel(base_verts_cnt,base_faces_cnt);
 
 	// transfer vertices
 	for (u32 v_idx=0; v_idx<base_verts_cnt; v_idx++){
@@ -96,7 +96,7 @@ void SimplifyCFORM		(CDB::CollectorPacked& CL)
 	CL.clear				();
 
 	// create and initialize qslim
-	MxEdgeQSlim* slim		= xr_new<MxEdgeQSlim>(mdl);
+	MxEdgeQSlim* slim		= new MxEdgeQSlim(mdl);
 	slim->boundary_weight	= 1000000.f;
 	slim->compactness_ratio	= COMPACTNESS_RATIO;
 	slim->meshing_penalty	= 1000000.f;
@@ -106,7 +106,7 @@ void SimplifyCFORM		(CDB::CollectorPacked& CL)
 
 	// constraint material&sector vertex
 	Ivector2 f_rm[3]={{0,1}, {1,2}, {2,0}};
-	for (f_idx=0; f_idx<slim->valid_faces; f_idx++){
+	for (u32 f_idx=0; f_idx<slim->valid_faces; f_idx++){
 		if (mdl->face_is_valid(f_idx)){
 			MxFace& base_f				= mdl->face(f_idx);
 			for (u32 edge_idx=0; edge_idx<3; edge_idx++){
@@ -154,7 +154,7 @@ void SimplifyCFORM		(CDB::CollectorPacked& CL)
 	mdl->compact_vertices	();
 
 	// rebuild CDB
-	for (f_idx=0; f_idx<mdl->face_count(); f_idx++){
+	for (u32 f_idx=0; f_idx<mdl->face_count(); f_idx++){
 		if (mdl->face_is_valid(f_idx)){
 			MxFace& F		= mdl->face(f_idx);
 			face_props& FP	= FPs[f_idx];

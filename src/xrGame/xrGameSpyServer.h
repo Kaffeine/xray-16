@@ -1,8 +1,8 @@
 #pragma once
 
 #include "xrServer.h"
-#include "GameSpy/GameSpy_GCD_Server.h"
-#include "GameSpy/GameSpy_QR2.h"
+#include "xrGameSpy/GameSpy_GCD_Server.h"
+#include "xrGameSpy/GameSpy_QR2.h"
 
 
 class xrGameSpyClientData	: public xrClientData
@@ -68,8 +68,8 @@ public:
 	
 
 	int								GetPlayersCount					();
-	void							OnCDKey_Validation				(int LocalID, int res, char* errormsg);
-	void							OnCDKey_ReValidation			(int LocalID, int hint, char* challenge);
+	void xr_stdcall OnCDKey_Validation				(int LocalID, int res, char* errormsg);
+	void xr_stdcall OnCDKey_ReValidation			(int LocalID, int hint, char* challenge);
 	CGameSpy_QR2*					QR2() {return &m_QR2;} ;
 
 	CGameSpy_GCD_Server*		GCD_Server()					{ return &m_GCDServer; }

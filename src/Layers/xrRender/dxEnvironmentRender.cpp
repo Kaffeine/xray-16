@@ -174,9 +174,9 @@ void dxEnvironmentRender::OnFrame(CEnvironment &env)
 		//. very very ugly hack
 		if (HW.Caps.raster_major >= 3 && HW.Caps.geometry.bVTF){
 			// tonemapping in VS
-			mixRen.sky_r_textures.push_back		(mk_pair(u32(D3DVERTEXTEXTURESAMPLER0),tonemap));	//. hack
-			mixRen.sky_r_textures_env.push_back	(mk_pair(u32(D3DVERTEXTEXTURESAMPLER0),tonemap));	//. hack
-			mixRen.clouds_r_textures.push_back	(mk_pair(u32(D3DVERTEXTEXTURESAMPLER0),tonemap));	//. hack
+			mixRen.sky_r_textures.push_back		(mk_pair(u32(CTexture::rstVertex),tonemap));	//. hack
+			mixRen.sky_r_textures_env.push_back	(mk_pair(u32(CTexture::rstVertex),tonemap));	//. hack
+			mixRen.clouds_r_textures.push_back	(mk_pair(u32(CTexture::rstVertex),tonemap));	//. hack
 		} else {
 			// tonemapping in PS
 			mixRen.sky_r_textures.push_back		(mk_pair(2,tonemap));								//. hack
@@ -187,14 +187,22 @@ void dxEnvironmentRender::OnFrame(CEnvironment &env)
 	}
 
 	//. Setup skybox textures, somewhat ugly
+#ifdef USE_OGL
+	GLuint e0 = mixRen.sky_r_textures[0].second->surface_get();
+	GLuint e1 = mixRen.sky_r_textures[1].second->surface_get();
+
+	tsky0->surface_set(GL_TEXTURE_CUBE_MAP, e0);
+	tsky1->surface_set(GL_TEXTURE_CUBE_MAP, e1);
+#else
 	ID3DBaseTexture*	e0	= mixRen.sky_r_textures[0].second->surface_get();
 	ID3DBaseTexture*	e1	= mixRen.sky_r_textures[1].second->surface_get();
 
 	tsky0->surface_set		(e0);	_RELEASE(e0);
 	tsky1->surface_set		(e1);	_RELEASE(e1);
+#endif // USE_OGL
 
 	// ******************** Environment params (setting)
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
 	//	TODO: DX10: Implement environment parameters setting for DX10 (if necessary)
 #else	//	USE_DX10
 
@@ -336,8 +344,13 @@ void dxEnvironmentRender::OnDeviceCreate()
 
 void dxEnvironmentRender::OnDeviceDestroy()
 {
-	tsky0->surface_set						(NULL);
-	tsky1->surface_set						(NULL);
+#ifdef USE_OGL
+	tsky0->surface_set(GL_TEXTURE_CUBE_MAP, NULL);
+	tsky1->surface_set(GL_TEXTURE_CUBE_MAP, NULL);
+#else
+	tsky0->surface_set(NULL);
+	tsky1->surface_set(NULL);
+#endif // USE_OGL
 
 	sh_2sky.destroy							();
 	sh_2geom.destroy						();

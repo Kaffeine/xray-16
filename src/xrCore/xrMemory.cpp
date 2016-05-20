@@ -14,30 +14,6 @@ bool shared_str_initialized = false;
 // XXX nitrocaster: to be removed
 XRCORE_API bool g_allow_heap_min = true;
 
-// Processor specific implementations
-extern pso_MemCopy xrMemCopy_MMX;
-extern pso_MemCopy xrMemCopy_x86;
-extern pso_MemFill xrMemFill_x86;
-extern pso_MemFill32 xrMemFill32_MMX;
-extern pso_MemFill32 xrMemFill32_x86;
-
-#ifdef DEBUG_MEMORY_NAME
-// Global new/delete override
-# if !(defined(__BORLANDC__) || defined(NO_XRNEW))
-IC void* operator new (size_t size) {return Memory.mem_alloc(size ? size : 1, "C++ NEW");}
-IC void operator delete (void* p) { xr_free(p); }
-IC void* operator new[](size_t size) { return Memory.mem_alloc(size ? size : 1, "C++ NEW"); }
-IC void operator delete[](void* p) { xr_free(p); }
-# endif
-#else // DEBUG_MEMORY_NAME
-# if !(defined(__BORLANDC__) || defined(NO_XRNEW))
-void* operator new (size_t size) { return Memory.mem_alloc(size?size:1); }
-void operator delete (void* p) { xr_free(p); }
-void* operator new[] (size_t size) { return Memory.mem_alloc(size?size:1); }
-void operator delete[] (void* p) { xr_free(p); }
-# endif
-#endif // DEBUG_MEMORY_MANAGER
-
 #ifdef DEBUG_MEMORY_MANAGER
 XRCORE_API void dump_phase()
 {
@@ -64,9 +40,6 @@ xrMemory::xrMemory()
     debug_mode = FALSE;
 
 #endif // DEBUG_MEMORY_MANAGER
-    mem_copy = xrMemCopy_x86;
-    mem_fill = xrMemFill_x86;
-    mem_fill32 = xrMemFill32_x86;
 }
 
 #ifdef DEBUG_MEMORY_MANAGER
@@ -82,21 +55,6 @@ void xrMemory::_initialize(BOOL bDebug)
 
     stat_calls = 0;
     stat_counter = 0;
-
-    u32 features = CPU::ID.feature;
-    if (features & _CPU_FEATURE_MMX)
-    {
-        mem_copy = xrMemCopy_MMX;
-        mem_fill = xrMemFill_x86;
-        mem_fill32 = xrMemFill32_MMX;
-    }
-    else
-    {
-        mem_copy = xrMemCopy_x86;
-        mem_fill = xrMemFill_x86;
-        mem_fill32 = xrMemFill32_x86;
-    }
-
 #ifndef M_BORLAND
     if (!strstr(Core.Params, "-pure_alloc"))
     {
@@ -119,10 +77,10 @@ void xrMemory::_initialize(BOOL bDebug)
 #endif // DEBUG_MEMORY_MANAGER
 
     // DUMP_PHASE;
-    g_pStringContainer = xr_new<str_container>();
+    g_pStringContainer = new str_container();
     shared_str_initialized = true;
     // DUMP_PHASE;
-    g_pSharedMemoryContainer = xr_new<smem_container>();
+    g_pSharedMemoryContainer = new smem_container();
     // DUMP_PHASE;
 }
 

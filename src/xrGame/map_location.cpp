@@ -6,15 +6,15 @@
 #include "Level.h"
 #include "xrEngine/xr_object.h"
 #include "ai_space.h"
-#include "game_graph.h"
+#include "xrAICore/Navigation/game_graph.h"
 #include "xrServer.h"
 #include "xrServer_Objects_ALife_Monsters.h"
 #include "ui/UIXmlInit.h"
 #include "ui/UIMap.h"
 #include "alife_simulator.h"
-#include "graph_engine.h"
+#include "xrAICore/Navigation/graph_engine.h"
 #include "actor.h"
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location.h"
 #include "alife_object_registry.h"
 #include "relation_registry.h"
 #include "InventoryOwner.h"
@@ -92,7 +92,7 @@ void CMapLocation::LoadSpot(LPCSTR type, bool bReload)
 {
 	if ( !g_uiSpotXml )
 	{
-		g_uiSpotXml				= xr_new<CUIXml>();
+		g_uiSpotXml				= new CUIXml();
 		g_uiSpotXml->Load		(CONFIG_PATH, UI_PATH, "map_spots.xml");
 	}
 
@@ -137,7 +137,7 @@ void CMapLocation::LoadSpot(LPCSTR type, bool bReload)
 		{
 			if ( !bReload )
 			{
-				m_level_spot = xr_new<CMapSpot>(this);
+				m_level_spot = new CMapSpot(this);
 			}
 			m_level_spot->Load(g_uiSpotXml,str);
 		}else{
@@ -152,7 +152,7 @@ void CMapLocation::LoadSpot(LPCSTR type, bool bReload)
 		{
 			if ( !bReload )
 			{
-				m_level_spot_pointer = xr_new<CMapSpotPointer>(this);
+				m_level_spot_pointer = new CMapSpotPointer(this);
 			}
 			m_level_spot_pointer->Load(g_uiSpotXml,str);
 		}else{
@@ -169,7 +169,7 @@ void CMapLocation::LoadSpot(LPCSTR type, bool bReload)
 		{
 			if ( !bReload )
 			{
-				m_minimap_spot = xr_new<CMiniMapSpot>(this);
+				m_minimap_spot = new CMiniMapSpot(this);
 			}
 			m_minimap_spot->Load(g_uiSpotXml,str);
 		}else{
@@ -183,7 +183,7 @@ void CMapLocation::LoadSpot(LPCSTR type, bool bReload)
 		{
 			if ( !bReload )
 			{
-				m_minimap_spot_pointer = xr_new<CMapSpotPointer>(this);
+				m_minimap_spot_pointer = new CMapSpotPointer(this);
 			}
 			m_minimap_spot_pointer->Load(g_uiSpotXml,str);
 		}else{
@@ -200,7 +200,7 @@ void CMapLocation::LoadSpot(LPCSTR type, bool bReload)
 		{
 			if ( !bReload )
 			{
-				m_complex_spot = xr_new<CComplexMapSpot>(this);
+				m_complex_spot = new CComplexMapSpot(this);
 			}
 			m_complex_spot->Load(g_uiSpotXml,str);
 		}else{
@@ -214,7 +214,7 @@ void CMapLocation::LoadSpot(LPCSTR type, bool bReload)
 		{
 			if ( !bReload )
 			{
-				m_complex_spot_pointer = xr_new<CMapSpotPointer>(this);
+				m_complex_spot_pointer = new CMapSpotPointer(this);
 			}
 			m_complex_spot_pointer->Load(g_uiSpotXml,str);
 		}else{
@@ -237,7 +237,7 @@ void CMapLocation::CalcPosition()
 		return;
 	}
 
-	CObject* pObject =  Level().Objects.net_Find(m_objectID);
+	IGameObject* pObject =  Level().Objects.net_Find(m_objectID);
 	if(!pObject)
 	{
 		if(m_owner_se_object)
@@ -260,7 +260,7 @@ const Fvector2& CMapLocation::CalcDirection()
 		m_cached.m_Direction.set(Device.vCameraDirection.x,Device.vCameraDirection.z);
 	}else
 	{
-		CObject* pObject =  Level().Objects.net_Find(m_objectID);
+		IGameObject* pObject =  Level().Objects.net_Find(m_objectID);
 		if(!pObject)
 			m_cached.m_Direction.set(0.0f, 0.0f);
 		else{
@@ -270,7 +270,7 @@ const Fvector2& CMapLocation::CalcDirection()
 	}
 
 	if(m_flags.test(ePosToActor)){
-		CObject* pObject =  Level().Objects.net_Find(m_objectID);
+		IGameObject* pObject =  Level().Objects.net_Find(m_objectID);
 		if(pObject){
 			Fvector2 dcp,obj_pos;
 			dcp.set(Device.vCameraPosition.x, Device.vCameraPosition.z);
@@ -312,7 +312,7 @@ bool CMapLocation::Update() //returns actual
 		}
 	}
 
-	CObject* pObject					= Level().Objects.net_Find(m_objectID);
+	IGameObject* pObject					= Level().Objects.net_Find(m_objectID);
 	
 	if (m_owner_se_object || (!IsGameTypeSingle() && pObject) )
 	{
@@ -646,7 +646,7 @@ CMapSpot* CMapLocation::GetSpotBorder(CMapSpot* sp)
 		{
 			if ( NULL == m_level_map_spot_border )
 			{
-				m_level_map_spot_border			= xr_new<CMapSpot>(this);
+				m_level_map_spot_border			= new CMapSpot(this);
 				m_level_map_spot_border->Load	(g_uiSpotXml,m_spot_border_names[0].c_str());
 			}
 			return m_level_map_spot_border;
@@ -655,7 +655,7 @@ CMapSpot* CMapLocation::GetSpotBorder(CMapSpot* sp)
 		{
 			if ( NULL == m_mini_map_spot_border )
 			{
-				m_mini_map_spot_border			= xr_new<CMapSpot>(this);
+				m_mini_map_spot_border			= new CMapSpot(this);
 				m_mini_map_spot_border->Load	(g_uiSpotXml,m_spot_border_names[2].c_str());
 			}
 			return m_mini_map_spot_border;
@@ -664,7 +664,7 @@ CMapSpot* CMapLocation::GetSpotBorder(CMapSpot* sp)
 		{
 			if ( NULL == m_complex_spot_border )
 			{
-				m_complex_spot_border			= xr_new<CMapSpot>(this);
+				m_complex_spot_border			= new CMapSpot(this);
 				m_complex_spot_border->Load		(g_uiSpotXml,m_spot_border_names[4].c_str());
 			}
 			return m_complex_spot_border;
@@ -676,7 +676,7 @@ CMapSpot* CMapLocation::GetSpotBorder(CMapSpot* sp)
 		{
 			if ( NULL == m_level_map_spot_border_na && m_spot_border_names[1].size() )
 			{
-				m_level_map_spot_border_na			= xr_new<CMapSpot>(this);
+				m_level_map_spot_border_na			= new CMapSpot(this);
 				m_level_map_spot_border_na->Load	(g_uiSpotXml,m_spot_border_names[1].c_str());
 			}
 			return m_level_map_spot_border_na;
@@ -685,7 +685,7 @@ CMapSpot* CMapLocation::GetSpotBorder(CMapSpot* sp)
 		{
 			if ( NULL == m_mini_map_spot_border_na && m_spot_border_names[3].size() )
 			{
-				m_mini_map_spot_border_na			= xr_new<CMapSpot>(this);
+				m_mini_map_spot_border_na			= new CMapSpot(this);
 				m_mini_map_spot_border_na->Load		(g_uiSpotXml,m_spot_border_names[3].c_str());
 			}
 			return m_mini_map_spot_border_na;
@@ -694,7 +694,7 @@ CMapSpot* CMapLocation::GetSpotBorder(CMapSpot* sp)
 		{
 			if ( NULL == m_complex_spot_border_na && m_spot_border_names[5].size() )
 			{
-				m_complex_spot_border_na			= xr_new<CMapSpot>(this);
+				m_complex_spot_border_na			= new CMapSpot(this);
 				m_complex_spot_border_na->Load		(g_uiSpotXml,m_spot_border_names[5].c_str());
 			}
 			return m_complex_spot_border_na;
@@ -771,7 +771,7 @@ bool CRelationMapLocation::Update()
 	bool vis_res = true;
 	if(m_last_relation==ALife::eRelationTypeEnemy || m_last_relation==ALife::eRelationTypeWorstEnemy)
 	{
-		CObject* _object_ = Level().Objects.net_Find(m_objectID);
+		IGameObject* _object_ = Level().Objects.net_Find(m_objectID);
 		if(_object_)
 		{
 			CEntityAlive* ea = smart_cast<CEntityAlive*>(_object_);
@@ -799,7 +799,7 @@ bool CRelationMapLocation::Update()
 
 	if(bAlive==false)
 	{
-		CObject* _object_ = Level().Objects.net_Find(m_objectID);
+		IGameObject* _object_ = Level().Objects.net_Find(m_objectID);
 		if(_object_)
 		{
 			const CGameObject* pObj = smart_cast<const CGameObject*>(_object_);

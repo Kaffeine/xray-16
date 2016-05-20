@@ -10,7 +10,7 @@
 #include "purchase_list.h"
 #include "inventoryowner.h"
 #include "GameObject.h"
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location.h"
 #include "Level.h"
 
 static float min_deficit_factor = .3f;
@@ -48,7 +48,8 @@ void CPurchaseList::process	(const CGameObject &owner, const shared_str &name, c
 	const u32				&level_vertex_id = owner.ai_location().level_vertex_id();
 	const ALife::_OBJECT_ID	&id = owner.ID();
 	CRandom					random((u32)(CPU::QPC() & u32(-1)));
-	for (u32 i=0, j=0; i<count; ++i) {
+    u32 j = 0;
+	for (u32 i=0; i<count; ++i) {
 		if (random.randF() > probability)
 			continue;
 

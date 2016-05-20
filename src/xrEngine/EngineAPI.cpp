@@ -34,10 +34,6 @@ CEngineAPI::~CEngineAPI()
     // destroy quality token here
     if (vid_quality_token)
     {
-        for (int i = 0; vid_quality_token[i].name; i++)
-        {
-            xr_free(vid_quality_token[i].name);
-        }
         xr_free(vid_quality_token);
         vid_quality_token = NULL;
     }
@@ -57,9 +53,23 @@ bool is_enough_address_space_available()
 
 void CEngineAPI::InitializeNotDedicated()
 {
+    LPCSTR gl_name = "xrRender_GL";
     LPCSTR r2_name = "xrRender_R2";
     LPCSTR r3_name = "xrRender_R3";
     LPCSTR r4_name = "xrRender_R4";
+
+    if (psDeviceFlags.test(rsGL))
+    {
+        // try to initialize GL
+        Log("Loading DLL:", gl_name);
+        hRender = LoadLibrary(gl_name);
+        if (0 == hRender)
+        {
+            // try to load R1
+            Msg("! ...Failed - incompatible hardware.");
+            psDeviceFlags.set(rsR2, TRUE);
+        }
+    }
 
     if (psDeviceFlags.test(rsR4))
     {
@@ -128,6 +138,11 @@ void CEngineAPI::Initialize(void)
         R_ASSERT(hRender);
         g_current_renderer = 1;
     }
+    // ask current renderer to setup GlobalEnv
+    using SetupEnvFunc = void(*)();
+    auto setupEnv = (SetupEnvFunc)XRay::GetProcAddress(hRender, "SetupEnv");
+    R_ASSERT(setupEnv);
+    setupEnv();
     // game
     {
         LPCSTR g_name = "xrGame";
@@ -188,17 +203,20 @@ void CEngineAPI::CreateRendererList()
 #else
     // TODO: ask renderers if they are supported!
     if (vid_quality_token != NULL) return;
+    bool bSupports_gl = false;
     bool bSupports_r2 = false;
     bool bSupports_r2_5 = false;
     bool bSupports_r3 = false;
     bool bSupports_r4 = false;
 
+    LPCSTR gl_name = "xrRender_GL";
     LPCSTR r2_name = "xrRender_R2";
     LPCSTR r3_name = "xrRender_R3";
     LPCSTR r4_name = "xrRender_R4";
 
     if (strstr(Core.Params, "-perfhud_hack"))
     {
+        bSupports_gl = true;
         bSupports_r2 = true;
         bSupports_r2_5 = true;
         bSupports_r3 = true;
@@ -206,6 +224,12 @@ void CEngineAPI::CreateRendererList()
     }
     else
     {
+        // XXX: since we are going to support OpenGL render with its own feature levels,
+        // the reference render availability checking trick doesn't quite work: it's based
+        // on assumption that first unsupported render quality level means all the rest
+        // (greater) levels are not supported too, which is incorrect in case of Linux,
+        // where we have OpenGL only (so the engine would crash on R_ASSERT below).
+        // ...
         // try to initialize R2
         hRender = XRay::LoadLibrary(r2_name);
         if (hRender)
@@ -214,7 +238,6 @@ void CEngineAPI::CreateRendererList()
             SupportsAdvancedRendering* test_rendering = (SupportsAdvancedRendering*)XRay::GetProcAddress(hRender, "SupportsAdvancedRendering");
             R_ASSERT(test_rendering);
             bSupports_r2_5 = test_rendering();
-            XRay::UnloadLibrary(hRender);
         }
 
         // try to initialize R3
@@ -229,7 +252,6 @@ void CEngineAPI::CreateRendererList()
             SupportsDX10Rendering* test_dx10_rendering = (SupportsDX10Rendering*)XRay::GetProcAddress(hRender, "SupportsDX10Rendering");
             R_ASSERT(test_dx10_rendering);
             bSupports_r3 = test_dx10_rendering();
-            XRay::UnloadLibrary(hRender);
         }
 
         // try to initialize R4
@@ -244,82 +266,47 @@ void CEngineAPI::CreateRendererList()
             SupportsDX11Rendering* test_dx11_rendering = (SupportsDX11Rendering*)XRay::GetProcAddress(hRender, "SupportsDX11Rendering");
             R_ASSERT(test_dx11_rendering);
             bSupports_r4 = test_dx11_rendering();
-            XRay::UnloadLibrary(hRender);
         }
+
+        // try to initialize GL
+        Log("Loading DLL:", gl_name);
+        hRender = LoadLibrary(gl_name);
+        if (hRender)
+            bSupports_gl = true;
     }
 
     hRender = 0;
-
-    xr_vector<LPCSTR> _tmp;
-    u32 i = 0;
-    bool bBreakLoop = false;
-    for (; i < 6; ++i)
+    bool proceed = true;
+    xr_vector<LPCSTR> tmp;
+    tmp.push_back("renderer_r1");
+    if (proceed &= bSupports_r2, proceed)
     {
-        switch (i)
-        {
-        case 1:
-            if (!bSupports_r2)
-                bBreakLoop = true;
-            break;
-        case 3: //"renderer_r2.5"
-            if (!bSupports_r2_5)
-                bBreakLoop = true;
-            break;
-        case 4: //"renderer_r_dx10"
-            if (!bSupports_r3)
-                bBreakLoop = true;
-            break;
-        case 5: //"renderer_r_dx11"
-            if (!bSupports_r4)
-                bBreakLoop = true;
-            break;
-        default:
-            ;
-        }
-
-        if (bBreakLoop) break;
-
-        _tmp.push_back(NULL);
-        LPCSTR val = NULL;
-        switch (i)
-        {
-        case 0:
-            val = "renderer_r1";
-            break;
-        case 1:
-            val = "renderer_r2a";
-            break;
-        case 2:
-            val = "renderer_r2";
-            break;
-        case 3:
-            val = "renderer_r2.5";
-            break;
-        case 4:
-            val = "renderer_r3";
-            break; // -)
-        case 5:
-            val = "renderer_r4";
-            break; // -)
-        }
-        if (bBreakLoop) break;
-        _tmp.back() = xr_strdup(val);
+        tmp.push_back("renderer_r2a");
+        tmp.push_back("renderer_r2");
     }
-    u32 _cnt = _tmp.size() + 1;
+    if (proceed &= bSupports_r2_5, proceed)
+        tmp.push_back("renderer_r2.5");
+    if (proceed &= bSupports_gl, proceed)
+        tmp.push_back("renderer_gl");
+    if (proceed &= bSupports_r3, proceed)
+        tmp.push_back("renderer_r3");
+    if (proceed &= bSupports_r4, proceed)
+        tmp.push_back("renderer_r4");
+    u32 _cnt = tmp.size() + 1;
     vid_quality_token = xr_alloc<xr_token>(_cnt);
 
     vid_quality_token[_cnt - 1].id = -1;
     vid_quality_token[_cnt - 1].name = NULL;
 
 #ifdef DEBUG
-    Msg("Available render modes[%d]:", _tmp.size());
+    Msg("Available render modes[%d]:", tmp.size());
 #endif // DEBUG
-    for (u32 i = 0; i < _tmp.size(); ++i)
+    for (u32 i = 0; i < tmp.size(); ++i)
     {
         vid_quality_token[i].id = i;
-        vid_quality_token[i].name = _tmp[i];
+        vid_quality_token[i].name = tmp[i];
 #ifdef DEBUG
-        Msg("[%s]", _tmp[i]);
+        Msg("[%s]", tmp[i]);
 #endif // DEBUG
     }
 

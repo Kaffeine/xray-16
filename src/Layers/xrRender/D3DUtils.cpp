@@ -95,7 +95,7 @@ u32 m_ColorSafeRect = 0xffB040B0;
 
 void SPrimitiveBuffer::CreateFromData(D3DPRIMITIVETYPE _pt, u32 _p_cnt, u32 FVF, LPVOID vertices, u32 _v_cnt, u16* indices, u32 _i_cnt)
 {
-#if defined(USE_DX10) || defined(USE_DX11)
+#if defined(USE_DX10) || defined(USE_DX11) || defined(USE_OGL)
 //	TODO: DX10: Implement SPrimitiveBuffer::CreateFromData for DX10
 //	VERIFY(!"SPrimitiveBuffer::CreateFromData not implemented for dx10");
 #else	//	USE_DX10
@@ -113,13 +113,13 @@ void SPrimitiveBuffer::CreateFromData(D3DPRIMITIVETYPE _pt, u32 _p_cnt, u32 FVF,
 	FLvertexVec	verts	(v_cnt);
 	for (u32 k=0; k<v_cnt; ++k)
 		verts[k].set	(((Fvector*)vertices)[k],0xFFFFFFFF);
-	Memory.mem_copy		(bytes,&*verts.begin(),v_cnt*stride);
+	memcpy		(bytes,&*verts.begin(),v_cnt*stride);
 	R_CHK				(pVB->Unlock());
 	if (i_cnt){ 
 		R_CHK(HW.pDevice->CreateIndexBuffer	(i_cnt*sizeof(u16),D3DUSAGE_WRITEONLY,D3DFMT_INDEX16,D3DPOOL_MANAGED,&pIB,NULL));
 		HW.stats_manager.increment_stats_ib	(pIB);
 		R_CHK			(pIB->Lock(0,0,(LPVOID*)&bytes,0));
-		Memory.mem_copy	(bytes,indices,i_cnt*sizeof(u16));
+		memcpy	(bytes,indices,i_cnt*sizeof(u16));
 		R_CHK			(pIB->Unlock());
 		OnRender.bind	(this,&SPrimitiveBuffer::RenderDIP);
 	}else{
@@ -130,6 +130,7 @@ void SPrimitiveBuffer::CreateFromData(D3DPRIMITIVETYPE _pt, u32 _p_cnt, u32 FVF,
 }
 void SPrimitiveBuffer::Destroy()
 {                       
+#ifndef USE_OGL
 	if (pGeom){
 		HW.stats_manager.decrement_stats_vb	(pGeom->vb);
 		HW.stats_manager.decrement_stats_ib	(pGeom->ib);
@@ -137,6 +138,7 @@ void SPrimitiveBuffer::Destroy()
 		_RELEASE		(pGeom->ib);
 		pGeom.destroy	();
 	}
+#endif // !USE_OGL
 }
 
 void CDrawUtilities::UpdateGrid(int number_of_cell, float square_size, int subdiv){
@@ -168,7 +170,7 @@ void CDrawUtilities::UpdateGrid(int number_of_cell, float square_size, int subdi
 				m_GridPoints.push_back( right );
 			}
 		}
-		for(i=-m_GridCounts[1]; i<=m_GridCounts[1]; i++){
+		for(int i=-m_GridCounts[1]; i<=m_GridCounts[1]; i++){
 			if( (!!thin) != !!(i%m_GridSubDiv[1]) ){
 				left.p.x = -m_GridCounts[0]*m_GridStep.x;
 				right.p.x = m_GridCounts[0]*m_GridStep.x;
@@ -214,7 +216,7 @@ void CDrawUtilities::OnDeviceCreate()
     // initialize identity box
 	Fbox bb;
 	bb.set(-0.505f,-0.505f,-0.505f, 0.505f,0.505f,0.505f);
-	for (i=0; i<8; i++){
+	for (int i=0; i<8; i++){
     	Fvector S;
     	Fvector p;
         bb.getpoint(i,p);
@@ -231,7 +233,7 @@ void CDrawUtilities::OnDeviceCreate()
     vs_TL.create	(FVF::F_TL,RCache.Vertex.Buffer(),RCache.Index.Buffer());
     vs_LIT.create	(FVF::F_LIT,RCache.Vertex.Buffer(),RCache.Index.Buffer());
 
-	m_Font						= xr_new<CGameFont>("stat_font");
+	m_Font						= new CGameFont("stat_font");
 }
 
 void CDrawUtilities::OnDeviceDestroy()

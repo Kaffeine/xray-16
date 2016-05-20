@@ -4,7 +4,7 @@
 #include "xrEngine/XR_IOConsole.h"
 #include "xrEngine/GameMtlLib.h"
 #include "Include/xrRender/Kinematics.h"
-#include "profiler.h"
+#include "xrEngine/profiler.h"
 #include "MainMenu.h"
 #include "UICursor.h"
 #include "game_base_space.h"
@@ -31,6 +31,7 @@
 #include "UI/UIGameTutorial.h"
 #include "xrEngine/GameFont.h"
 #include "xrEngine/PerformanceAlert.hpp"
+#include "xrEngine/xr_input.h"
 
 #ifndef MASTER_GOLD
 #	include "custommonster.h"
@@ -143,8 +144,8 @@ void CGamePersistent::OnAppStart()
 	GMLib.Load					();
 	init_game_globals			();
 	__super::OnAppStart			();
-	m_pUI_core					= xr_new<ui_core>();
-	m_pMainMenu					= xr_new<CMainMenu>();
+	m_pUI_core					= new ui_core();
+	m_pMainMenu					= new CMainMenu();
 }
 
 
@@ -216,32 +217,6 @@ LPCSTR GameTypeToString(EGameIDs gt, bool bShort)
 	default :
 		return		"---";
 	}
-}
-
-EGameIDs ParseStringToGameType(LPCSTR str)
-{
-	if (!xr_strcmp(str, "single")) 
-		return eGameIDSingle;
-	else
-		if (!xr_strcmp(str, "deathmatch") || !xr_strcmp(str, "dm")) 
-			return eGameIDDeathmatch;
-		else
-			if (!xr_strcmp(str, "teamdeathmatch") || !xr_strcmp(str, "tdm")) 
-				return eGameIDTeamDeathmatch;
-			else
-				if (!xr_strcmp(str, "artefacthunt") || !xr_strcmp(str, "ah")) 
-					return eGameIDArtefactHunt;
-				else
-					if (!xr_strcmp(str, "capturetheartefact") || !xr_strcmp(str, "cta")) 
-						return eGameIDCaptureTheArtefact;
-					else
-						if (!xr_strcmp(str, "dominationzone")) 
-							return eGameIDDominationZone;
-						else
-							if (!xr_strcmp(str, "teamdominationzone")) 
-								return eGameIDTeamDominationZone;
-							else 
-								return eGameIDNoGame; //EGameIDs
 }
 
 void CGamePersistent::UpdateGameType			()
@@ -452,7 +427,7 @@ void CGamePersistent::start_logo_intro()
 		if (!g_dedicated_server && 0==xr_strlen(m_game_params.m_game_or_spawn) && NULL==g_pGameLevel)
 		{
 			VERIFY				(NULL==m_intro);
-			m_intro				= xr_new<CUISequencer>();
+			m_intro				= new CUISequencer();
 			m_intro->Start		("intro_logo");
 			Msg					("intro_start intro_logo");
 			Console->Hide		();
@@ -487,7 +462,7 @@ void CGamePersistent::game_loaded()
 			m_game_params.m_e_game_type == eGameIDSingle)
 		{
 			VERIFY				(NULL==m_intro);
-			m_intro				= xr_new<CUISequencer>();
+			m_intro				= new CUISequencer();
 			m_intro->Start		("game_loaded");
 			Msg					("intro_start game_loaded");
 			m_intro->m_on_destroy_event.bind(this, &CGamePersistent::update_game_loaded);
@@ -517,7 +492,7 @@ void CGamePersistent::start_game_intro		()
 		if (0==stricmp(m_game_params.m_new_or_load, "new"))
 		{
 			VERIFY				(NULL==m_intro);
-			m_intro				= xr_new<CUISequencer>();
+			m_intro				= new CUISequencer();
 			m_intro->Start		("intro_game");
 			Msg("intro_start intro_game");
 		}
@@ -608,13 +583,13 @@ void CGamePersistent::OnFrame	()
 #ifdef DEBUG
 					if(psActorFlags.test(AF_NO_CLIP))
 					{
-						Actor()->dbg_update_cl			= 0;
+						Actor()->SetDbgUpdateFrame(0);
 						Actor()->GetSchedulerData().dbg_update_shedule		= 0;
 						Device.dwTimeDelta				= 0;
 						Device.fTimeDelta				= 0.01f;			
 						Actor()->UpdateCL				();
 						Actor()->shedule_Update			(0);
-						Actor()->dbg_update_cl			= 0;
+						Actor()->SetDbgUpdateFrame(0);
 						Actor()->GetSchedulerData().dbg_update_shedule		= 0;
 
 						CSE_Abstract* e					= Level().Server->ID_to_entity(Actor()->ID());
@@ -624,15 +599,15 @@ void CGamePersistent::OnFrame	()
 						xr_vector<u16>::iterator it = s_actor->children.begin();
 						for(;it!=s_actor->children.end();it++)
 						{
-							CObject* obj = Level().Objects.net_Find(*it);
+							IGameObject* obj = Level().Objects.net_Find(*it);
 							if(obj && Engine.Sheduler.Registered(obj))
 							{
 								obj->GetSchedulerData().dbg_update_shedule = 0;
-								obj->dbg_update_cl = 0;
+								obj->SetDbgUpdateFrame(0);
 								obj->shedule_Update	(0);
 								obj->UpdateCL();
 								obj->GetSchedulerData().dbg_update_shedule = 0;
-								obj->dbg_update_cl = 0;
+								obj->SetDbgUpdateFrame(0);
 							}
 						}
 					}
@@ -685,8 +660,9 @@ void CGamePersistent::OnFrame	()
 	}
 
 #ifdef DEBUG
-	if ((m_last_stats_frame + 1) < m_frame_counter)
-		profiler().clear		();
+    // XXX nitrocaster PROFILER: temporarily disabled due to linkage issues
+	//if ((m_last_stats_frame + 1) < m_frame_counter)
+	//	profiler().clear		();
 #endif
 	UpdateDof();
 }
@@ -743,7 +719,8 @@ void CGamePersistent::DumpStatistics(IGameFont &font, IPerformanceAlert *alert)
 #ifdef DEBUG
 #	ifndef _EDITOR
 		m_last_stats_frame		= m_frame_counter;
-		profiler().show_stats(font,!!psAI_Flags.test(aiStats));
+        // XXX nitrocaster PROFILER: temporarily disabled due to linkage issues
+		//profiler().show_stats(font,!!psAI_Flags.test(aiStats));
 #	endif
 #endif
 }
@@ -769,6 +746,7 @@ void CGamePersistent::OnAppActivate		()
 	}
 
 	bEntryFlag = TRUE;
+    pInput->ClipCursor(!GetUICursor().IsVisible());
 }
 
 void CGamePersistent::OnAppDeactivate	()
@@ -778,7 +756,7 @@ void CGamePersistent::OnAppDeactivate	()
 	bool bIsMP = (g_pGameLevel && Level().game && GameID() != eGameIDSingle);
 
 	bRestorePause = FALSE;
-
+    
 	if ( !bIsMP )
 	{
 		bRestorePause			= Device.Paused();

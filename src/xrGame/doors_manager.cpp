@@ -29,7 +29,7 @@ manager::~manager					( )
 //
 //void manager::check_bug_door		( ) const
 //{
-//	CObject const* const object = Level().Objects.FindObjectByName("shkaf_work_01_door_0000");
+//	IGameObject const* const object = Level().Objects.FindObjectByName("shkaf_work_01_door_0000");
 //	if ( !object ) {
 //		Msg					( "there is now object[\"shkaf_work_01_door_0000\"] found" );
 //		return;
@@ -53,7 +53,7 @@ manager::~manager					( )
 //
 door* manager::register_door		( CPhysicObject& object )
 {
-	door* const result		= xr_new<door>( &object );
+	door* const result		= new door( &object );
 	//if ( !xr_strcmp(result->get_name(),"shkaf_work_01_door_0000") ) {
 	//	Msg					( "registering door[\"shkaf_work_01_door_0000\"][%f][%f][%f]", VPUSH(result->position()) );
 	//}

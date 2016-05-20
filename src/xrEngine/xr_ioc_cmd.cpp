@@ -12,6 +12,7 @@
 #include "CustomHUD.h"
 
 #include "xr_object.h"
+#include "xr_object_list.h"
 
 xr_token* vid_quality_token = NULL;
 
@@ -468,7 +469,8 @@ public:
     CCC_SND_Restart(LPCSTR N) : IConsole_Command(N) { bEmptyArgsHandled = TRUE; };
     virtual void Execute(LPCSTR args)
     {
-        Sound->_restart();
+        if (Sound)
+            Sound->_restart();
     }
 };
 
@@ -542,21 +544,15 @@ ENGINE_API BOOL r2_sun_static = TRUE;
 ENGINE_API BOOL r2_advanced_pp = FALSE; // advanced post process and effects
 
 u32 renderer_value = 3;
-//void fill_render_mode_list();
-//void free_render_mode_list();
 
 class CCC_r2 : public CCC_Token
 {
     typedef CCC_Token inherited;
 public:
     CCC_r2(LPCSTR N) :inherited(N, &renderer_value, NULL) { renderer_value = 3; };
-    virtual ~CCC_r2()
-    {
-        //free_render_mode_list();
-    }
+    virtual ~CCC_r2() {}
     virtual void Execute(LPCSTR args)
     {
-        //fill_render_mode_list ();
         // vid_quality_token must be already created!
         tokens = vid_quality_token;
 
@@ -565,8 +561,9 @@ public:
         // 1..3 - r2
         // 4 - r3
         psDeviceFlags.set(rsR2, ((renderer_value > 0) && renderer_value < 4));
-        psDeviceFlags.set(rsR3, (renderer_value == 4));
-        psDeviceFlags.set(rsR4, (renderer_value >= 5));
+        psDeviceFlags.set(rsGL, (renderer_value == 4));
+        psDeviceFlags.set(rsR3, (renderer_value == 5));
+        psDeviceFlags.set(rsR4, (renderer_value == 6));
 
         r2_sun_static = (renderer_value < 2);
 

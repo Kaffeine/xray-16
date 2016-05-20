@@ -10,6 +10,7 @@
 #include "stalker_anomaly_actions.h"
 #include "ai/stalker/ai_stalker.h"
 #include "script_game_object.h"
+#include "script_game_object_impl.h"
 #include "stalker_decision_space.h"
 #include "customzone.h"
 #include "space_restriction_manager.h"
@@ -101,8 +102,8 @@ void CStalkerActionGetOutOfAnomaly::execute	()
 	typedef xr_vector<ALife::_OBJECT_ID>	ids_type;
 	ids_type const& restrictions		= alife_object->m_dynamic_in_restrictions;
 
-	xr_vector<CObject*>::const_iterator	I = object().feel_touch.begin();
-	xr_vector<CObject*>::const_iterator	E = object().feel_touch.end();
+	xr_vector<IGameObject*>::const_iterator	I = object().feel_touch.begin();
+	xr_vector<IGameObject*>::const_iterator	E = object().feel_touch.end();
 	for ( ; I != E; ++I) {
 		CCustomZone						*zone = smart_cast<CCustomZone*>(*I);
 		if ( zone && (zone->restrictor_type() != RestrictionSpace::eRestrictorTypeNone) ) {

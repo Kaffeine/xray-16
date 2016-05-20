@@ -2,8 +2,7 @@
 #define PHDISABLING_H
 
 #include "DisablingParams.h"
-
-#include "3rd party/ode/include/ode/common.h"
+#include "Externals/ode/include/ode/common.h"
 
 struct SDisableVector
 {

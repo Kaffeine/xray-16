@@ -106,7 +106,7 @@ void CLevel::remove_objects	()
 	g_pGamePersistent->destroy_particles		(false);
 
 //.	xr_delete									(m_seniority_hierarchy_holder);
-//.	m_seniority_hierarchy_holder				= xr_new<CSeniorityHierarchyHolder>();
+//.	m_seniority_hierarchy_holder				= new CSeniorityHierarchyHolder();
 	if (!IsGameTypeSingle()) Msg("CLevel::remove_objects - End");
 }
 
@@ -187,7 +187,7 @@ void CLevel::ClientSend()
 //		if (!(Game().local_player) || Game().local_player->testFlag(GAME_PLAYER_FLAG_VERY_VERY_DEAD)) return;
 		if (CurrentControlEntity()) 
 		{
-			CObject* pObj = CurrentControlEntity();
+			IGameObject* pObj = CurrentControlEntity();
 			if (!pObj->getDestroy() && pObj->net_Relevant())
 			{				
 				P.w_begin		(M_CL_UPDATE);
@@ -237,7 +237,7 @@ u32	CLevel::Objects_net_Save	(NET_Packet* _Packet, u32 start, u32 max_object_siz
 	NET_Packet& Packet	= *_Packet;
 	u32			position;
 	for (; start<Objects.o_count(); start++)	{
-		CObject		*_P = Objects.o_get_by_iterator(start);
+		IGameObject		*_P = Objects.o_get_by_iterator(start);
 		CGameObject *P = smart_cast<CGameObject*>(_P);
 //		Msg			("save:iterating:%d:%s, size[%d]",P->ID(),*P->cName(), Packet.w_tell() );
 		if (P && !P->getDestroy() && P->net_SaveRelevant())	{
@@ -249,7 +249,7 @@ u32	CLevel::Objects_net_Save	(NET_Packet* _Packet, u32 start, u32 max_object_siz
 			u32 size				= u32		(Packet.w_tell()-position)-sizeof(u16);
 //			Msg						("save:saved:%d bytes:%d:%s",size,P->ID(),*P->cName());
 			if				(size>=65536)			{
-				Debug.fatal	(DEBUG_INFO,"Object [%s][%d] exceed network-data limit\n size=%d, Pend=%d, Pstart=%d",
+				xrDebug::Fatal	(DEBUG_INFO,"Object [%s][%d] exceed network-data limit\n size=%d, Pend=%d, Pstart=%d",
 					*P->cName(), P->ID(), size, Packet.w_tell(), position);
 			}
 #endif
@@ -513,7 +513,7 @@ void			CLevel::ClearAllObjects				()
 		ParentFound = false;
 		for (u32 i=0; i<CLObjNum; i++)
 		{
-			CObject* pObj = Level().Objects.o_get_by_iterator(i);
+			IGameObject* pObj = Level().Objects.o_get_by_iterator(i);
 			if (!pObj->H_Parent()) continue;
 			//-----------------------------------------------------------
 			NET_Packet			GEN;
@@ -539,7 +539,7 @@ void			CLevel::ClearAllObjects				()
 
 	for (u32 i=0; i<CLObjNum; i++)
 	{
-		CObject* pObj = Level().Objects.o_get_by_iterator(i);
+		IGameObject* pObj = Level().Objects.o_get_by_iterator(i);
 		if (pObj->H_Parent() != NULL)
 		{
 			if (IsGameTypeSingle())

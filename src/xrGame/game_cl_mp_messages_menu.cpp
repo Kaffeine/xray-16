@@ -16,7 +16,7 @@ void				game_cl_mp::AddMessageMenu			(LPCSTR	menu_section, LPCSTR snd_path, LPCS
 
 	m_aMessageMenus.push_back(cl_MessageMenu());
 	cl_MessageMenu* pNewMenu = &(m_aMessageMenus.back());
-	pNewMenu->m_pSpeechMenu = xr_new<CUISpeechMenu>(menu_section);
+	pNewMenu->m_pSpeechMenu = new CUISpeechMenu(menu_section);
 	pNewMenu->m_aMessages.clear();
 	for (u32 i=0; i<10; i++)
 	{
@@ -184,7 +184,7 @@ void				game_cl_mp::OnSpeechMessage			(NET_Packet& P)
 	}
 	else
 	{
-		CObject* pObj = Level().Objects.net_Find(ps->GameID);
+		IGameObject* pObj = Level().Objects.net_Find(ps->GameID);
 		if (pObj)
 		{
 			pMSound->mSound_Voice.play_at_pos(pObj, pObj->Position());

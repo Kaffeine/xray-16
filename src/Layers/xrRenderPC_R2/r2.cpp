@@ -269,9 +269,9 @@ void					CRender::create					()
 
 	m_bMakeAsyncSS				= false;
 
-	Target						= xr_new<CRenderTarget>		();	// Main target
+	Target						= new CRenderTarget		();	// Main target
 
-	Models						= xr_new<CModelPool>		();
+	Models						= new CModelPool		();
 	PSLibrary.OnCreate			();
 	HWOCC.occq_create			(occq_size);
 
@@ -337,7 +337,7 @@ void CRender::reset_end()
 		R_CHK					(HW.pDevice->CreateQuery(D3DQUERYTYPE_EVENT,&q_sync_point[i]));
 	HWOCC.occq_create			(occq_size);
 
-	Target						=	xr_new<CRenderTarget>	();
+	Target						=	new CRenderTarget	();
 
 	xrRender_apply_tf			();
 
@@ -370,7 +370,7 @@ void CRender::OnFrame()
 
 
 // Implementation
-IRender_ObjectSpecific*	CRender::ros_create				(IRenderable* parent)				{ return xr_new<CROS_impl>();			}
+IRender_ObjectSpecific*	CRender::ros_create				(IRenderable* parent)				{ return new CROS_impl();			}
 void					CRender::ros_destroy			(IRender_ObjectSpecific* &p)		{ xr_delete(p);							}
 IRenderVisual*			CRender::model_Create			(LPCSTR name, IReader* data)		{ return Models->Create(name,data);		}
 IRenderVisual*			CRender::model_CreateChild		(LPCSTR name, IReader* data)		{ return Models->CreateChild(name,data);}
@@ -383,7 +383,7 @@ void					CRender::model_Delete			(IRenderVisual* &V, BOOL bDiscard)
 }
 IRender_DetailModel*	CRender::model_CreateDM			(IReader*	F)
 {
-	CDetail*	D		= xr_new<CDetail> ();
+	CDetail*	D		= new CDetail ();
 	D->Load				(F);
 	return D;
 }
@@ -435,7 +435,7 @@ FSlideWindowItem*		CRender::getSWI					(int id)			{ VERIFY(id<int(SWIs.size()));
 IRender_Target*			CRender::getTarget				()					{ return Target;										}
 
 IRender_Light*			CRender::light_create			()					{ return Lights.Create();								}
-IRender_Glow*			CRender::glow_create			()					{ return xr_new<CGlow>();								}
+IRender_Glow*			CRender::glow_create			()					{ return new CGlow();								}
 
 void					CRender::flush					()					{ r_dsgraph_render_graph	(0);						}
 
@@ -515,7 +515,7 @@ void					CRender::rmNormal			()
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 CRender::CRender()
-:m_bFirstFrameAfterReset(false)
+:m_bFirstFrameAfterReset(false), Sectors_xrc("render")
 {
 	init_cacades();
 }
@@ -543,6 +543,7 @@ void CRender::DumpStatistics(IGameFont &font, IPerformanceAlert *alert)
     font.OutNext("- culled:     %u", Stats.ic_culled);
     Stats.FrameStart();
     HOM.DumpStatistics(font, alert);
+    Sectors_xrc.DumpStatistics(font, alert);
 }
 
 /////////
@@ -623,8 +624,6 @@ static HRESULT create_shader				(
 
 	return				_result;
 }
-
-#include <boost/crc.hpp>
 
 static inline bool match_shader_id	( LPCSTR const debug_shader_id, LPCSTR const full_shader_id, FS_FileSet const& file_set, string_path& result );
 
@@ -996,22 +995,10 @@ HRESULT	CRender::shader_compile			(
 		IReader* file = FS.r_open(file_name);
 		if (file->length()>4)
 		{
-			u32 crc = 0;
-			crc = file->r_u32();
-
-			boost::crc_32_type		processor;
-			processor.process_block	( file->pointer(), ((char*)file->pointer()) + file->elapsed() );
-			u32 const real_crc		= processor.checksum( );
-
-			if ( real_crc == crc ) {
-				_result				= create_shader(pTarget, (DWORD*)file->pointer(), file->elapsed(), file_name, result, o.disasm);
-				//if ( !SUCCEEDED(_result) ) {
-				//	Msg				("! create shader failed");
-				//}
-				//else {
-				//	Msg				( "create shaders succeeded" );
-				//}
-			}
+			u32 crc = file->r_u32();
+            u32 crcComp = crc32(file->pointer(), file->elapsed());
+            if (crcComp==crc)
+                _result = create_shader(pTarget, (DWORD*)file->pointer(), file->elapsed(), file_name, result, o.disasm);
 		}
 		file->close();
 	}
@@ -1034,11 +1021,7 @@ HRESULT	CRender::shader_compile			(
 		if (SUCCEEDED(_result)) {
 //			Msg						( "shader compilation succeeded" );
 			IWriter* file = FS.w_open(file_name);
-
-			boost::crc_32_type		processor;
-			processor.process_block	( pShaderBuf->GetBufferPointer(), ((char*)pShaderBuf->GetBufferPointer()) + pShaderBuf->GetBufferSize() );
-			u32 const crc			= processor.checksum( );
-
+            u32 crc = crc32(pShaderBuf->GetBufferPointer(), pShaderBuf->GetBufferSize());
 			file->w_u32				(crc);
 			file->w					( pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize());
 			FS.w_close				(file);

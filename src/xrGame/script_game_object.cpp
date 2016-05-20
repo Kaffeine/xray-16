@@ -26,12 +26,12 @@
 #include "Include/xrRender/Kinematics.h"
 #include "HangingLamp.h"
 #include "patrol_path_manager.h"
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location.h"
 #include "custommonster.h"
 #include "EntityCondition.h"
 #include "space_restrictor.h"
 #include "detail_path_manager.h"
-#include "level_graph.h"
+#include "xrAICore/Navigation/level_graph.h"
 #include "actor.h"
 #include "actor_memory.h"
 #include "visual_memory_manager.h"
@@ -126,7 +126,7 @@ CScriptEntityAction	*CScriptGameObject::GetCurrentAction	() const
 		ai().script_engine().script_log		(LuaMessageType::Error,"CSciptEntity : cannot access class member GetCurrentAction!");
 	else
 		if (l_tpScriptMonster->GetCurrentAction())
-			return		(xr_new<CScriptEntityAction>(l_tpScriptMonster->GetCurrentAction()));
+			return		(new CScriptEntityAction(l_tpScriptMonster->GetCurrentAction()));
 	return				(0);
 }
 

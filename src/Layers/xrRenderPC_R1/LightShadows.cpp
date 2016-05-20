@@ -31,8 +31,8 @@ const	u32			cache_old		= 30*1000;	// 30 secs
 //////////////////////////////////////////////////////////////////////
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
-
-CLightShadows::CLightShadows()
+// XXX: add to statistics
+CLightShadows::CLightShadows() : xrc("LightShadows")
 {
 	current	= 0;
 	RT		= 0;
@@ -109,7 +109,7 @@ void CLightShadows::set_object	(IRenderable* O)
 
 			// alloc
 			caster*	cs		= NULL;
-			if (casters_pool.empty())	cs	= xr_new<caster> ();
+			if (casters_pool.empty())	cs	= new caster ();
 			else {
 				cs	= casters_pool.back	();
 				casters_pool.pop_back	();

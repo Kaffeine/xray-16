@@ -12,7 +12,7 @@
 #ifdef _DEBUG
 #include <dinput.h>
 #include "Actor.h"
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location.h"
 #include "level_debug.h"
 #include "cover_point.h"
 #include "ai/monsters/monster_cover_manager.h"
@@ -20,7 +20,7 @@
 
 CSnork::CSnork() 
 {
-	StateMan		= xr_new<CStateManagerSnork>	(this);
+	StateMan		= new CStateManagerSnork	(this);
 	com_man().add_ability(ControlCom::eControlJump);
 	com_man().add_ability(ControlCom::eControlThreaten);
 }
@@ -110,7 +110,7 @@ void CSnork::UpdateCL()
 	inherited::UpdateCL	();
 
 	//////////////////////////////////////////////////////////////////////////
-	//CObject *obj = Level().CurrentEntity();
+	//IGameObject *obj = Level().CurrentEntity();
 	//if (!obj) return;
 	
 	//find_geometry	();
@@ -118,7 +118,7 @@ void CSnork::UpdateCL()
 	
 #ifdef _DEBUG
 	// test 
-	CObject *obj = Level().CurrentEntity();
+	IGameObject *obj = Level().CurrentEntity();
 	if (!obj) return;
 	const CCoverPoint *point = CoverMan->find_cover(obj->Position(), 10.f, 30.f);
 	

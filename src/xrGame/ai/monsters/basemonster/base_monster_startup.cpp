@@ -8,7 +8,7 @@
 #include "ai/Monsters/ai_monster_squad_manager.h"
 #include "Include/xrRender/KinematicsAnimated.h"
 #include "detail_path_manager.h"
-#include "level_graph.h"
+#include "xrAICore/Navigation/level_graph.h"
 #include "ai/Monsters/corpse_cover.h"
 #include "cover_evaluators.h"
 #include "sound_player.h"
@@ -17,7 +17,7 @@
 #include "ai/Monsters/anomaly_detector.h"
 #include "ai/Monsters/monster_cover_manager.h"
 #include "ai/Monsters/monster_home.h"
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location.h"
 #include "Level.h"
 #include "xrServerEntities/xrServer_Objects_ALife_Monsters.h"
 #include "alife_simulator.h"
@@ -63,9 +63,9 @@ void CBaseMonster::Load(LPCSTR section)
 	m_left_eye_bone_name			= READ_IF_EXISTS(pSettings,r_string,section, "bone_eye_left", 0);
 	m_right_eye_bone_name			= READ_IF_EXISTS(pSettings,r_string,section, "bone_eye_right", 0);
 
-	m_corpse_cover_evaluator		= xr_new<CMonsterCorpseCoverEvaluator>	(&movement().restrictions());
-	m_enemy_cover_evaluator			= xr_new<CCoverEvaluatorFarFromEnemy>	(&movement().restrictions());
-	m_cover_evaluator_close_point	= xr_new<CCoverEvaluatorCloseToEnemy>	(&movement().restrictions());
+	m_corpse_cover_evaluator		= new CMonsterCorpseCoverEvaluator	(&movement().restrictions());
+	m_enemy_cover_evaluator			= new CCoverEvaluatorFarFromEnemy	(&movement().restrictions());
+	m_cover_evaluator_close_point	= new CCoverEvaluatorCloseToEnemy	(&movement().restrictions());
 
 	MeleeChecker.load				(section);
 	Morale.load						(section);
@@ -115,15 +115,15 @@ void CBaseMonster::Load(LPCSTR section)
 	
 	if ( (separate_factor > 0.0001f) && (separate_range > 0.01f) )
 	{
-		m_steer_manager						=	xr_new<steering_behaviour::manager>();
+		m_steer_manager						=	new steering_behaviour::manager();
 
-		m_grouping_behaviour				=	xr_new<squad_grouping_behaviour>
+		m_grouping_behaviour				=	new squad_grouping_behaviour
 												(this, 
 												 Fvector3().set(0.f, 0.f, 0.f), 
 												 Fvector3().set(0.f, separate_factor, 0.f), 
 												 separate_range);
 
-		get_steer_manager()->add				( xr_new<steering_behaviour::grouping>(m_grouping_behaviour) );
+		get_steer_manager()->add				( new steering_behaviour::grouping(m_grouping_behaviour) );
 	}
 
 	//------------------------------------
@@ -197,7 +197,7 @@ void CBaseMonster::PostLoad (LPCSTR section)
 	{
 		SVelocityParam&	velocity_stand		=	move().get_velocity(MonsterMovement::eVelocityParameterStand);
 
-		m_anti_aim							=	xr_new<anti_aim_ability>(this);
+		m_anti_aim							=	new anti_aim_ability(this);
 		control().add							(m_anti_aim,  ControlCom::eAntiAim);
 
 		pcstr	anti_aim_animation			=	READ_IF_EXISTS(pSettings, r_string, section, 

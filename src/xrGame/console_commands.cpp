@@ -37,21 +37,22 @@
 #include "GameTask.h"
 #include "MainMenu.h"
 #include "saved_game_wrapper.h"
-#include "level_graph.h"
+#include "xrAICore/Navigation/level_graph.h"
 
 #include "cameralook.h"
 #include "character_hit_animations_params.h"
 #include "inventory_upgrade_manager.h"
 
-#include "GameSpy/GameSpy_Full.h"
-#include "GameSpy/GameSpy_Patching.h"
+#include "xrGameSpy/GameSpy_Full.h"
+#include "xrGameSpy/GameSpy_Patching.h"
 
 #include "ai_debug_variables.h"
 #include "xrPhysics/console_vars.h"
 #ifdef DEBUG
 #	include "PHDebug.h"
 #	include "ui/UIDebugFonts.h" 
-#	include "game_graph.h"
+#	include "xrAICore/Navigation/game_graph.h"
+#include "LevelGraphDebugRender.hpp"
 #	include "CharacterPhysicsSupport.h"
 #endif // DEBUG
 
@@ -136,12 +137,12 @@ enum E_COMMON_FLAGS{
 
 CUIOptConCom g_OptConCom;
 
-typedef void (*full_memory_stats_callback_type) ( );
-XRCORE_API full_memory_stats_callback_type g_full_memory_stats_callback;
-
 static void full_memory_stats	( )
 {
 	Memory.mem_compact		();
+	u32		m_base=0,c_base=0,m_lmaps=0,c_lmaps=0;
+    GlobalEnv.Render->ResourcesGetMemoryUsage(m_base, c_base, m_lmaps, c_lmaps);
+	log_vminfo	();
 	size_t	_process_heap	= ::Memory.mem_usage();
 #ifndef PURE_ALLOC
 	u32		_game_lua		= CScriptEngine::GetMemoryUsage();
@@ -149,9 +150,6 @@ static void full_memory_stats	( )
 #endif
 	int		_eco_strings	= (int)g_pStringContainer->stat_economy			();
 	int		_eco_smem		= (int)g_pSharedMemoryContainer->stat_economy	();
-	u32		m_base=0,c_base=0,m_lmaps=0,c_lmaps=0;
-    GlobalEnv.Render->ResourcesGetMemoryUsage(m_base, c_base, m_lmaps, c_lmaps);
-	log_vminfo	();
 	Msg		("* [ D3D ]: textures[%d K]", (m_base+m_lmaps)/1024);
 #ifdef PURE_ALLOC
 	Msg		("* [x-ray]: process heap[%u K]",_process_heap/1024);
@@ -170,7 +168,7 @@ class CCC_MemStats : public IConsole_Command
 public:
 	CCC_MemStats(LPCSTR N) : IConsole_Command(N)  {
 		bEmptyArgsHandled = TRUE;
-		g_full_memory_stats_callback	= &full_memory_stats;
+		xrDebug::SetOutOfMemoryCallback(full_memory_stats);
 	};
 	virtual void Execute(LPCSTR args) {
 		full_memory_stats( );
@@ -386,7 +384,7 @@ public:
 		string_path		fn;
 		FS.update_path	(fn, "$game_saves$", fn_);
 
-		g_pGameLevel->Cameras().AddCamEffector(xr_new<CDemoRecord> (fn));
+		g_pGameLevel->Cameras().AddCamEffector(new CDemoRecord (fn));
 	}
 };
 
@@ -441,7 +439,7 @@ public:
 			  }
 			  strconcat			(sizeof(fn),fn, args, ".xrdemo");
 			  FS.update_path	(fn, "$game_saves$", fn);
-			  g_pGameLevel->Cameras().AddCamEffector(xr_new<CDemoPlay> (fn, 1.0f, loops));
+			  g_pGameLevel->Cameras().AddCamEffector(new CDemoPlay (fn, 1.0f, loops));
 		  }
 	  }
 };
@@ -783,7 +781,7 @@ public:
 		if (!ai().get_level_graph())
 			return;
 
-		ai().level_graph().setup_current_level	(-1);
+		Level().GetLevelGraphDebugRender()->SetupCurrentLevel(-1);
 	}
 };
 
@@ -799,9 +797,7 @@ public:
 		if (!ai().get_level_graph())
 			return;
 
-		ai().level_graph().setup_current_level	(
-			ai().level_graph().level_id()
-		);
+        Level().GetLevelGraphDebugRender()->SetupCurrentLevel(ai().level_graph().level_id());
 	}
 };
 
@@ -817,7 +813,7 @@ public:
 			return;
 
 		if (!*args) {
-			ai().level_graph().setup_current_level	(-1);
+            Level().GetLevelGraphDebugRender()->SetupCurrentLevel(-1);
 			return;
 		}
 
@@ -827,7 +823,7 @@ public:
 			return;
 		}
 
-		ai().level_graph().setup_current_level	(level->id());
+        Level().GetLevelGraphDebugRender()->SetupCurrentLevel(level->id());
 	}
 };
 
@@ -963,7 +959,8 @@ public:
 	CCC_DebugFonts (LPCSTR N) : IConsole_Command(N) {bEmptyArgsHandled = true; }
 	virtual void Execute				(LPCSTR args) 
 	{
-		xr_new<CUIDebugFonts>()->ShowDialog(true);		
+        // BUG: leak
+		(new CUIDebugFonts())->ShowDialog(true);		
 	}
 };
 
@@ -1007,7 +1004,7 @@ public:
 		_GetItem(args,0,param1,' ');
 		_GetItem(args,1,param2,' ');
 
-		CObject			*obj = Level().Objects.FindObjectByName(param1);
+		IGameObject			*obj = Level().Objects.FindObjectByName(param1);
 		CBaseMonster	*monster = smart_cast<CBaseMonster *>(obj);
 		if (!monster)	return;
 		
@@ -1032,7 +1029,7 @@ public:
 			}
 			ph_dbg_draw_mask1.set(ph_m1_DbgTrackObject,TRUE);
 			PH_DBG_SetTrackObject();
-			//CObject* O= Level().Objects.FindObjectByName(args);
+			//IGameObject* O= Level().Objects.FindObjectByName(args);
 			//if(O)
 			//{
 			//	PH_DBG_SetTrackObject(*(O->cName()));
@@ -1119,12 +1116,6 @@ public:
 
 #ifdef DEBUG
 
-struct CCC_LuaHelp : public IConsole_Command {
-	CCC_LuaHelp(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
-
-	virtual void Execute(LPCSTR args) { GlobalEnv.ScriptEngine->PrintHelp(); }
-};
-
 struct CCC_ShowSmartCastStats : public IConsole_Command {
 	CCC_ShowSmartCastStats(LPCSTR N) : IConsole_Command(N)  { bEmptyArgsHandled = true; };
 
@@ -1162,7 +1153,7 @@ public:
 #endif
 
 #ifndef MASTER_GOLD
-#	include "game_graph.h"
+#	include "xrAICore/Navigation/game_graph.h"
 struct CCC_JumpToLevel : public IConsole_Command {
 	CCC_JumpToLevel(LPCSTR N) : IConsole_Command(N)  {};
 
@@ -1483,7 +1474,7 @@ public		:
 			return;
 		};
 
-		CObject* obj			= Level().CurrentViewEntity();	VERIFY(obj);
+		IGameObject* obj			= Level().CurrentViewEntity();	VERIFY(obj);
 		shared_str ssss			= args;
 
 		CAttachmentOwner* owner = smart_cast<CAttachmentOwner*>(obj);
@@ -1699,8 +1690,9 @@ public:
 		}
 		
 //		GameSpyPatching.CheckForPatch(InformOfNoPatch);
-		
-		MainMenu()->GetGS()->GetGameSpyPatching()->CheckForPatch(InformOfNoPatch);
+        CGameSpy_Patching::PatchCheckCallback cb;
+        cb.bind(MainMenu(), &CMainMenu::OnPatchCheck);
+		MainMenu()->GetGS()->GetGameSpyPatching()->CheckForPatch(InformOfNoPatch, cb);
 	}
 };
 
@@ -1964,7 +1956,6 @@ CMD4(CCC_Integer,			"hit_anims_tune",						&tune_hit_anims,		0, 1);
 	CMD3(CCC_Mask,		"g_important_save",		&psActorFlags,	AF_IMPORTANT_SAVE);
 	
 #ifdef DEBUG
-	CMD1(CCC_LuaHelp,				"lua_help");
 	CMD1(CCC_ShowSmartCastStats,	"show_smart_cast_stats");
 	CMD1(CCC_ClearSmartCastStats,	"clear_smart_cast_stats");
 

@@ -45,7 +45,7 @@
 
 const u64 after_creation_collision_hit_block_steps_number=100;
 
-CPHMovementControl::CPHMovementControl(CObject* parent)
+CPHMovementControl::CPHMovementControl(IGameObject* parent)
 {
 	pObject=parent;
 
@@ -263,7 +263,7 @@ void CPHMovementControl::UpdateCollisionDamage( )
 }
 
 #include <ai/monsters/basemonster/base_monster.h>
-#include <ai_object_location.h>
+#include "xrAICore/Navigation/ai_object_location.h"
 #include "xrCore/_vector3d_ext.h"
 
 bool CPHMovementControl::MakeJumpPath(xr_vector<DetailPathManager::STravelPathPoint> &	out_path, 
@@ -520,8 +520,8 @@ void CPHMovementControl::PathNearestPoint(const xr_vector<DetailPathManager::STr
 
 	Fvector path_point,vtemp;
 	float temp;
-
-	for(int i=0;i<m_path_size-1;++i)
+    int i;
+	for(i=0;i<m_path_size-1;++i)
 	{
 		const Fvector &first=path[i].position, &second=path[i+1].position;
 		from_first.sub(new_position,first);
@@ -612,8 +612,8 @@ void CPHMovementControl::PathNearestPointFindUp(const xr_vector<DetailPathManage
 	Fvector path_point,vtemp;
 	float temp;
 	dir.set		(0,0,1);
-
-	for(int i=m_start_index;i<m_path_size-1;++i)
+    int i;
+	for(i=m_start_index;i<m_path_size-1;++i)
 	{
 		const Fvector &first=path[i].position, &second=path[i+1].position;
 		from_first.sub(new_position,first);
@@ -701,7 +701,8 @@ void CPHMovementControl::PathNearestPointFindDown(const xr_vector<DetailPathMana
 	float temp;
 	//(going down)
 	dir.set(0,0,1);
-	for(int i=m_start_index;i>1;--i)
+    int i;
+	for(i=m_start_index;i>1;--i)
 	{
 		const Fvector &first=path[i-1].position, &second=path[i].position;
 		from_first.sub(new_position,first);
@@ -1022,8 +1023,8 @@ void	CPHMovementControl::AllocateCharacterObject(CharacterType type)
 	switch(type)
 	{
 		case actor:		m_character = create_actor_character( IsGameTypeSingle() )	;	break;
-		//case actor:	m_character = xr_new<CPHActorCharacter>	()					;	break;
-		//case ai:		m_character = xr_new<CPHAICharacter>	()					;	break;
+		//case actor:	m_character = new CPHActorCharacter	()					;	break;
+		//case ai:		m_character = new CPHAICharacter	()					;	break;
 		case ai:		m_character = create_ai_character()							;	break;
 		default:		NODEFAULT;
 	}
@@ -1051,7 +1052,7 @@ if( !object||
 
 m_capture = phcapture_create( m_character, object,static_cast<NearestToPointCallback*>( cb ) );
 
-//m_capture=xr_new<CPHCapture>(m_character,
+//m_capture=new CPHCapture(m_character,
 //							 object,
 //							 cb
 //							 );
@@ -1068,7 +1069,7 @@ void	CPHMovementControl::PHCaptureObject(CPhysicsShellHolder* object,u16 element
 		)
 		return;
 
-	//m_capture=xr_new<CPHCapture>(m_character,
+	//m_capture=new CPHCapture(m_character,
 	//	object,
 	//	element
 	//	);
@@ -1354,7 +1355,7 @@ void	CPHMovementControl::TraceBorder(const Fvector &prev_position)
 
 	STraceBorderQParams			p(this,dir);
 	storage.r_clear				();
-	g_pGameLevel->ObjectSpace.RayQuery(storage,RD,BorderTraceCallback,&p,NULL,smart_cast<CObject*>(m_character->PhysicsRefObject()));
+	g_pGameLevel->ObjectSpace.RayQuery(storage,RD,BorderTraceCallback,&p,NULL,smart_cast<IGameObject*>(m_character->PhysicsRefObject()));
 }
 
 void	CPHMovementControl::				UpdateObjectBox(CPHCharacter *ach)
@@ -1774,7 +1775,7 @@ void			CPHMovementControl::BlockDamageSet		( u64 steps_num )
 	UpdateCollisionDamage();//reset all saved values
 }
 
-void	CPHMovementControl::NetRelcase	( CObject* O )
+void	CPHMovementControl::NetRelcase	( IGameObject* O )
 {
 	
 	CPhysicsShellHolder *sh = smart_cast<CPhysicsShellHolder *>(O);

@@ -117,7 +117,7 @@ void CBuild::Load	(const b_params& Params, const IReader& _in_FS)
 			} catch (...)
 			{
 				err_save	();
-				Debug.fatal	(DEBUG_INFO,"* ERROR: Can't process face #%d",i);
+				xrDebug::Fatal	(DEBUG_INFO,"* ERROR: Can't process face #%d",i);
 			}
 		}
         Logger.Progress(p_total += p_cost);
@@ -147,7 +147,7 @@ void CBuild::Load	(const b_params& Params, const IReader& _in_FS)
 		if (InvalideFaces())	
 		{
 			err_save		();
-			Debug.fatal		(DEBUG_INFO,"* FATAL: %d invalid faces. Compilation aborted",InvalideFaces());
+			xrDebug::Fatal		(DEBUG_INFO,"* FATAL: %d invalid faces. Compilation aborted",InvalideFaces());
 		}
 	}
 
@@ -158,7 +158,7 @@ void CBuild::Load	(const b_params& Params, const IReader& _in_FS)
 	{
 		while (!F->eof())
 		{
-			mu_models().push_back				(xr_new<xrMU_Model>());
+			mu_models().push_back				(new xrMU_Model());
 			mu_models().back()->Load			(*F, version );
 		}
 		F->close				();
@@ -168,7 +168,7 @@ void CBuild::Load	(const b_params& Params, const IReader& _in_FS)
 	{
 		while (!F->eof())
 		{
-			mu_refs().push_back				(xr_new<xrMU_Reference>());
+			mu_refs().push_back				(new xrMU_Reference());
 			mu_refs().back()->Load			( *F, mu_models() );
 		}		
 		F->close				();

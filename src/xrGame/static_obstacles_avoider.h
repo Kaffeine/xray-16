@@ -36,7 +36,7 @@ private:
 protected:
 	virtual	void							query					();
 	IC		const stalker_movement_manager_obstacles	&movement_manager		() const;
-	IC		const CAI_Stalker				&object					() const;
+	const CAI_Stalker				&object					() const;
 
 public:
 	IC										static_obstacles_avoider();
@@ -52,7 +52,7 @@ public:
 			void							query					(const Fvector &start_position, const Fvector &dest_position);
 	virtual	bool							process_query			(const bool &change_path_state);
 			void							update					();
-			void							remove_links			(CObject *object);
+			void							remove_links			(IGameObject *object);
 };
 
 #include "static_obstacles_avoider_inline.h"

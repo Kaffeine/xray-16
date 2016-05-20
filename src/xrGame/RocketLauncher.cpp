@@ -8,7 +8,7 @@
 #include "CustomRocket.h"
 #include "xrServer_Objects_ALife_Items.h"
 #include "Level.h"
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location.h"
 #include "xrEngine/IGame_Persistent.h"
 
 CRocketLauncher::CRocketLauncher()

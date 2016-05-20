@@ -298,7 +298,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 
 		if(state_anm)
 		{ //play moving cam effect
-			CActor*	control_entity		= static_cast_checked<CActor*>(Level().CurrentControlEntity());
+			CActor*	control_entity		= smart_cast<CActor*>(Level().CurrentControlEntity());
 			R_ASSERT2					(control_entity, "current control entity is NULL");
 			CEffectorCam* ec			= control_entity->Cameras().GetCamEffector(eCEActorMoving);
 			if(NULL==ec)
@@ -310,7 +310,7 @@ void CActor::g_cl_CheckControls(u32 mstate_wf, Fvector &vControlAccel, float &Ju
 				strconcat			(sizeof(anm_name), anm_name, "camera_effects\\actor_move\\", eff_name);
 				if (FS.exist( ce_path, "$game_anims$", anm_name))
 				{
-					CAnimatorCamLerpEffectorConst* e		= xr_new<CAnimatorCamLerpEffectorConst>();
+					CAnimatorCamLerpEffectorConst* e		= new CAnimatorCamLerpEffectorConst();
 					float max_scale				= 70.0f;
 					float factor				= cam_eff_factor/max_scale;
 					e->SetFactor				(factor);

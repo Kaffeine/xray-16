@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "profile_store.h"
-#include "GameSpy/GameSpy_Full.h"
-#include "GameSpy/GAmeSpy_SAKE.h"
+#include "xrGameSpy/GameSpy_Full.h"
+#include "xrGameSpy/GameSpy_SAKE.h"
 #include "MainMenu.h"
 #include "login_manager.h"
 #include "awards_store.h"
@@ -24,8 +24,8 @@ profile_store::profile_store(CGameSpy_Full* fullgs_obj) :
 	m_fullgs_obj		= fullgs_obj;
 	m_sake_obj			= fullgs_obj->GetGameSpySAKE();
 
-	m_awards_store		= xr_new<awards_store>(fullgs_obj);
-	m_best_scores_store	= xr_new<best_scores_store>(fullgs_obj);
+	m_awards_store		= new awards_store(fullgs_obj);
+	m_best_scores_store	= new best_scores_store(fullgs_obj);
 }
 
 

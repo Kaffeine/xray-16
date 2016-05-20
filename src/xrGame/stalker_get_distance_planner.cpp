@@ -13,6 +13,7 @@
 #include "stalker_property_evaluators.h"
 #include "stalker_get_distance_actions.h"
 #include "script_game_object.h"
+#include "script_game_object_impl.h"
 #include "ai/stalker/ai_stalker.h"
 
 using namespace StalkerSpace;
@@ -44,7 +45,7 @@ void CStalkerGetDistancePlanner::add_evaluators			()
 {
 	add_evaluator			(
 		eWorldPropertyInCover,
-		xr_new<CStalkerPropertyEvaluatorMember>(
+		new CStalkerPropertyEvaluatorMember(
 			(CPropertyStorage*)0,//&CScriptActionPlanner::m_storage,
 			eWorldPropertyInCover,
 			true,
@@ -55,7 +56,7 @@ void CStalkerGetDistancePlanner::add_evaluators			()
 	
 	add_evaluator			(
 		eWorldPropertyTooFarToKillEnemy,
-		xr_new<CStalkerPropertyEvaluatorTooFarToKillEnemy>(
+		new CStalkerPropertyEvaluatorTooFarToKillEnemy(
 			m_object,
 			"too far to kill"
 		)
@@ -66,12 +67,12 @@ void CStalkerGetDistancePlanner::add_actions			()
 {
 	CStalkerActionBase		*action;
 
-	action					= xr_new<CStalkerActionRunToCover>		(m_object,"run to cover");
+	action					= new CStalkerActionRunToCover		(m_object,"run to cover");
 	add_condition			(action,eWorldPropertyInCover,			false);
 	add_effect				(action,eWorldPropertyInCover,			true);
 	add_operator			(eWorldOperatorRunToCover,				action);
 
-	action					= xr_new<CStalkerActionWaitInCover>		(m_object,"wait in cover");
+	action					= new CStalkerActionWaitInCover		(m_object,"wait in cover");
 	add_condition			(action,eWorldPropertyInCover,			true);
 	add_condition			(action,eWorldPropertyTooFarToKillEnemy,true);
 	add_effect				(action,eWorldPropertyTooFarToKillEnemy,false);

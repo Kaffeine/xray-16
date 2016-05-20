@@ -526,7 +526,7 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 
 	VERIFY(m_pActorEffector == NULL);
 
-	m_pActorEffector			= xr_new<CActorCameraManager>();
+	m_pActorEffector			= new CActorCameraManager();
 
 	// motions
 	m_bAnimTorsoPlayed			= false;
@@ -633,7 +633,7 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 		if (!pStatGraph)
 		{
 			static g_Y = 0;
-			pStatGraph = xr_new<CStatGraph>();
+			pStatGraph = new CStatGraph();
 			pStatGraph->SetRect(0, g_Y, Device.dwWidth, 100, 0xff000000, 0xff000000);
 			g_Y += 110;
 			if (g_Y > 700) g_Y = 100;
@@ -689,7 +689,7 @@ BOOL CActor::net_Spawn		(CSE_Abstract* DC)
 		Level().MapManager().AddMapLocation("actor_location",ID());
 		Level().MapManager().AddMapLocation("actor_location_p",ID());
 
-		m_statistic_manager = xr_new<CActorStatisticMgr>();
+		m_statistic_manager = new CActorStatisticMgr();
 	}
 
 
@@ -757,7 +757,7 @@ void CActor::net_Destroy	()
 		destroy_physics_shell( actor_camera_shell );
 }
 
-void CActor::net_Relcase	(CObject* O)
+void CActor::net_Relcase	(IGameObject* O)
 {
 	
  	VERIFY(O);
@@ -1562,7 +1562,7 @@ void	CActor::OnRender_Network()
 		};
 
 		//drawing speed vectors
-		for (i=0; i<2; i++)
+		for (int i=0; i<2; i++)
 		{
 			c = float(i);
 			for (u32 k=0; k<3; k++)
@@ -1767,7 +1767,7 @@ BOOL CActor::net_SaveRelevant()
 }
 
 
-void				CActor::SetHitInfo				(CObject* who, CObject* weapon, s16 element, Fvector Pos, Fvector Dir)
+void				CActor::SetHitInfo				(IGameObject* who, IGameObject* weapon, s16 element, Fvector Pos, Fvector Dir)
 {
 	m_iLastHitterID = (who!= NULL) ? who->ID() : u16(-1);
 	m_iLastHittingWeaponID = (weapon != NULL) ? weapon->ID() : u16(-1);
@@ -1805,8 +1805,8 @@ void				CActor::OnCriticalHitHealthLoss			()
 {
 	if (GameID() == eGameIDSingle || !OnServer()) return;
 
-	CObject* pLastHitter = Level().Objects.net_Find(m_iLastHitterID);
-	CObject* pLastHittingWeapon = Level().Objects.net_Find(m_iLastHittingWeaponID);
+	IGameObject* pLastHitter = Level().Objects.net_Find(m_iLastHitterID);
+	IGameObject* pLastHittingWeapon = Level().Objects.net_Find(m_iLastHittingWeaponID);
 
 #ifdef DEBUG
 	Msg("%s killed by hit from %s %s", 

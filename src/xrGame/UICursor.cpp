@@ -4,6 +4,7 @@
 #include "ui/UIStatic.h"
 #include "ui/UIBtnHint.h"
 #include "xrEngine/IInputReceiver.h"
+#include "xrEngine/xr_input.h"
 
 #define C_DEFAULT	color_xrgb(0xff,0xff,0xff)
 
@@ -31,9 +32,21 @@ void CUICursor::OnScreenResolutionChanged()
 	InitInternal				();
 }
 
+void CUICursor::Show()
+{
+    bVisible = true;
+    pInput->ClipCursor(false);
+}
+
+void CUICursor::Hide()
+{
+    bVisible = false;
+    pInput->ClipCursor(true);
+}
+
 void CUICursor::InitInternal()
 {
-	m_static					= xr_new<CUIStatic>();
+	m_static					= new CUIStatic();
 	m_static->InitTextureEx		("ui\\ui_ani_cursor", "hud\\cursor");
 	Frect						rect;
 	rect.set					(0.0f,0.0f,40.0f,40.0f);

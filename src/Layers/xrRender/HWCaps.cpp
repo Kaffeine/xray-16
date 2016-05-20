@@ -4,14 +4,15 @@
 #include "hwcaps.h"
 #include "hw.h"
 
-#ifndef _EDITOR
+#if !defined(_EDITOR) && !defined(USE_OGL)
 	#include <nvapi.h>
+#include <ags_lib/inc/amd_ags.h>
 #endif
 
 namespace
 {
 
-#ifndef _EDITOR
+#if !defined(_EDITOR) && !defined(USE_OGL)
 u32 GetNVGpuNum()
 {
 	NvLogicalGpuHandle  logicalGPUs[NVAPI_MAX_LOGICAL_GPUS];
@@ -70,16 +71,25 @@ u32 GetNVGpuNum()
 
 u32 GetATIGpuNum()
 {
-    // XXX: use AMD AGS
-	//int iGpuNum = AtiMultiGPUAdapters();
-	int iGpuNum = 1;
-
-	if (iGpuNum>1)
-	{
-		Msg	("* ATI MGPU: %d-Way CrossFire detected.", iGpuNum);
-	}
-
-	return iGpuNum;
+    AGSContext *ags = nullptr;
+    AGSGPUInfo gpuInfo = {};
+    AGSReturnCode status = agsInit(&ags, &gpuInfo);
+    if (status!=AGS_SUCCESS)
+    {
+        Msg("! AGS: Initialization failed (%d)", status);
+        return 1;
+    }
+    int crossfireGpuCount = 1;
+    status = agsGetCrossfireGPUCount(ags, &crossfireGpuCount);
+    if (status!=AGS_SUCCESS)
+    {
+        Msg("! AGS: Unable to get CrossFire GPU count (%d)", status);
+        agsDeInit(ags);
+        return 1;
+    }
+    Msg("* AGS: CrossFire GPU count: %d", crossfireGpuCount);
+    agsDeInit(ags);
+	return crossfireGpuCount;
 }
 
 u32 GetGpuNum()
@@ -108,7 +118,7 @@ u32 GetGpuNum()
 #endif
 }
 
-#if !defined(USE_DX10) && !defined(USE_DX11)
+#if !defined(USE_DX10) && !defined(USE_DX11) && !defined(USE_OGL)
 void CHWCaps::Update()
 {
 	D3DCAPS9					caps;
@@ -266,7 +276,11 @@ void CHWCaps::Update()
 	dwMaxStencilValue=(1<<8)-1;
 
 	// DEV INFO
-
+#ifdef USE_OGL
+	// TODO: OGL: SLI/Crossfire support.
+	iGPUNum = 1;
+#else
 	iGPUNum = GetGpuNum();
+#endif // !USE_OGL
 }
 #endif	//	USE_DX10

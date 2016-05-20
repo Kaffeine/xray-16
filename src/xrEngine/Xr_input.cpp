@@ -86,7 +86,7 @@ CInput::CInput(BOOL bExclusive, int deviceForInit)
                    mouse_input_flags,
                    MOUSEBUFFERSIZE));
 
-    Debug.set_on_dialog(&on_error_dialog);
+    xrDebug::SetDialogHandler(on_error_dialog);
 
 #ifdef ENGINE_BUILD
     Device.seqAppActivate.Add(this);
@@ -261,7 +261,7 @@ void CInput::KeyUpdate()
             }
         }
 
-        for (i = 0; i < COUNT_KB_BUTTONS; i++)
+        for (u32 i = 0; i < COUNT_KB_BUTTONS; i++)
             if (KBState[i])
                 cbStack.back()->IR_OnKeyboardHold(i);
     }
@@ -350,6 +350,24 @@ BOOL CInput::iGetAsyncKeyState(int dik)
 BOOL CInput::iGetAsyncBtnState(int btn)
 {
     return !!mouseState[btn];
+}
+
+void CInput::ClipCursor(bool clip)
+{
+    HWND hwnd = Device.m_hWnd;
+    if (hwnd)
+    {
+        if (clip)
+        {
+            RECT clientRect;
+            ::GetClientRect(hwnd, &clientRect);
+            ::ClientToScreen(hwnd, (LPPOINT)&clientRect.left);
+            ::ClientToScreen(hwnd, (LPPOINT)&clientRect.right);
+            ::ClipCursor(&clientRect);
+        }
+        else
+            ::ClipCursor(nullptr);
+    }
 }
 
 void CInput::MouseUpdate()

@@ -10,14 +10,15 @@
 
 #include "object_factory_space.h"
 #include "object_item_abstract.h"
+#include "xrScriptEngine/Functor.hpp"
 
 class CObjectItemScript : public CObjectItemAbstract {
 protected:
 	typedef CObjectItemAbstract inherited;
 
 protected:
-	luabind::object								m_client_creator;
-	luabind::object								m_server_creator;
+	mutable luabind::functor<ObjectFactory::ClientObjectBaseClass *, luabind::policy::adopt<0>> m_client_creator;
+	mutable luabind::functor<ObjectFactory::ServerObjectBaseClass *, luabind::policy::adopt<0>> m_server_creator;
 
 public:
 												CObjectItemScript	(
@@ -34,7 +35,7 @@ public:
 													const CLASS_ID &clsid, 
 													LPCSTR script_clsid
 												);
-	virtual ObjectFactory::CLIENT_BASE_CLASS	*client_object		() const;
+    virtual ObjectFactory::ClientObjectBaseClass *client_object() const;
 #endif
-	virtual ObjectFactory::SERVER_BASE_CLASS	*server_object		(LPCSTR section) const;
+    virtual ObjectFactory::ServerObjectBaseClass *server_object(LPCSTR section) const;
 };

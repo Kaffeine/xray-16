@@ -11,9 +11,9 @@
 
 #ifdef _DEBUG
 #	include <dinput.h>
-#	include "ai_object_location.h"
+#	include "xrAICore/Navigation/ai_object_location.h"
 #	include "level_debug.h"
-#	include "level_graph.h"
+#	include "xrAICore/Navigation/level_graph.h"
 #	include "ai_space.h"
 #	include "alife_simulator.h"
 #	include "xrServerEntities/xrServer_Object_Base.h"
@@ -179,6 +179,6 @@ void CAI_PseudoDog::debug_on_key(int key)
 
 IStateManagerBase *CAI_PseudoDog::create_state_manager()
 {
-	return xr_new<CStateManagerPseudodog>(this);
+	return new CStateManagerPseudodog(this);
 }
 

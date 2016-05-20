@@ -20,14 +20,14 @@
 ///////////////////////////////////////////////////////////////////////////////////
 IPHCapture	*phcapture_create(CPHCharacter *ch, IPhysicsShellHolder* object, NearestToPointCallback* cb /*=0*/ )
 {
-//m_capture=xr_new<CPHCapture>(m_character,
+//m_capture=new CPHCapture(m_character,
 //							 object,
 //							 cb
 //							 );
 	VERIFY( ch );
 	//VERIFY( object );
 	//VERIFY( cb );
-	return xr_new<CPHCapture>(ch,
+	return new CPHCapture(ch,
 		   				 object,
 		   				 cb
 		   				 );
@@ -35,7 +35,7 @@ IPHCapture	*phcapture_create(CPHCharacter *ch, IPhysicsShellHolder* object, Near
 IPHCapture	*phcapture_create(CPHCharacter *ch, IPhysicsShellHolder* object,u16 element)
 {
 	VERIFY( ch );
-	return xr_new<CPHCapture>(ch,
+	return new CPHCapture(ch,
 		object,
 		element
 		);
@@ -150,7 +150,7 @@ void CPHCapture::PullingUpdate()
 
 	Fvector dir;
 	Fvector capture_bone_position;
-	//CObject* object=smart_cast<CObject*>(m_character->PhysicsRefObject());
+	//IGameObject* object=smart_cast<IGameObject*>(m_character->PhysicsRefObject());
 	capture_bone_position.set(m_capture_bone->mTransform.c);
 	m_character->PhysicsRefObject()->ObjectXFORM().transform_tiny(capture_bone_position);
 	m_taget_element->GetGlobalPositionDynamic(&dir);
@@ -309,7 +309,7 @@ void CPHCapture::CapturedUpdate()
 	}
 
 	Fvector capture_bone_position;
-	//CObject* object=smart_cast<CObject*>(m_character->PhysicsRefObject());
+	//IGameObject* object=smart_cast<IGameObject*>(m_character->PhysicsRefObject());
 	capture_bone_position.set(m_capture_bone->mTransform.c);
 	m_character->PhysicsRefObject()->ObjectXFORM().transform_tiny(capture_bone_position);
 	dBodySetPosition(m_body,capture_bone_position.x,capture_bone_position.y,capture_bone_position.z);

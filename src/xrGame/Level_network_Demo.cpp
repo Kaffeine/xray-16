@@ -101,7 +101,7 @@ void CLevel::RestartPlayDemo()
 		VERIFY(g_pGameLevel);
 		VERIFY(m_current_spectator);
 		g_pGameLevel->Cameras().dbg_upd_frame	= 0;
-		m_current_spectator->dbg_update_cl		= 0;
+		m_current_spectator->SetDbgUpdateFrame(0);
 #endif
 		StopPlayDemo	();
 	}
@@ -162,7 +162,7 @@ void CLevel::SaveDemoInfo()
 	m_writer->seek(m_demo_info_file_pos);
 	if (!m_demo_info)
 	{
-		m_demo_info = xr_new<demo_info>();
+		m_demo_info = new demo_info();
 	}
 	m_demo_info->load_from_game();
 	m_demo_info->write_to_file(m_writer);
@@ -185,7 +185,7 @@ bool CLevel::LoadDemoHeader	()
 	u32 demo_info_start_pos	= m_reader->tell();
 	
 	R_ASSERT(m_demo_info == NULL);
-	m_demo_info = xr_new<demo_info>();
+	m_demo_info = new demo_info();
 	m_demo_info->read_from_file(m_reader);
 
 	m_reader->seek			(demo_info_start_pos + demo_info::max_demo_info_size);
@@ -255,7 +255,7 @@ void CLevel::SpawnDemoSpectator()
 	F_entity_Destroy				(specentity);
 }
 
-void CLevel::SetDemoSpectator(CObject* spectator)
+void CLevel::SetDemoSpectator(IGameObject* spectator)
 {
 	R_ASSERT2	(smart_cast<CSpectator*>(spectator),
 		"tried to set not an spectator object to demo spectator");
@@ -276,14 +276,14 @@ message_filter*	 CLevel::GetMessageFilter()
 {
 	if (m_msg_filter)
 		return m_msg_filter;
-	m_msg_filter = xr_new<message_filter>();
+	m_msg_filter = new message_filter();
 	return m_msg_filter;
 }
 demoplay_control* CLevel::GetDemoPlayControl()
 {
 	if (m_demoplay_control)
 		return m_demoplay_control;
-	m_demoplay_control = xr_new<demoplay_control>();
+	m_demoplay_control = new demoplay_control();
 	return m_demoplay_control;
 }
 /*
@@ -370,7 +370,7 @@ void __stdcall CLevel::MSpawnsCatchCallback(u32 message, u32 subtype, NET_Packet
 	tmp_msg_filter->remove_filter(M_SPAWN, fake_sub_msg);
 }
 
-CObject* CLevel::GetDemoSpectator()	
+IGameObject* CLevel::GetDemoSpectator()	
 { 
 	return smart_cast<CGameObject*>(m_current_spectator); 
 };

@@ -7,7 +7,7 @@
 ////////////////////////////////////////////////////////////////////////////
 
 #include "stdafx.h"
-#include "xrGame/level_graph.h"
+#include "xrAICore/Navigation/level_graph.h"
 
 CLevelGraph::CVertex	**stack_storage;
 
@@ -70,7 +70,7 @@ void verify_level_graph	(LPCSTR name, bool verbose)
 	Msg				("Verifying level %s",name);
     Logger.Phase("Verifying level graph");
     Logger.Progress(0.f);
-	CLevelGraph		*level_graph = xr_new<CLevelGraph>(name);
+	CLevelGraph		*level_graph = new CLevelGraph(name);
 	if (!level_graph->header().vertex_count()) {
         Logger.Progress(1.f);
 		Msg			("Level graph is empty!");

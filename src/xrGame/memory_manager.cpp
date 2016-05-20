@@ -19,9 +19,9 @@
 #include "agent_manager.h"
 #include "agent_member_manager.h"
 #include "memory_space_impl.h"
-#include "ai_object_location.h"
-#include "level_graph.h"
-#include "profiler.h"
+#include "xrAICore/Navigation/ai_object_location.h"
+#include "xrAICore/Navigation/level_graph.h"
+#include "xrEngine/profiler.h"
 #include "agent_enemy_manager.h"
 #include "script_game_object.h"
 
@@ -32,15 +32,15 @@ CMemoryManager::CMemoryManager		(CEntityAlive *entity_alive, CSound_UserDataVisi
 	m_stalker			= smart_cast<CAI_Stalker*>(m_object);
 
 	if (m_stalker)
-		m_visual		= xr_new<CVisualMemoryManager>(m_stalker);
+		m_visual		= new CVisualMemoryManager(m_stalker);
 	else
-		m_visual		= xr_new<CVisualMemoryManager>(m_object);
+		m_visual		= new CVisualMemoryManager(m_object);
 
-	m_sound				= xr_new<CSoundMemoryManager>	(m_object, m_stalker, visitor);
-	m_hit				= xr_new<CHitMemoryManager>		(m_object, m_stalker);
-	m_enemy				= xr_new<CEnemyManager>			(m_object);
-	m_item				= xr_new<CItemManager>			(m_object);
-	m_danger			= xr_new<CDangerManager>		(m_object);
+	m_sound				= new CSoundMemoryManager	(m_object, m_stalker, visitor);
+	m_hit				= new CHitMemoryManager		(m_object, m_stalker);
+	m_enemy				= new CEnemyManager			(m_object);
+	m_item				= new CItemManager			(m_object);
+	m_danger			= new CDangerManager		(m_object);
 }
 
 CMemoryManager::~CMemoryManager		()
@@ -149,7 +149,7 @@ void CMemoryManager::update			(float time_delta)
 	STOP_PROFILE
 }
 
-void CMemoryManager::enable			(const CObject *object, bool enable)
+void CMemoryManager::enable			(const IGameObject *object, bool enable)
 {
 	visual().enable		(object,enable);
 	sound().enable		(object,enable);
@@ -186,7 +186,7 @@ void CMemoryManager::update			(const xr_vector<T> &objects, bool add_enemies)
 	}
 }
 
-CMemoryInfo CMemoryManager::memory(const CObject *object) const
+CMemoryInfo CMemoryManager::memory(const IGameObject *object) const
 {
 	CMemoryInfo						result;
 	if (!this->object().g_Alive())
@@ -231,7 +231,7 @@ CMemoryInfo CMemoryManager::memory(const CObject *object) const
 	return		(result);
 }
 
-u32 CMemoryManager::memory_time(const CObject *object) const
+u32 CMemoryManager::memory_time(const IGameObject *object) const
 {
 	u32					result = 0;
 	if (!this->object().g_Alive())
@@ -261,7 +261,7 @@ u32 CMemoryManager::memory_time(const CObject *object) const
 	return				(result);
 }
 
-Fvector CMemoryManager::memory_position	(const CObject *object) const
+Fvector CMemoryManager::memory_position	(const IGameObject *object) const
 {
 	u32					time = 0;
 	Fvector				result = Fvector().set(0.f,0.f,0.f);
@@ -298,7 +298,7 @@ Fvector CMemoryManager::memory_position	(const CObject *object) const
 	return				(result);
 }
 
-void CMemoryManager::remove_links	(CObject *object)
+void CMemoryManager::remove_links	(IGameObject *object)
 {
 	if (m_object->g_Alive()) {
 		visual().remove_links	(object);
@@ -357,7 +357,7 @@ void CMemoryManager::load							(IReader &packet)
 
 // we do this due to the limitation of client spawn manager
 // should be revisited from the acrhitectural point of view
-void CMemoryManager::on_requested_spawn				(CObject *object)
+void CMemoryManager::on_requested_spawn				(IGameObject *object)
 {
 	visual().on_requested_spawn	(object);
 	sound().on_requested_spawn	(object);

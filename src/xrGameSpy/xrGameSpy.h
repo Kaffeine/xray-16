@@ -1,42 +1,34 @@
-#include "xrCore/Platform.h"
+#pragma once
+#include "Common/Platform.hpp"
 
-// The following ifdef block is the standard way of creating macros which make exporting 
-// from a DLL simpler. All files within this DLL are compiled with the XRGAMESPY_EXPORTS
-// symbol defined on the command line. this symbol should not be defined on any project
-// that uses this DLL. This way any other project whose source files include this file see 
-// XRGAMESPY_API functions as being imported from a DLL, whereas this DLL sees symbols
-// defined with this macro as being exported.
 #ifdef XRGAMESPY_EXPORTS
 #define XRGAMESPY_API XR_EXPORT
 #else
 #define XRGAMESPY_API XR_IMPORT
 #endif
-/*
-// This class is exported from the xrGameSpy.dll
-class XRGAMESPY_API CxrGameSpy {
-public:
-	CxrGameSpy(void);
-	// TODO: add your methods here.
-};
 
-extern XRGAMESPY_API int nxrGameSpy;
+#include <GameSpy/Common/gsCommon.h>
+#include <GameSpy/Common/gsAvailable.h>
+#include <GameSpy/ghttp/ghttp.h>
+#include <GameSpy/qr2/qr2.h>
+#include <GameSpy/gcdkey/gcdkeyc.h>
+#include <GameSpy/gcdkey/gcdkeys.h>
+#include <GameSpy/serverbrowsing/sb_serverbrowsing.h>
+#include <GameSpy/pt/pt.h>
+#include <GameSpy/gp/gp.h>
+#include <GameSpy/sake/sake.h>
+#include <GameSpy/sc/sc.h>
+#undef max
 
-XRGAMESPY_API int fnxrGameSpy(void);
-*/
-#pragma once
-#include "xrGameSpy_MainDefs.h"
+#include "xrGameSpy/xrGameSpy_MainDefs.h"
+#include "xrGameSpy/GameSpy_Available.h"
+#include "xrGameSpy/GameSpy_Browser.h"
+#include "xrGameSpy/GameSpy_QR2.h"
+#include "xrGameSpy/GameSpy_GCD_Client.h"
+#include "xrGameSpy/GameSpy_GCD_Server.h"
 
-#include "xrGameSpy_Available.h"
-#include "xrGameSpy_ServerBrowser.h"
-#include "xrGameSpy_QR2.h"
-#include "xrGameSpy_CDKey.h"
+XRGAMESPY_API const char* GetGameVersion();
+XRGAMESPY_API int GetGameDistribution();
+XRGAMESPY_API void GetGameID(int *GameID, int verID);
 
-
-extern "C"
-{
-	EXPORT_FN_DECL(const char*, GetGameVersion,		());
-	EXPORT_FN_DECL(void,		GetGameID,			(int* GameID, int verID));
-}
-
-
-
+void FillSecretKey(char *secretKey);

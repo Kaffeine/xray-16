@@ -12,10 +12,6 @@
 #include "file_transfer.h"
 #include "screenshot_server.h"
 #include "xrNetServer/NET_AuthCheck.h"
-#pragma warning(push)
-#pragma warning(disable:4995)
-#include <malloc.h>
-#pragma warning(pop)
 
 LPCSTR xrServer::get_map_download_url(LPCSTR level_name, LPCSTR level_version)
 {
@@ -66,7 +62,7 @@ xrServer::EConnect xrServer::Connect(shared_str &session_name, GameDescriptionDa
 //	game->type				= type_id;
 	if (game->Type() != eGameIDSingle)
 	{
-		m_file_transfers	= xr_new<file_transfer::server_site>();
+		m_file_transfers	= new file_transfer::server_site();
 		initialize_screenshot_proxies();
 		LoadServerInfo();
 		xr_auth_strings_t	tmp_ignore;

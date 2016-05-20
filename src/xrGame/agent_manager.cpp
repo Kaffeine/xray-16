@@ -15,7 +15,7 @@
 #include "agent_member_manager.h"
 #include "agent_memory_manager.h"
 #include "agent_manager_planner.h"
-#include "profiler.h"
+#include "xrEngine/profiler.h"
 
 CAgentManager::CAgentManager			()
 {
@@ -46,13 +46,13 @@ void CAgentManager::init_scheduler		()
 
 void CAgentManager::init_components		()
 {
-	m_corpse					= xr_new<CAgentCorpseManager>	(this);
-	m_enemy						= xr_new<CAgentEnemyManager>	(this);
-	m_explosive					= xr_new<CAgentExplosiveManager>(this);
-	m_location					= xr_new<CAgentLocationManager>	(this);
-	m_member					= xr_new<CAgentMemberManager>	(this);
-	m_memory					= xr_new<CAgentMemoryManager>	(this);
-	m_brain						= xr_new<CAgentManagerPlanner>	();
+	m_corpse					= new CAgentCorpseManager	(this);
+	m_enemy						= new CAgentEnemyManager	(this);
+	m_explosive					= new CAgentExplosiveManager(this);
+	m_location					= new CAgentLocationManager	(this);
+	m_member					= new CAgentMemberManager	(this);
+	m_memory					= new CAgentMemoryManager	(this);
+	m_brain						= new CAgentManagerPlanner	();
 	brain().setup				(this);
 }
 
@@ -74,7 +74,7 @@ void CAgentManager::remove_components	()
 	xr_delete					(m_brain);
 }
 
-void CAgentManager::remove_links		(CObject *object)
+void CAgentManager::remove_links		(IGameObject *object)
 {
 	corpse().remove_links		(object);
 	enemy().remove_links		(object);

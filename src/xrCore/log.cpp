@@ -176,7 +176,7 @@ void Log(const char* msg, const Fmatrix& dop)
 
 void LogWinErr(const char* msg, long err_code)
 {
-    Msg("%s: %s", msg, Debug.error2string(err_code));
+    Msg("%s: %s", msg, xrDebug::ErrorToString(err_code));
 }
 
 LogCallback SetLogCB(const LogCallback &cb)
@@ -194,7 +194,7 @@ LPCSTR log_name()
 void InitLog()
 {
     R_ASSERT(LogFile == NULL);
-    LogFile = xr_new< xr_vector<shared_str> >();
+    LogFile = new xr_vector<shared_str>();
     LogFile->reserve(1000);
 }
 

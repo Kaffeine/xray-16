@@ -103,7 +103,7 @@ void CGlowManager::Load		(IReader* fs)
 
 	for (;count;count--)
 	{
-		CGlow* G			= xr_new<CGlow>();
+		CGlow* G			= new CGlow();
 		fs->r				(&G->position,	3*sizeof(float));
 		fs->r				(&G->radius,	1*sizeof(float));
 		G->spatial.sphere.set(G->position, G->radius);
@@ -197,7 +197,7 @@ void CGlowManager::Render			()
 void CGlowManager::render_sw		()
 {
 	// 0. save main view and disable
-	CObject*	o_main		= g_pGameLevel->CurrentViewEntity();
+	IGameObject*	o_main		= g_pGameLevel->CurrentViewEntity();
 
 	// 1. Test some number of glows
 	Fvector start	= Device.vCameraPosition;

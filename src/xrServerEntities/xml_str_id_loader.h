@@ -95,18 +95,17 @@ TEMPLATE_SPECIALIZATION
 const typename ITEM_DATA* CSXML_IdToIndex::GetById (const shared_str& str_id, bool no_assert)
 {
 	T_INIT::InitXmlIdToIndex();
-		
-	for(T_VECTOR::iterator it = m_pItemDataVector->begin();
-		m_pItemDataVector->end() != it; it++)
+    T_VECTOR::iterator it;
+	for (it = m_pItemDataVector->begin(); m_pItemDataVector->end()!=it; it++)
 	{
-		if( (*it).id == str_id)
-			break;
+        if ((*it).id == str_id)
+            break;
 	}
 
-	if(m_pItemDataVector->end() == it)
+	if (it==m_pItemDataVector->end())
 	{
 		int i=0;
-		for(T_VECTOR::iterator it = m_pItemDataVector->begin();	m_pItemDataVector->end() != it; it++,i++)
+		for (it = m_pItemDataVector->begin(); m_pItemDataVector->end()!=it; it++, i++)
 			Msg("[%d]=[%s]",i,*(*it).id );
 
 		R_ASSERT3(no_assert, "item not found, id", *str_id);
@@ -142,7 +141,7 @@ typename void	CSXML_IdToIndex::InitInternal ()
 	VERIFY(!m_pItemDataVector);
 	T_INIT::InitXmlIdToIndex();
 
-	m_pItemDataVector = xr_new<T_VECTOR>();
+	m_pItemDataVector = new T_VECTOR();
 
 	VERIFY(file_str);
 	VERIFY(tag_name);
@@ -154,7 +153,7 @@ typename void	CSXML_IdToIndex::InitInternal ()
 	{
 		_GetItem	(file_str, it, xml_file);
 
-		CUIXml* uiXml			= xr_new<CUIXml>();
+		CUIXml* uiXml			= new CUIXml();
 		xr_string				xml_file_full;
 		xml_file_full			= xml_file;
 		xml_file_full			+= ".xml";

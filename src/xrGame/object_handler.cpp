@@ -21,15 +21,15 @@
 #include "Include/xrRender/Kinematics.h"
 #include "memory_manager.h"
 #include "enemy_manager.h"
-#include "ai_object_location.h"
-#include "profiler.h"
+#include "xrAICore/Navigation/ai_object_location.h"
+#include "xrEngine/profiler.h"
 #include "stalker_animation_manager.h"
 #include "object_handler_planner_impl.h"
 #include "effectorshot.h"
 
 CObjectHandler::CObjectHandler		()
 {
-	m_planner					= xr_new<CObjectHandlerPlanner>();
+	m_planner					= new CObjectHandlerPlanner();
 	m_inventory_actual			= false;
 //	m_last_enemy_for_best_weapon= 0;
 }

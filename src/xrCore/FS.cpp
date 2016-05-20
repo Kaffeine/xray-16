@@ -10,9 +10,6 @@
 #include <sys\stat.h>
 #pragma warning(default:4995)
 
-//typedef void DUMMY_STUFF (const void*,const u32&,void*);
-//XRCORE_API DUMMY_STUFF *g_dummy_stuff = 0;
-
 #ifdef M_BORLAND
 # define O_SEQUENTIAL 0
 #endif // M_BORLAND
@@ -321,19 +318,19 @@ void IWriter::w_sdir(const Fvector& D)
     w_dir(C);
     w_float(mag);
 }
+// XXX: reimplement to prevent buffer overflows
 void IWriter::w_printf(const char* format, ...)
 {
-    va_list mark;
+    va_list args;
+    va_start(args, format);
+    VPrintf(format, args);
+    va_end(args);
+}
+
+void IWriter::VPrintf(const char *format, va_list args)
+{
     char buf[1024];
-
-    va_start(mark, format);
-#ifndef _EDITOR
-    vsprintf_s(buf, format, mark);
-#else
-    vsprintf(buf, format, mark);
-#endif
-    va_end(mark);
-
+    std::vsnprintf(buf, sizeof(buf), format, args);
     w(buf, xr_strlen(buf));
 }
 
@@ -351,11 +348,11 @@ IReader* IReader::open_chunk(u32 ID)
             BYTE* dest;
             unsigned dest_sz;
             _decompressLZ(&dest, &dest_sz, pointer(), dwSize);
-            return xr_new<CTempReader>(dest, dest_sz, tell() + dwSize);
+            return new CTempReader(dest, dest_sz, tell() + dwSize);
         }
         else
         {
-            return xr_new<IReader>(pointer(), dwSize, tell() + dwSize);
+            return new IReader(pointer(), dwSize, tell() + dwSize);
         }
     }
     else return 0;
@@ -408,12 +405,12 @@ IReader* IReader::open_chunk_iterator(u32& ID, IReader* _prev)
         u8* dest;
         unsigned dest_sz;
         _decompressLZ(&dest, &dest_sz, pointer(), _size);
-        return xr_new<CTempReader>(dest, dest_sz, tell() + _size);
+        return new CTempReader(dest, dest_sz, tell() + _size);
     }
     else
     {
         // normal
-        return xr_new<IReader>(pointer(), _size, tell() + _size);
+        return new IReader(pointer(), _size, tell() + _size);
     }
 }
 
@@ -542,15 +539,15 @@ CVirtualFileRW::CVirtualFileRW(const char* cFileName)
 {
     // Open the file
     hSrcFile = CreateFile(cFileName, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ, 0, OPEN_EXISTING, 0, 0);
-    R_ASSERT3(hSrcFile != INVALID_HANDLE_VALUE, cFileName, Debug.error2string(GetLastError()));
+    R_ASSERT3(hSrcFile != INVALID_HANDLE_VALUE, cFileName, xrDebug::ErrorToString(GetLastError()));
     Size = (int)GetFileSize(hSrcFile, NULL);
-    R_ASSERT3(Size, cFileName, Debug.error2string(GetLastError()));
+    R_ASSERT3(Size, cFileName, xrDebug::ErrorToString(GetLastError()));
 
     hSrcMap = CreateFileMapping(hSrcFile, 0, PAGE_READWRITE, 0, 0, 0);
-    R_ASSERT3(hSrcMap != INVALID_HANDLE_VALUE, cFileName, Debug.error2string(GetLastError()));
+    R_ASSERT3(hSrcMap != INVALID_HANDLE_VALUE, cFileName, xrDebug::ErrorToString(GetLastError()));
 
     data = (char*)MapViewOfFile(hSrcMap, FILE_MAP_ALL_ACCESS, 0, 0, 0);
-    R_ASSERT3(data, cFileName, Debug.error2string(GetLastError()));
+    R_ASSERT3(data, cFileName, xrDebug::ErrorToString(GetLastError()));
 
 #ifdef FS_DEBUG
     register_file_mapping(data, Size, cFileName);
@@ -572,15 +569,15 @@ CVirtualFileReader::CVirtualFileReader(const char* cFileName)
 {
     // Open the file
     hSrcFile = CreateFile(cFileName, GENERIC_READ, FILE_SHARE_READ | FILE_SHARE_WRITE, 0, OPEN_EXISTING, 0, 0);
-    R_ASSERT3(hSrcFile != INVALID_HANDLE_VALUE, cFileName, Debug.error2string(GetLastError()));
+    R_ASSERT3(hSrcFile != INVALID_HANDLE_VALUE, cFileName, xrDebug::ErrorToString(GetLastError()));
     Size = (int)GetFileSize(hSrcFile, NULL);
-    R_ASSERT3(Size, cFileName, Debug.error2string(GetLastError()));
+    R_ASSERT3(Size, cFileName, xrDebug::ErrorToString(GetLastError()));
 
     hSrcMap = CreateFileMapping(hSrcFile, 0, PAGE_READONLY, 0, 0, 0);
-    R_ASSERT3(hSrcMap != INVALID_HANDLE_VALUE, cFileName, Debug.error2string(GetLastError()));
+    R_ASSERT3(hSrcMap != INVALID_HANDLE_VALUE, cFileName, xrDebug::ErrorToString(GetLastError()));
 
     data = (char*)MapViewOfFile(hSrcMap, FILE_MAP_READ, 0, 0, 0);
-    R_ASSERT3(data, cFileName, Debug.error2string(GetLastError()));
+    R_ASSERT3(data, cFileName, xrDebug::ErrorToString(GetLastError()));
 
 #ifdef FS_DEBUG
     register_file_mapping(data, Size, cFileName);

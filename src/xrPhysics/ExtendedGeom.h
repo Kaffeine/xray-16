@@ -6,8 +6,8 @@
 #endif
 #include "PHObject.h"
 
-#include "3rd party/ode/include/ode/common.h"
-#include "3rd party/ode/include/ode/collision.h"
+#include "Externals/ode/include/ode/common.h"
+#include "Externals/ode/include/ode/collision.h"
 #include "physicscommon.h"
 #include "MathUtils.h"
 #ifdef	DEBUG
@@ -50,7 +50,7 @@ class CObjectContactCallback
 		}
 		else
 		{
-			next=xr_new<CObjectContactCallback>(c);
+			next=new CObjectContactCallback(c);
 		}
 	}
 	bool	HasCallback(ObjectContactCallbackFun		*c)
@@ -176,7 +176,7 @@ IC IPhysicsShellHolder* retrieveRefObject(dGeomID geom)
 IC void dGeomCreateUserData(dxGeom* geom)
 {
 	if(!geom) return;
-	dGeomSetData(geom,xr_new<dxGeomUserData>());
+	dGeomSetData(geom,new dxGeomUserData());
 	(dGeomGetUserData(geom))->pushing_neg=false;
 	(dGeomGetUserData(geom))->pushing_b_neg=false;
 	(dGeomGetUserData(geom))->b_static_colide=true;
@@ -244,7 +244,7 @@ IC void dGeomUserDataSetContactCallback(dxGeom* geom,ContactCallbackFun* callbac
 IC void dGeomUserDataSetObjectContactCallback(dxGeom* geom,ObjectContactCallbackFun	*obj_callback)
 {
 	xr_delete((dGeomGetUserData(geom))->object_callbacks);
-	if(obj_callback)(dGeomGetUserData(geom))->object_callbacks=xr_new<CObjectContactCallback>(obj_callback);
+	if(obj_callback)(dGeomGetUserData(geom))->object_callbacks=new CObjectContactCallback(obj_callback);
 }
 
 IC void dGeomUserDataAddObjectContactCallback(dxGeom* geom,ObjectContactCallbackFun	*obj_callback)

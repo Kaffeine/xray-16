@@ -4,9 +4,9 @@
 #include "Hit.h"
 #include "PHDestroyable.h"
 #include "CharacterPhysicsSupport.h"
-#include "game_level_cross_table.h"
-#include "game_graph.h"
-#include "level_graph.h"
+#include "xrAICore/Navigation/game_level_cross_table.h"
+#include "xrAICore/Navigation/game_graph.h"
+#include "xrAICore/Navigation/level_graph.h"
 #include "PHMovementControl.h"
 #include "ai/Monsters/ai_monster_squad_manager.h"
 #include "xrServerEntities/xrServer_Objects_ALife_Monsters.h"
@@ -38,7 +38,8 @@
 #include "xrServer.h"
 #include "ai/Monsters/ai_monster_squad.h"
 #include "Actor.h"
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location_impl.h"
 #include "ai_space.h"
 #include "xrScriptEngine/script_engine.hpp"
 #include "ai/Monsters/anti_aim_ability.h"
@@ -58,13 +59,13 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 								m_radiation_aura(this, "radiation"), 
 								m_base_aura(this, "base")
 {
-	m_pPhysics_support=xr_new<CCharacterPhysicsSupport>(CCharacterPhysicsSupport::etBitting,this);
+	m_pPhysics_support=new CCharacterPhysicsSupport(CCharacterPhysicsSupport::etBitting,this);
 	
 	m_pPhysics_support				->in_Init();
 
 	// Components external init 
 	
-	m_control_manager				= xr_new<CControl_Manager>(this);
+	m_control_manager				= new CControl_Manager(this);
 
 	EnemyMemory.init_external		(this, 20000);
 	SoundMemory.init_external		(this, 20000);
@@ -89,10 +90,10 @@ CBaseMonster::CBaseMonster() :	m_psy_aura(this, "psy"),
 	m_com_manager.add_ability		(ControlCom::eControlTripleAnimation);
 
 
-	m_anomaly_detector				= xr_new<CAnomalyDetector>(this);
-	CoverMan						= xr_new<CMonsterCoverManager>(this);
+	m_anomaly_detector				= new CAnomalyDetector(this);
+	CoverMan						= new CMonsterCoverManager(this);
 
-	Home							= xr_new<CMonsterHome>(this);
+	Home							= new CMonsterHome(this);
 
 	com_man().add_ability				(ControlCom::eComCriticalWound);
 
@@ -394,7 +395,7 @@ void CBaseMonster::shedule_Update(u32 dt)
 //////////////////////////////////////////////////////////////////////
 
 
-void CBaseMonster::Die(CObject* who)
+void CBaseMonster::Die(IGameObject* who)
 {
 	if (StateMan) StateMan->critical_finalize();
 
@@ -599,12 +600,12 @@ void CBaseMonster::set_state_sound(u32 type, bool once)
 	m_prev_sound_type	= type;
 }
 
-bool CBaseMonster::feel_touch_on_contact	(CObject *O)
+bool CBaseMonster::feel_touch_on_contact	(IGameObject *O)
 {
 	return		(inherited::feel_touch_on_contact(O));
 }
 
-bool CBaseMonster::feel_touch_contact(CObject *O)
+bool CBaseMonster::feel_touch_contact(IGameObject *O)
 {
 	m_anomaly_detector->on_contact(O);
 	return inherited::feel_touch_contact(O);
@@ -727,7 +728,7 @@ void CBaseMonster::on_kill_enemy(const CEntity *obj)
 
 CMovementManager *CBaseMonster::create_movement_manager	()
 {
-	m_movement_manager = xr_new<CControlPathBuilder>(this);
+	m_movement_manager = new CControlPathBuilder(this);
 
 	control().add					(m_movement_manager, ControlCom::eControlPath);
 	control().install_path_manager	(m_movement_manager);
@@ -754,7 +755,7 @@ IFactoryObject *CBaseMonster::_construct	()
 	return						(this);
 }
 
-void CBaseMonster::net_Relcase(CObject *O)
+void CBaseMonster::net_Relcase(IGameObject *O)
 {
 	inherited::net_Relcase(O);
 
@@ -781,10 +782,10 @@ void CBaseMonster::net_Relcase(CObject *O)
 	
 void CBaseMonster::create_base_controls()
 {
-	m_anim_base		= xr_new<CControlAnimationBase>		();
-	m_move_base		= xr_new<CControlMovementBase>		();
-	m_path_base		= xr_new<CControlPathBuilderBase>	();
-	m_dir_base		= xr_new<CControlDirectionBase>		();
+	m_anim_base		= new CControlAnimationBase		();
+	m_move_base		= new CControlMovementBase		();
+	m_path_base		= new CControlPathBuilderBase	();
+	m_dir_base		= new CControlDirectionBase		();
 }
 
 void CBaseMonster::set_action(EAction action)
@@ -884,7 +885,7 @@ void CBaseMonster::OnEvent(NET_Packet& P, u16 type)
 	{
 	case GE_KILL_SOMEONE:
 		P.r_u16		(id);
-		CObject* O	= Level().Objects.net_Find	(id);
+		IGameObject* O	= Level().Objects.net_Find	(id);
 
 		if (O)  {
 			CEntity *pEntity = smart_cast<CEntity*>(O);

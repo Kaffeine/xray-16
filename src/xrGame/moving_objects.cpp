@@ -9,7 +9,7 @@
 #include "stdafx.h"
 #include "moving_objects.h"
 #include "ai_space.h"
-#include "level_graph.h"
+#include "xrAICore/Navigation/level_graph.h"
 #include "moving_object.h"
 
 moving_objects::moving_objects				() :
@@ -25,7 +25,7 @@ moving_objects::~moving_objects				()
 void moving_objects::on_level_load			()
 {
 	xr_delete				(m_tree);
-	m_tree					= xr_new<TREE>(ai().level_graph().header().box(),ai().level_graph().header().cell_size()*.5f,16*1024,16*1024);
+	m_tree					= new TREE(ai().level_graph().header().box(),ai().level_graph().header().cell_size()*.5f,16*1024,16*1024);
 }
 
 void moving_objects::register_object		(moving_object *moving_object)

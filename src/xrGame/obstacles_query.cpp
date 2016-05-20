@@ -11,7 +11,7 @@
 #include "GameObject.h"
 #include "ai_obstacle.h"
 #include "ai_space.h"
-#include "level_graph.h"
+#include "xrAICore/Navigation/level_graph.h"
 
 #pragma warning(push)
 #pragma warning(disable:4995)
@@ -23,7 +23,7 @@ void obstacles_query::set_intersection	(const obstacles_query &query)
 	u32							n = m_obstacles.size();
 	u32							buffer_size = n*sizeof(OBSTACLES::value_type);
 	OBSTACLES::value_type		*temp = (OBSTACLES::value_type*)_alloca(buffer_size);
-	Memory.mem_copy				(temp,&*obstacles().begin(),buffer_size);
+	memcpy				(temp,&*obstacles().begin(),buffer_size);
 	m_obstacles.erase			(
 		std::set_intersection(
 			temp,
@@ -47,7 +47,7 @@ void obstacles_query::merge				(const AREA &object_area)
 	u32							destination_size = area_size + object_area.size();
 	u32							buffer_size = destination_size*sizeof(u32);
 	u32							*temp = (u32*)_alloca(buffer_size);
-	Memory.mem_copy				(temp,&*m_area.begin(),area_size*sizeof(u32));
+	memcpy				(temp,&*m_area.begin(),area_size*sizeof(u32));
 	m_area.resize				(destination_size);
 	m_area.erase				(
 		std::set_union(
@@ -169,7 +169,7 @@ bool obstacles_query::remove_objects	(const Fvector &position, const float &radi
 	return						(crc_before != crc());
 }
 
-void obstacles_query::remove_links		(CObject *object)
+void obstacles_query::remove_links		(IGameObject *object)
 {
 	OBSTACLES::iterator			I = m_obstacles.find(smart_cast<CGameObject*>(object));
 	if (I == m_obstacles.end())

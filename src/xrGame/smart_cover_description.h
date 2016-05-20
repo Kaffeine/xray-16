@@ -8,9 +8,9 @@
 #ifndef SMART_COVER_DESCRIPTION_H_INCLUDED
 #define SMART_COVER_DESCRIPTION_H_INCLUDED
 
-#include <boost/noncopyable.hpp>
+#include "Common/Noncopyable.hpp"
 #include "smart_cover_detail.h"
-#include "graph_abstract.h"
+#include "xrAICore/Navigation/graph_abstract.h"
 
 namespace smart_cover {
 
@@ -22,7 +22,7 @@ namespace transitions {
 }
 
 class description final :
-	private boost::noncopyable, 
+	private Noncopyable, 
 	public  detail::intrusive_base_time
 {
 public:
@@ -53,7 +53,7 @@ private:
 			void					load_loopholes		(shared_str const &table_id);
 			void					load_transitions	(shared_str const &table_id);
 			void					process_loopholes	();
-			void					load_actions		(luabind::object const &table, ActionsList& result);
+			void					load_actions		(luabind::adl::object const &table, ActionsList& result);
 };
 
 } // namespace smart_cover

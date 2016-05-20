@@ -1,7 +1,7 @@
 #ifndef __V3D__
 #define __V3D__
 
-#include "Platform.h"
+#include "Common/Platform.hpp"
 
 template <class T>
 struct _vector3

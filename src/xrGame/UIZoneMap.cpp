@@ -10,7 +10,7 @@
 
 #include "actor.h"
 #include "ai_space.h"
-#include "game_graph.h"
+#include "xrAICore/Navigation/game_graph.h"
 
 #include "ui/UIMap.h"
 #include "ui/UIXmlInit.h"
@@ -40,7 +40,7 @@ void CUIZoneMap::Init()
 	
 	m_clock_wnd						= UIHelper::CreateStatic(uiXml, "minimap:clock_wnd", &m_background);
 
-	m_activeMap						= xr_new<CUIMiniMap>();
+	m_activeMap						= new CUIMiniMap();
 	m_clipFrame.AttachChild			(m_activeMap);
 	m_activeMap->SetAutoDelete		(true);
 

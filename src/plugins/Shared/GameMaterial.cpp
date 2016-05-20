@@ -9,7 +9,7 @@
 class XRayMtlClassDesc:public ClassDesc2 {
 public:
 	int 			IsPublic		()				{ return 1; }
-	void *			Create			(BOOL loading)	{ return xr_new<XRayMtl>(loading); }
+	void *			Create			(BOOL loading)	{ return new XRayMtl(loading); }
 	const TCHAR *	ClassName		()				{ return GetString(IDS_CLASS_NAME); }
 	SClass_ID		SuperClassID	()				{ return MATERIAL_CLASS_ID; }
 	Class_ID 		ClassID			()				{ return XRAYMTL_CLASS_ID; }
@@ -1158,7 +1158,7 @@ void* XRayMtl::GetInterface(ULONG id)
 
 void XRayMtl::Reset() 
 {
-	ReplaceReference( TEXMAPS_REF, xr_new<Texmaps>((MtlBase*)this));	
+	ReplaceReference( TEXMAPS_REF, new Texmaps((MtlBase*)this));	
 	ivalid.SetEmpty();
 
 	SetShaderIndx( FindShader( Class_ID(DEFAULT_SHADER_CLASS_ID,0) ));
@@ -1239,7 +1239,7 @@ XRayMtl::XRayMtl(BOOL loading) : mReshadeRQ(RR_None), mInRQ(RR_None) // mjm - 06
 	for ( int i = 0; i < 12; ++i )
 		stdIDToChannel[i] = -1;
 
-	for ( i = 0; i < STD2_NMAX_TEXMAPS; ++i )
+	for (int i = 0; i < STD2_NMAX_TEXMAPS; ++i )
 		channelTypes[i] = UNSUPPORTED_CHANNEL;
 
 	ivalid.SetEmpty();
@@ -1274,7 +1274,7 @@ XRayMtl::XRayMtl(BOOL loading) : mReshadeRQ(RR_None), mInRQ(RR_None) // mjm - 06
 RefTargetHandle XRayMtl::Clone(RemapDir &remap) {
 	//DebugPrint(" Cloning NEWSTDMTL %d \n", ++numNewStdMtls);
 	macroRecorder->Disable();
-	XRayMtl *mnew = xr_new<XRayMtl>(TRUE);
+	XRayMtl *mnew = new XRayMtl(TRUE);
 	*((MtlBase*)mnew) = *((MtlBase*)this);  // copy superclass stuff
 	mnew->ReplaceReference(TEXMAPS_REF,		remap.CloneRef(maps));
 	mnew->ReplaceReference(SHADER_REF,		remap.CloneRef(pShader));	
@@ -1312,7 +1312,7 @@ RefTargetHandle XRayMtl::Clone(RemapDir &remap) {
 	for ( int i = 0; i < 12; ++i )
 		mnew->stdIDToChannel[i] = stdIDToChannel[i];
 
-	for ( i = 0; i < STD2_NMAX_TEXMAPS; ++i )
+	for (int i = 0; i < STD2_NMAX_TEXMAPS; ++i )
 		mnew->channelTypes[i] = channelTypes[i];
 	macroRecorder->Enable();
 	BaseClone(this, mnew, remap);
@@ -1620,7 +1620,7 @@ void XRayMtl::SwitchShader(Shader* newShader, BOOL loadDlg )
 		theHold.Resume(); //-----------------------------------------------------
 
 		if (theHold.Holding())
-			theHold.Put(xr_new<SwitchShaderRestore>(this,oldShader,newShader));  // this will make a ref to oldShader
+			theHold.Put(new SwitchShaderRestore(this,oldShader,newShader));  // this will make a ref to oldShader
 
 		theHold.Suspend(); //-----------------------------------------------------
 
@@ -1800,7 +1800,7 @@ void XRayMtl::SwitchSampler( Sampler* newSampler )
 
 		theHold.Resume(); //-----------------------------------------------------
 		if (theHold.Holding())
-			theHold.Put(xr_new<SwitchSamplerRestore>(this, pixelSampler));  // this will make a ref to oldShader
+			theHold.Put(new SwitchSamplerRestore(this, pixelSampler));  // this will make a ref to oldShader
 		theHold.Suspend(); //-----------------------------------------------------
 
 		SetPixelSampler( newSampler );
@@ -1952,7 +1952,7 @@ void XRayMtl::UpdateTexmaps()
 	}
 
 	// last do the Channel Ids from stdMat
-	for ( i = 0; i < N_ID_CHANNELS; ++i ){
+	for (long i = 0; i < N_ID_CHANNELS; ++i ){
 		int chan = pShader->StdIDToChannel(i);
 		if ( chan >= 0 ) {
 			stdIDToChannel[i] = chan;
@@ -2232,7 +2232,8 @@ void XRayMtl::ShuffleTexMaps( Shader* newShader, Shader* oldShader )
 	int nNewShadeMaps = newShader->nTexChannelsSupported();
 
 	// for each new shader map
-	for( int oldChan, newChan = 0; newChan < nNewShadeMaps; ++newChan ){
+    int oldChan, newChan = 0;
+	for(; newChan < nNewShadeMaps; ++newChan ){
 
 		TSTR newName = newShader->GetTexChannelInternalName(newChan);
 
@@ -3375,10 +3376,10 @@ case NEWSTDMTL_DIM_REFLECT:
 
 	// register version updaters
 	if (version <= FINAL_PARAMBLOCK_v1_VERSION) {
-		iload->RegisterPostLoadCallback(xr_new<ParamBlockPLCB>((ParamVersionDesc*)oldNewStdMtlVersions, NEWSTDMTL_NUMOLDVER, &stdMtlVersion, this, 0));
-		iload->RegisterPostLoadCallback(xr_new<NewStdMtl2UpdateCB>(this, version));
+		iload->RegisterPostLoadCallback(new ParamBlockPLCB((ParamVersionDesc*)oldNewStdMtlVersions, NEWSTDMTL_NUMOLDVER, &stdMtlVersion, this, 0));
+		iload->RegisterPostLoadCallback(new NewStdMtl2UpdateCB(this, version));
 		if (version<12)
-			iload->RegisterPostLoadCallback(xr_new<NewStdMtl2BumpFixCB>(this));
+			iload->RegisterPostLoadCallback(new NewStdMtl2BumpFixCB(this));
 		iload->SetObsolete();
 	}
 
@@ -3389,7 +3390,7 @@ case NEWSTDMTL_DIM_REFLECT:
 	if (gamemtlId==-1) gamemtlId = XRayMtl::FindGameMtl("default");
 
 	// register plcb to finalize setup
-	iload->RegisterPostLoadCallback(xr_new<NewStdMtl2CB>(this));
+	iload->RegisterPostLoadCallback(new NewStdMtl2CB(this));
 
 	return IO_OK;
 }
@@ -3738,7 +3739,7 @@ void XRayMtl::PostShade(ShadeContext& sc, IReshadeFragment* pFrag, int& nextTexI
 // too late for sdk, eco in progress
 IllumParams* CloneIp( IllumParams& ip )
 {
-	IllumParams* pClone = xr_new<IllumParams>( ip.nUserIllumOut, ip.userIllumNames );
+	IllumParams* pClone = new IllumParams( ip.nUserIllumOut, ip.userIllumNames );
 	pClone->finalC = ip.finalC;
 	pClone->finalT = ip.finalT;
 	pClone->finalOpac = ip.finalOpac;
@@ -3762,7 +3763,7 @@ IllumParams* CloneIp( IllumParams& ip )
 	pClone->refractAmt = ip.refractAmt;
 	pClone->reflectAmt = ip.reflectAmt;
 
-	for( i=0; i < STD2_NMAX_TEXMAPS; ++i )
+	for(int i=0; i < STD2_NMAX_TEXMAPS; ++i )
 		pClone->channels[ i ] = ip.channels[ i ];
 
 	return pClone;
@@ -4156,7 +4157,7 @@ void XRayMtl::SetupGfxMultiMaps(TimeValue t, Material *mtl, MtlMakerCallback &cb
 	mtl->texture.SetCount(nmaps);
 	if (nmaps==0) 
 		return;
-	for (i=0; i<nmaps; i++)
+	for (int i=0; i<nmaps; i++)
 		mtl->texture[i].textHandle = NULL;
 	texHandleValid.SetInfinite();
 	Interval  valid;
@@ -4422,7 +4423,7 @@ bool XRayMtl::EvalChannel(ShadeContext& sc, int channelID, Color& outClr)
 
 	// Get raw color\value from the shader
 	IllumParams ip(0, NULL);
-	Memory.mem_fill(static_cast<void*>(&ip), 0, sizeof(IllumParams) );
+	memset(static_cast<void*>(&ip), 0, sizeof(IllumParams) );
 	//	ip.mtlFlags = flags;
 	pShad->GetIllumParams( sc, ip );
 

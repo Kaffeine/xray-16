@@ -10,13 +10,14 @@
 #include "ai/Monsters/rats/ai_rat.h"
 #include "ai/ai_monsters_misc.h"
 #include "xrPhysics/PhysicsShell.h"
-#include "game_graph.h"
-#include "game_level_cross_table.h"
+#include "xrAICore/Navigation/game_graph.h"
+#include "xrAICore/Navigation/game_level_cross_table.h"
 #include "xrServerEntities/xrServer_Objects_ALife_Monsters.h"
 #include "ai/Monsters/rats/ai_rat_space.h"
 #include "Include/xrRender/KinematicsAnimated.h"
 #include "detail_path_manager.h"
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location_impl.h"
 #include "movement_manager.h"
 #include "location_manager.h"
 #include "xrServerEntities/ai_sounds.h"
@@ -28,8 +29,8 @@
 #include "Common/object_broker.h"
 #include "ai/Monsters/ai_monster_squad_manager.h"
 #include "ai/Monsters/ai_monster_squad.h"
-#include "patrol_path_storage.h"
-#include "patrol_path.h"
+#include "xrAICore/Navigation/PatrolPath/patrol_path_storage.h"
+#include "xrAICore/Navigation/PatrolPath/patrol_path.h"
 #include "Actor.h"
 
 using namespace RatSpace;
@@ -38,10 +39,10 @@ CAI_Rat::CAI_Rat() :
 	m_behaviour_manager		(0)
 {
 	init					();
-//	m_behaviour_manager				= xr_new<steering_behaviour::manager>(this);
-//	m_behaviour_manager->add		(xr_new<steering_behaviour::cohesion>(this),	.5f);
-//	m_behaviour_manager->add		(xr_new<steering_behaviour::separation>(this),	.5f);
-//	m_behaviour_manager->add		(xr_new<steering_behaviour::alignment>(this),	.5f);
+//	m_behaviour_manager				= new steering_behaviour::manager(this);
+//	m_behaviour_manager->add		(new steering_behaviour::cohesion(this),	.5f);
+//	m_behaviour_manager->add		(new steering_behaviour::separation(this),	.5f);
+//	m_behaviour_manager->add		(new steering_behaviour::alignment(this),	.5f);
 }
 
 CAI_Rat::~CAI_Rat()
@@ -85,22 +86,22 @@ void CAI_Rat::init()
 
 void CAI_Rat::init_state_manager		()
 {
-	m_state_manager				= xr_new<rat_state_manager>();
+	m_state_manager				= new rat_state_manager();
 	m_state_manager->construct	(this);
 	fire(false);
 
-	m_state_manager->add_state	(aiRatDeath,		xr_new<rat_state_death>			());
-	m_state_manager->add_state	(aiRatFreeActive,	xr_new<rat_state_free_active>	());
-	m_state_manager->add_state	(aiRatFreePassive,	xr_new<rat_state_free_passive>	());
-	m_state_manager->add_state	(aiRatAttackRange,	xr_new<rat_state_attack_range>	());
-	m_state_manager->add_state	(aiRatAttackMelee,	xr_new<rat_state_attack_melee>	());
-	m_state_manager->add_state	(aiRatUnderFire,	xr_new<rat_state_under_fire>	());
-	m_state_manager->add_state	(aiRatRetreat,		xr_new<rat_state_retreat>		());
-	m_state_manager->add_state	(aiRatPursuit,		xr_new<rat_state_pursuit>		());
-	m_state_manager->add_state	(aiRatFreeRecoil,	xr_new<rat_state_free_recoil>	());
-	m_state_manager->add_state	(aiRatReturnHome,	xr_new<rat_state_return_home>	());
-	m_state_manager->add_state	(aiRatEatCorpse,	xr_new<rat_state_eat_corpse>	());
-	m_state_manager->add_state	(aiRatNoWay,		xr_new<rat_state_no_way>		());
+	m_state_manager->add_state	(aiRatDeath,		new rat_state_death			());
+	m_state_manager->add_state	(aiRatFreeActive,	new rat_state_free_active	());
+	m_state_manager->add_state	(aiRatFreePassive,	new rat_state_free_passive	());
+	m_state_manager->add_state	(aiRatAttackRange,	new rat_state_attack_range	());
+	m_state_manager->add_state	(aiRatAttackMelee,	new rat_state_attack_melee	());
+	m_state_manager->add_state	(aiRatUnderFire,	new rat_state_under_fire	());
+	m_state_manager->add_state	(aiRatRetreat,		new rat_state_retreat		());
+	m_state_manager->add_state	(aiRatPursuit,		new rat_state_pursuit		());
+	m_state_manager->add_state	(aiRatFreeRecoil,	new rat_state_free_recoil	());
+	m_state_manager->add_state	(aiRatReturnHome,	new rat_state_return_home	());
+	m_state_manager->add_state	(aiRatEatCorpse,	new rat_state_eat_corpse	());
+	m_state_manager->add_state	(aiRatNoWay,		new rat_state_no_way		());
 
 	m_state_manager->push_state	(aiRatFreeActive);
 }
@@ -125,7 +126,7 @@ void CAI_Rat::reload					(LPCSTR	section)
 	sound().add		(pSettings->r_string(section,"sound_eat"),		100, SOUND_TYPE_MONSTER_EATING	,	3, u32(eRatSoundMaskEat),		eRatSoundEat,		head_bone_name);
 }
 
-void CAI_Rat::Die(CObject* who)
+void CAI_Rat::Die(IGameObject* who)
 {
 	inherited::Die(who);
 
@@ -516,7 +517,7 @@ void CAI_Rat::UpdatePositionAnimation()
 		SelectAnimation		(XFORM().k,Fvector().set(1,0,0),m_fSpeed);
 }
 
-//void CAI_Rat::Hit(float P,Fvector &dir,CObject*who,s16 element,Fvector p_in_object_space,float impulse, ALife::EHitType hit_type /*= ALife::eHitTypeWound*/)
+//void CAI_Rat::Hit(float P,Fvector &dir,IGameObject*who,s16 element,Fvector p_in_object_space,float impulse, ALife::EHitType hit_type /*= ALife::eHitTypeWound*/)
 void		CAI_Rat::Hit									(SHit* pHDS)
 {
 //	inherited::Hit				(P,dir,who,element,p_in_object_space,impulse, hit_type);
@@ -533,7 +534,7 @@ void		CAI_Rat::Hit									(SHit* pHDS)
 	}
 }
 
-void CAI_Rat::feel_touch_new(CObject* O)
+void CAI_Rat::feel_touch_new(IGameObject* O)
 {
 }
 
@@ -651,7 +652,7 @@ void CAI_Rat::activate_physic_shell	()
 
 void CAI_Rat::on_activate_physic_shell	()
 {
-	CObject						*object = smart_cast<CObject*>(H_Parent());
+	IGameObject						*object = smart_cast<IGameObject*>(H_Parent());
 	R_ASSERT					(object);
 	XFORM().set					(object->XFORM());
 	inherited::activate_physic_shell();
@@ -671,7 +672,7 @@ float CAI_Rat::get_custom_pitch_speed	(float def_speed)
 				if (fsimilar(m_fSpeed,m_fAttackSpeed))
 					return	(PI_DIV_2);
 
-	Debug.fatal				(DEBUG_INFO,"Impossible RAT speed!");
+	xrDebug::Fatal				(DEBUG_INFO,"Impossible RAT speed!");
 	return					(PI_DIV_2);
 }
 

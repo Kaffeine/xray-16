@@ -73,7 +73,7 @@ void CWeaponStatMgun::OnShot()
 	StartSmokeParticles		(m_fire_pos, zero_vel);
 	OnShellDrop				(m_fire_pos, zero_vel);
 
-	bool b_hud_mode =		(Level().CurrentEntity() == smart_cast<CObject*>(Owner()));
+	bool b_hud_mode =		(Level().CurrentEntity() == smart_cast<IGameObject*>(Owner()));
 	m_sounds.PlaySound		("sndShot", m_fire_pos, Owner(), b_hud_mode);
 
 	AddShotEffector			();
@@ -94,7 +94,7 @@ void CWeaponStatMgun::AddShotEffector				()
 		camera_recoil.StepAngleHorz		= ::Random.randF(-1.0f, 1.0f) * 0.01f;
 		camera_recoil.DispersionFrac	= 0.7f;
 
-		if (!S)	S			= (CCameraShotEffector*)OwnerActor()->Cameras().AddCamEffector(xr_new<CCameraShotEffector>(camera_recoil) );
+		if (!S)	S			= (CCameraShotEffector*)OwnerActor()->Cameras().AddCamEffector(new CCameraShotEffector(camera_recoil) );
 		R_ASSERT			(S);
 		S->Initialize		(camera_recoil);
 		S->Shot2			(0.01f);

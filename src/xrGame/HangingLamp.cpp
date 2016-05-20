@@ -95,7 +95,7 @@ BOOL CHangingLamp::net_Spawn(CSE_Abstract* DC)
 		R_ASSERT			(Visual()&&smart_cast<IKinematics*>(Visual()));
 		light_bone			= K->LL_BoneID	(*lamp->light_main_bone);	VERIFY(light_bone!=BI_NONE);
 		ambient_bone		= K->LL_BoneID	(*lamp->light_ambient_bone);VERIFY(ambient_bone!=BI_NONE);
-        CForm = xr_new<CCF_Skeleton>				(this);
+        CForm = new CCF_Skeleton				(this);
 	}
 	fBrightness				= lamp->brightness;
 	clr.set					(lamp->color);						clr.a = 1.f;
@@ -313,7 +313,7 @@ void CHangingLamp::TurnOff	()
 		
 }
 
-//void CHangingLamp::Hit(float P,Fvector &dir, CObject* who,s16 element,
+//void CHangingLamp::Hit(float P,Fvector &dir, IGameObject* who,s16 element,
 //					   Fvector p_in_object_space, float impulse, ALife::EHitType hit_type)
 void	CHangingLamp::Hit					(SHit* pHDS)
 {

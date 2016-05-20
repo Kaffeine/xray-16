@@ -3,8 +3,8 @@
 #include "stdafx.h"
 #pragma hdrstop
 
-#include <mmsystem.h>
-#include <objbase.h>
+//#include <mmsystem.h>
+//#include <objbase.h>
 #include "xrCore.h"
 #include "Threading/ttapi.h"
 #include "Math/MathUtil.hpp"
@@ -16,8 +16,6 @@
 #endif // DEBUG
 
 XRCORE_API xrCore Core;
-XRCORE_API u32 build_id;
-XRCORE_API LPCSTR build_date;
 
 namespace CPU
 {
@@ -25,8 +23,6 @@ extern void Detect();
 };
 
 static u32 init_counter = 0;
-
-extern char g_application_path[256];
 
 //. extern xr_vector<shared_str>* LogFile;
 
@@ -41,18 +37,15 @@ void xrCore::_initialize(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs, 
 #ifdef __WIN32
         Params = xr_strdup(GetCommandLine());
 #endif
-        if (!strstr(Params, "-editor"))
-            CoInitializeEx(NULL, COINIT_MULTITHREADED);
+//        if (!strstr(Params, "-editor"))
+//            CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
         string_path fn, dr, di;
 
         // application path
-        GetModuleFileName(GetModuleHandle("xrCore"), fn, sizeof(fn));
-        _splitpath(fn, dr, di, 0, 0);
+//        GetModuleFileName(GetModuleHandle("xrCore"), fn, sizeof(fn));
+//        _splitpath(fn, dr, di, 0, 0);
         strconcat(sizeof(ApplicationPath), ApplicationPath, dr, di);
-#ifndef _EDITOR
-        xr_strcpy(g_application_path, sizeof(g_application_path), ApplicationPath);
-#endif
 
 #ifdef _EDITOR
         // working path
@@ -64,14 +57,14 @@ void xrCore::_initialize(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs, 
         }
 #endif
 
-        GetCurrentDirectory(sizeof(WorkingPath), WorkingPath);
+//        GetCurrentDirectory(sizeof(WorkingPath), WorkingPath);
 
         // User/Comp Name
-        DWORD sz_user = sizeof(UserName);
-        GetUserName(UserName, &sz_user);
+//        DWORD sz_user = sizeof(UserName);
+//        GetUserName(UserName, &sz_user);
 
-        DWORD sz_comp = sizeof(CompName);
-        GetComputerName(CompName, &sz_comp);
+//        DWORD sz_comp = sizeof(CompName);
+//        GetComputerName(CompName, &sz_comp);
 
         // Mathematics & PSI detection
         CPU::Detect();
@@ -85,13 +78,13 @@ void xrCore::_initialize(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs, 
         R_ASSERT(CPU::ID.feature&_CPU_FEATURE_SSE);
         ttapi_Init(CPU::ID);
         XRay::Math::Initialize();
-        // Debug._initialize ();
+        // xrDebug::Initialize ();
 
         rtc_initialize();
 
-        xr_FS = xr_new<CLocatorAPI>();
+        xr_FS = new CLocatorAPI();
 
-        xr_EFS = xr_new<EFS_Utils>();
+        xr_EFS = new EFS_Utils();
         //. R_ASSERT (co_res==S_OK);
     }
     if (init_fs)
@@ -114,7 +107,8 @@ void xrCore::_initialize(LPCSTR _ApplicationName, LogCallback cb, BOOL init_fs, 
 #endif
 #endif
         FS._initialize(flags, 0, fs_fname);
-        Msg("'%s' build %d, %s\n", "xrCore", build_id, build_date);
+        CalculateBuildId();
+        Msg("'%s' build %d, %s\n", "xrCore", buildId, buildDate);
         EFS._initialize();
 #ifdef DEBUG
 #ifndef _EDITOR
@@ -169,6 +163,41 @@ void xrCore::InitializeArguments(int argc, char *argv[])
         currentLength += xr_strlen(argv[i]);
     }
     Core.Params = params;
+}
+
+void xrCore::CalculateBuildId()
+{
+    const int startDay = 31;
+    const int startMonth = 1;
+    const int startYear = 1999;
+    const char *monthId[12] =
+    {
+        "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    };
+    const int daysInMonth[12] =
+    {
+        31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31
+    };
+    buildDate = __DATE__;
+    int days;
+    int months = 0;
+    int years;
+    string16 month;
+    string256 buffer;
+    xr_strcpy(buffer, buildDate);
+    sscanf(buffer, "%s %d %d", month, &days, &years);
+    for (int i = 0; i<12; i++)
+    {
+        if (_stricmp(monthId[i], month))
+            continue;
+        months = i;
+        break;
+    }
+    buildId = (years- startYear)*365+days-startDay;
+    for (int i = 0; i<months; i++)
+        buildId += daysInMonth[i];
+    for (int i = 0; i<startMonth-1; i++)
+        buildId -= daysInMonth[i];
 }
 
 //. why ???

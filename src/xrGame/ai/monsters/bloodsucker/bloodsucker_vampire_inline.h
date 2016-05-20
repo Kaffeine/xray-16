@@ -16,10 +16,10 @@
 TEMPLATE_SPECIALIZATION
 CStateBloodsuckerVampireAbstract::CStateBloodsuckerVampire(_Object *obj) : inherited(obj)
 {
-	add_state	(eStateVampire_ApproachEnemy,	xr_new<CStateBloodsuckerVampireApproach<_Object> >	(obj));
-	add_state	(eStateVampire_Execute,			xr_new<CStateBloodsuckerVampireExecute<_Object> >	(obj));
-	add_state	(eStateVampire_RunAway,			xr_new<CStateMonsterHideFromPoint<_Object> >		(obj));
-	add_state	(eStateVampire_Hide,			xr_new<CStateBloodsuckerVampireHide<_Object> >		(obj));
+	add_state	(eStateVampire_ApproachEnemy,	new CStateBloodsuckerVampireApproach<_Object>(obj));
+	add_state	(eStateVampire_Execute,			new CStateBloodsuckerVampireExecute<_Object>(obj));
+	add_state	(eStateVampire_RunAway,			new CStateMonsterHideFromPoint<_Object>(obj));
+	add_state	(eStateVampire_Hide,			new CStateBloodsuckerVampireHide<_Object>(obj));
 }
 
 TEMPLATE_SPECIALIZATION
@@ -160,7 +160,7 @@ void CStateBloodsuckerVampireAbstract::setup_substates()
 }
 
 TEMPLATE_SPECIALIZATION
-void CStateBloodsuckerVampireAbstract::remove_links	(CObject* object)
+void CStateBloodsuckerVampireAbstract::remove_links	(IGameObject* object)
 {
 	if (enemy == object)
 		enemy					= 0;

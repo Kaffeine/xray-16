@@ -141,7 +141,7 @@ namespace detail
 
 bool check_actor_visibility (const Fvector trace_from, 
 							 const Fvector trace_to,
-							 CObject* object)
+							 IGameObject* object)
 {
 	const float dist = trace_from.distance_to(trace_to);
 	Fvector trace_dir;
@@ -248,7 +248,7 @@ void CControllerPsyHit::death_glide_start()
 	float const base_fov	=	g_fov;
 	float const dest_fov	=	g_fov - (g_fov-10.f)*actor_psy_immunity;
 	
-	Actor()->Cameras().AddCamEffector(xr_new<CControllerPsyHitCamEffector>(eCEControllerPsyHit, src_pos,target_pos, 
+	Actor()->Cameras().AddCamEffector(new CControllerPsyHitCamEffector(eCEControllerPsyHit, src_pos,target_pos, 
 										m_man->animation().motion_time(m_stage[1], m_object->Visual()),
 										base_fov, dest_fov));
 

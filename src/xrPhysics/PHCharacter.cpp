@@ -10,7 +10,7 @@
 #include "xrEngine/GameMtlLib.h"
 
 #include "tri-colliderKNoOPC\__aabb_tri.h"
-#include "3rd party/ode/ode/src/util.h"
+#include "Externals/ode/ode/src/util.h"
 #include "ph_valid_ode.h"
 #include "Phaicharacter.h"
 #include "phactorcharacter.h"
@@ -234,10 +234,10 @@ void	CPHCharacter::	fix_body_rotation					()
 
 CPHCharacter	*create_ai_character()
 {
-	return xr_new<CPHAICharacter>	();
+	return new CPHAICharacter	();
 }
 CPHCharacter	*create_actor_character( bool single_game )
 {
-	return xr_new<CPHActorCharacter>	( single_game );
+	return new CPHActorCharacter	( single_game );
 }
 

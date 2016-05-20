@@ -67,7 +67,7 @@
 
 #include "Include/xrRender/UIRender.h"
 
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location.h"
 #include "ui/uiMotionIcon.h"
 #include "ui/UIActorMenu.h"
 #include "ActorHelmet.h"
@@ -98,9 +98,9 @@ int				psActorSleepTime = 1;
 
 CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 {
-	game_news_registry		= xr_new<CGameNewsRegistryWrapper		>();
+	game_news_registry		= new CGameNewsRegistryWrapper();
 	// Cameras
-	cameras[eacFirstEye]	= xr_new<CCameraFirstEye>				(this);
+	cameras[eacFirstEye]	= new CCameraFirstEye				(this);
 	cameras[eacFirstEye]->Load("actor_firsteye_cam");
 
 	if(strstr(Core.Params,"-psp"))
@@ -110,16 +110,16 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 
 	if( psActorFlags.test(AF_PSP) )
 	{
-		cameras[eacLookAt]		= xr_new<CCameraLook2>				(this);
+		cameras[eacLookAt]		= new CCameraLook2				(this);
 		cameras[eacLookAt]->Load("actor_look_cam_psp");
 	}else
 	{
-		cameras[eacLookAt]		= xr_new<CCameraLook>				(this);
+		cameras[eacLookAt]		= new CCameraLook				(this);
 		cameras[eacLookAt]->Load("actor_look_cam");
 	}
-	cameras[eacFreeLook]	= xr_new<CCameraLook>					(this);
+	cameras[eacFreeLook]	= new CCameraLook					(this);
 	cameras[eacFreeLook]->Load("actor_free_cam");
-	cameras[eacFixedLookAt]	= xr_new<CCameraFixedLook>				(this);
+	cameras[eacFixedLookAt]	= new CCameraFixedLook				(this);
 	cameras[eacFixedLookAt]->Load("actor_look_cam");
 
 	cam_active				= eacFirstEye;
@@ -185,21 +185,21 @@ CActor::CActor() : CEntityAlive(),current_ik_cam_shift(0)
 	m_pUsableObject			= NULL;
 
 
-	m_anims					= xr_new<SActorMotions>();
-//.	m_vehicle_anims			= xr_new<SActorVehicleAnims>();
+	m_anims					= new SActorMotions();
+//.	m_vehicle_anims			= new SActorVehicleAnims();
 	m_entity_condition		= NULL;
 	m_iLastHitterID			= u16(-1);
 	m_iLastHittingWeaponID	= u16(-1);
 	m_statistic_manager		= NULL;
 	//-----------------------------------------------------------------------------------
-	m_memory				= g_dedicated_server ? 0 : xr_new<CActorMemory>(this);
+	m_memory				= g_dedicated_server ? 0 : new CActorMemory(this);
 	m_bOutBorder			= false;
 	m_hit_probability		= 1.f;
 	m_feel_touch_characters = 0;
 	//-----------------------------------------------------------------------------------
 	m_dwILastUpdateTime		= 0;
 
-	m_location_manager		= xr_new<CLocationManager>(this);
+	m_location_manager		= new CLocationManager(this);
 	m_block_sprint_counter	= 0;
 
 	m_disabled_hitmarks		= false;
@@ -523,7 +523,7 @@ void	CActor::Hit(SHit* pHDS)
 			{
 				S.set_volume(10.0f);
 				if(!m_sndShockEffector){
-					m_sndShockEffector = xr_new<SndShockEffector>();
+					m_sndShockEffector = new SndShockEffector();
 					m_sndShockEffector->Start(this, float(S.get_length_sec()*1000.0f), HDS.damage() );
 				}
 			}
@@ -547,8 +547,8 @@ void	CActor::Hit(SHit* pHDS)
 			!g_dedicated_server && 
 			(HDS.hit_type == ALife::eHitTypeFireWound) )
 	{
-		CObject* pLastHitter			= Level().Objects.net_Find(m_iLastHitterID);
-		CObject* pLastHittingWeapon		= Level().Objects.net_Find(m_iLastHittingWeaponID);
+		IGameObject* pLastHitter			= Level().Objects.net_Find(m_iLastHitterID);
+		IGameObject* pLastHittingWeapon		= Level().Objects.net_Find(m_iLastHittingWeaponID);
 		HitSector						(pLastHitter, pLastHittingWeapon);
 	}
 
@@ -629,7 +629,7 @@ void	CActor::Hit(SHit* pHDS)
 
 void CActor::HitMark	(float P, 
 						 Fvector dir,			
-						 CObject* who_object, 
+						 IGameObject* who_object, 
 						 s16 element, 
 						 Fvector position_in_bone_space, 
 						 float impulse,  
@@ -696,7 +696,7 @@ void CActor::HitMark	(float P,
 	}//if hit_type
 }
 
-void CActor::HitSignal(float perc, Fvector& vLocalDir, CObject* who, s16 element)
+void CActor::HitSignal(float perc, Fvector& vLocalDir, IGameObject* who, s16 element)
 {
 	if (g_Alive()) 
 	{
@@ -719,7 +719,7 @@ void CActor::HitSignal(float perc, Fvector& vLocalDir, CObject* who, s16 element
 	}
 }
 void start_tutorial(LPCSTR name);
-void CActor::Die	(CObject* who)
+void CActor::Die	(IGameObject* who)
 {
 #ifdef DEBUG
 	Msg("--- Actor [%s] dies !", this->Name());
@@ -871,7 +871,7 @@ void CActor::g_Physics			(Fvector& _accel, float jump, float dt)
 	if (Local() && g_Alive()) 
 	{
 		if(character_physics_support()->movement()->gcontact_Was)
-			Cameras().AddCamEffector		(xr_new<CEffectorFall> (character_physics_support()->movement()->gcontact_Power));
+			Cameras().AddCamEffector		(new CEffectorFall (character_physics_support()->movement()->gcontact_Power));
 
 		if (!fis_zero(character_physics_support()->movement()->gcontact_HealthLost))	
 		{
@@ -950,7 +950,7 @@ void CActor::UpdateCL	()
 
 	if(m_feel_touch_characters>0)
 	{
-		for(xr_vector<CObject*>::iterator it = feel_touch.begin(); it != feel_touch.end(); it++)
+		for(xr_vector<IGameObject*>::iterator it = feel_touch.begin(); it != feel_touch.end(); it++)
 		{
 			CPhysicsShellHolder	*sh = smart_cast<CPhysicsShellHolder*>(*it);
 			if(sh&&sh->character_physics_support())
@@ -1220,7 +1220,7 @@ void CActor::shedule_Update	(u32 DT)
 	//эффектор включаемый при ходьбе
 	if (!pCamBobbing)
 	{
-		pCamBobbing = xr_new<CEffectorBobbing>	();
+		pCamBobbing = new CEffectorBobbing	();
 		Cameras().AddCamEffector			(pCamBobbing);
 	}
 	pCamBobbing->SetState						(mstate_real, conditions().IsLimping(), IsZoomAimingMode());
@@ -1851,7 +1851,7 @@ CPHDestroyable*	CActor::ph_destroyable	()
 CEntityConditionSimple *CActor::create_entity_condition	(CEntityConditionSimple* ec)
 {
 	if(!ec)
-		m_entity_condition		= xr_new<CActorCondition>(this);
+		m_entity_condition		= new CActorCondition(this);
 	else
 		m_entity_condition		= smart_cast<CActorCondition*>(ec);
 	
@@ -1860,7 +1860,7 @@ CEntityConditionSimple *CActor::create_entity_condition	(CEntityConditionSimple*
 
 IFactoryObject *CActor::_construct			()
 {
-	m_pPhysics_support				=	xr_new<CCharacterPhysicsSupport>(CCharacterPhysicsSupport::etActor,this);
+	m_pPhysics_support				=	new CCharacterPhysicsSupport(CCharacterPhysicsSupport::etActor,this);
 	CEntityAlive::_construct		();
 	CInventoryOwner::_construct		();
 	CStepManager::_construct		();

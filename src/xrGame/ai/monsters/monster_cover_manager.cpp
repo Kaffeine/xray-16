@@ -4,13 +4,13 @@
 #include "cover_evaluators.h"
 #include "cover_point.h"
 #include "ai_space.h"
-#include "level_graph.h"
-#include "game_graph.h"
-#include "game_level_cross_table.h"
+#include "xrAICore/Navigation/level_graph.h"
+#include "xrAICore/Navigation/game_graph.h"
+#include "xrAICore/Navigation/game_level_cross_table.h"
 #include "Level.h"
 #include "level_debug.h"
 #include "cover_manager.h"
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location.h"
 #include "ai_monster_squad.h"
 #include "ai_monster_squad_manager.h"
 #include <functional>
@@ -167,7 +167,7 @@ CMonsterCoverManager::~CMonsterCoverManager()
 
 void CMonsterCoverManager::load()
 {
-	m_ce_best = xr_new<CCoverEvaluator>(&(m_object->control().path_builder().restrictions()));
+	m_ce_best = new CCoverEvaluator(&(m_object->control().path_builder().restrictions()));
 }
 
 const CCoverPoint *CMonsterCoverManager::find_cover(const Fvector &position, float min_pos_distance, float max_pos_distance, float deviation)

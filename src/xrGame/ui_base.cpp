@@ -57,7 +57,7 @@ sPoly2D* C2DFrustum::ClipPoly	(sPoly2D& S, sPoly2D& D) const
 		cls[src->size()] = cls[0]	;
 		src->push_back((*src)[0])	;
 		Fvector2 dir_pt,dir_uv;		float denum,t;
-		for (j=0; j<src->size()-1; j++)	{
+		for (u32 j=0; j<src->size()-1; j++)	{
 			if ((*src)[j].pt.similar((*src)[j+1].pt,EPS_S)) continue;
 			if (negative(cls[j]))	{
 				dest->push_back((*src)[j])	;
@@ -200,8 +200,8 @@ ui_core::ui_core()
 {
 	if(!g_dedicated_server)
 	{
-		m_pUICursor					= xr_new<CUICursor>();
-		m_pFontManager				= xr_new<CFontManager>();
+		m_pUICursor					= new CUICursor();
+		m_pFontManager				= new CFontManager();
 	}else
 	{
 		m_pUICursor					= NULL;
@@ -288,9 +288,6 @@ shared_str	ui_core::get_xml_name(LPCSTR fn)
 			xr_sprintf(str, "%s", fn);
 			if ( NULL==strext(fn) ) xr_strcat(str, ".xml");
 		}
-#ifdef DEBUG
-		Msg("[16-9] get_xml_name for[%s] returns [%s]", fn, str);
-#endif // #ifdef DEBUG
 	}
 	return str;
 }

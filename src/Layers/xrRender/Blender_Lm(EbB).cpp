@@ -85,7 +85,7 @@ void	CBlender_LmEbB::Compile(CBlender_Compile& C)
 		}
 		C.PassEnd			();
 	} else {
-		if (C.L_textures.size()<2)	Debug.fatal	(DEBUG_INFO,"Not enought textures for shader, base tex: %s",*C.L_textures[0]);
+		if (C.L_textures.size()<2)	xrDebug::Fatal	(DEBUG_INFO,"Not enought textures for shader, base tex: %s",*C.L_textures[0]);
 		switch (C.iElement)
 		{
 		case SE_R1_NORMAL_HQ:
@@ -138,7 +138,7 @@ void	CBlender_LmEbB::Compile(CBlender_Compile& C)
 		}
 	}
 }
-#elif RENDER==R_R2
+#elif RENDER==R_R2 || RENDER==R_GL
 //////////////////////////////////////////////////////////////////////////
 // R2
 //////////////////////////////////////////////////////////////////////////

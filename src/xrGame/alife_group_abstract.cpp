@@ -14,8 +14,8 @@
 #include "xrServer_Objects_ALife_Monsters.h"
 #include "alife_schedule_registry.h"
 #include "alife_graph_registry.h"
-#include "game_level_cross_table.h"
-#include "level_graph.h"
+#include "xrAICore/Navigation/game_level_cross_table.h"
+#include "xrAICore/Navigation/level_graph.h"
 
 void CSE_ALifeGroupAbstract::switch_online	()
 {
@@ -131,7 +131,9 @@ void CSE_ALifeGroupAbstract::try_switch_offline		()
 	VERIFY								(I);
 	
 	// iterating on group members
-	for (u32 i=0, N = (u32)m_tpMembers.size(); i<N; ++i) {
+    u32 memberCount = (u32)m_tpMembers.size();
+    u32 i;
+	for (i=0; i<memberCount; ++i) {
 		// casting group member to the abstract monster to get access to the Health property
 		CSE_ALifeMonsterAbstract		*tpGroupMember = smart_cast<CSE_ALifeMonsterAbstract*>(ai().alife().objects().object(m_tpMembers[i]));
 		if (!tpGroupMember)
@@ -181,7 +183,7 @@ void CSE_ALifeGroupAbstract::try_switch_offline		()
 		tpGroupMember->m_bOnline			= true;
 		--m_wCount;
 		--i;
-		--N;
+		--memberCount;
 	}
 
 	// checking if group is not empty
@@ -191,7 +193,7 @@ void CSE_ALifeGroupAbstract::try_switch_offline		()
 	if (!I->can_switch_offline())
 		return;
 	
-	if (I->can_switch_online() || (i == N))
+	if (I->can_switch_online() || (i == memberCount))
 		I->alife().switch_offline			(I);
 }
 

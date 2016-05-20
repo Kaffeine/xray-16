@@ -21,7 +21,7 @@ CCustomOutfit::CCustomOutfit()
 	for(int i=0; i<ALife::eHitTypeMax; i++)
 		m_HitTypeProtection[i] = 1.0f;
 
-	m_boneProtection = xr_new<SBoneProtections>();
+	m_boneProtection = new SBoneProtections();
 	m_artefact_count = 0;
 	m_BonesProtectionSect = NULL;
 }
@@ -113,9 +113,9 @@ void CCustomOutfit::Load(LPCSTR section)
 
 void CCustomOutfit::ReloadBonesProtection()
 {
-	CObject* parent = H_Parent();
+	IGameObject* parent = H_Parent();
 	if(IsGameTypeSingle())
-		parent = smart_cast<CObject*>(Level().CurrentViewEntity());
+		parent = smart_cast<IGameObject*>(Level().CurrentViewEntity());
 
 	if(parent && parent->Visual() && m_BonesProtectionSect.size())
 		m_boneProtection->reload( m_BonesProtectionSect, smart_cast<IKinematics*>(parent->Visual()));
@@ -347,9 +347,9 @@ bool CCustomOutfit::install_upgrade_impl( LPCSTR section, bool test )
 
 void CCustomOutfit::AddBonesProtection(LPCSTR bones_section)
 {
-	CObject* parent = H_Parent();
+	IGameObject* parent = H_Parent();
 	if(IsGameTypeSingle())
-		parent = smart_cast<CObject*>(Level().CurrentViewEntity());
+		parent = smart_cast<IGameObject*>(Level().CurrentViewEntity());
 
 	if ( parent && parent->Visual() && m_BonesProtectionSect.size() )
 		m_boneProtection->add(bones_section, smart_cast<IKinematics*>( parent->Visual() ) );

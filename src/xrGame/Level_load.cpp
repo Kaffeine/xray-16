@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "LevelGameDef.h"
+#include "Common/LevelGameDef.h"
 #include "ai_space.h"
 #include "ParticlesObject.h"
 #include "xrScriptEngine/script_process.hpp"
@@ -11,8 +11,6 @@
 #include "xrPhysics/PhysicsCommon.h"
 #include "level_sounds.h"
 #include "GamePersistent.h"
-
-ENGINE_API	bool g_dedicated_server;
 
 bool CLevel::Load_GameSpecific_Before()
 {
@@ -216,7 +214,7 @@ void CLevel::Load_GameSpecific_CFORM	( CDB::TRI* tris, u32 count )
 				continue;
 			}
 
-			Debug.fatal					(DEBUG_INFO,"Game material '%d' not found",(*I).material);
+			xrDebug::Fatal					(DEBUG_INFO,"Game material '%d' not found",(*I).material);
 		}
 		return;
 	}
@@ -235,7 +233,7 @@ void CLevel::Load_GameSpecific_CFORM	( CDB::TRI* tris, u32 count )
 				continue;
 			}
 
-			Debug.fatal					(DEBUG_INFO,"Game material '%d' not found",(*I).material);
+			xrDebug::Fatal					(DEBUG_INFO,"Game material '%d' not found",(*I).material);
 		}
 	}
 }

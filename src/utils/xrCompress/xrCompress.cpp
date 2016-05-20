@@ -1,15 +1,5 @@
 #include "xrCompress.h"
 
-//typedef void DUMMY_STUFF (const void*,const u32&,void*);
-//XRCORE_API DUMMY_STUFF	*g_temporary_stuff;
-//XRCORE_API DUMMY_STUFF	*g_dummy_stuff;
-
-//#	define TRIVIAL_ENCRYPTOR_ENCODER
-//#	define TRIVIAL_ENCRYPTOR_DECODER
-
-//#	undef TRIVIAL_ENCRYPTOR_ENCODER
-//#	undef TRIVIAL_ENCRYPTOR_DECODER
-
 xrCompressor::xrCompressor()
 :fs_pack_writer(NULL),bFast(false),files_list(NULL),folders_list(NULL),bStoreFiles(false),pPackHeader(NULL),config_ltx(NULL)
 {
@@ -23,9 +13,6 @@ xrCompressor::xrCompressor()
 	dwTimeStart		= 0;
 
 	XRP_MAX_SIZE	= 1024*1024*640; // bytes (640Mb)
-
-//	g_temporary_stuff	= &trivial_encryptor::decode;
-//	g_dummy_stuff		= &trivial_encryptor::encode;
 }
 
 xrCompressor::~xrCompressor()
@@ -164,7 +151,7 @@ void xrCompressor::write_file_header(LPCSTR file_name, const u32 &crc, const u32
 	*(u32*)buffer		= crc;
 	buffer				+= sizeof(u32);
 
-	Memory.mem_copy		(buffer,file_name,file_name_size);
+	memcpy		(buffer,file_name,file_name_size);
 	buffer				+= file_name_size;
 
 	*(u32*)buffer		= ptr;
@@ -337,12 +324,6 @@ void xrCompressor::OpenPack(LPCSTR tgt_folder, int num)
 	filesALIAS		= 0;
 
 	dwTimeStart		= timeGetTime();
-
-	//write pack header without compression
-//	DUMMY_STUFF* _dummy_stuff_subst		= NULL;
-//	_dummy_stuff_subst					= g_dummy_stuff;
-//	g_dummy_stuff						= NULL;
-
 	if(config_ltx && config_ltx->section_exist("header"))
 	{
 		CMemoryWriter			W;
@@ -523,8 +504,8 @@ void xrCompressor::ProcessLTX(CInifile& ltx)
 	if (ltx.line_exist("options","exclude_exts"))
 		_SequenceToList(exclude_exts, ltx.r_string("options","exclude_exts"));
 
-	files_list				= xr_new< xr_vector<char*> >();
-	folders_list			= xr_new< xr_vector<char*> >();
+	files_list				= new xr_vector<char*>();
+	folders_list			= new xr_vector<char*>();
 
 	if(ltx.section_exist("include_folders"))
 	{

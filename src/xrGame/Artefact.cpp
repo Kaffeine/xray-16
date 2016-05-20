@@ -9,7 +9,7 @@
 
 #include "Inventory.h"
 #include "Level.h"
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location.h"
 #include "xrServer_Objects_ALife_Monsters.h"
 #include "xrPhysics/iphworld.h"
 #include "restriction_space.h"
@@ -18,8 +18,8 @@
 #include "artefact_activation.h"
 
 #include "ai_space.h"
-#include "patrol_path.h"
-#include "patrol_path_storage.h"
+#include "xrAICore/Navigation/PatrolPath/patrol_path.h"
+#include "xrAICore/Navigation/PatrolPath/patrol_path_storage.h"
 
 #define	FASTMODE_DISTANCE (50.f)	//distance to camera from sphere, when zone switches to fast update sequence
 
@@ -80,7 +80,7 @@ void CArtefact::Load(LPCSTR section)
 BOOL CArtefact::net_Spawn(CSE_Abstract* DC) 
 {
 	if(pSettings->r_bool(cNameSect(),"can_be_controlled") )
-		m_detectorObj				= xr_new<SArtefactDetectorsSupport>(this);
+		m_detectorObj				= new SArtefactDetectorsSupport(this);
 
 	BOOL result						= inherited::net_Spawn(DC);
 	SwitchAfParticles				(true);
@@ -491,7 +491,7 @@ void CArtefact::CreateArtefactActivation()
 	if (m_activationObj) {
 		return;
 	}
-	m_activationObj = xr_new<SArtefactActivation>(this, H_Parent()->ID());
+	m_activationObj = new SArtefactActivation(this, H_Parent()->ID());
 }
 
 SArtefactDetectorsSupport::SArtefactDetectorsSupport(CArtefact* A)

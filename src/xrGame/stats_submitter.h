@@ -1,8 +1,8 @@
 #ifndef STATS_SUBMITTER_INCLUDED
 #define STATS_SUBMITTER_INCLUDED
 
-#include <boost/noncopyable.hpp>
-#include "gamespy/GameSpy_ATLAS.h"
+#include "Common/Noncopyable.hpp"
+#include "xrGameSpy/GameSpy_ATLAS.h"
 #include "profile_data_types.h"
 #include "gsc_dsigned_ltx.h"
 #include "xrCore/Crypto/crypto.h"
@@ -20,7 +20,7 @@ namespace gamespy_profile
 
 class stats_submitter :
 	public ScheduledBase,
-	private boost::noncopyable
+	private Noncopyable
 {
 public:
 							stats_submitter			(CGameSpy_Full* fullgs);

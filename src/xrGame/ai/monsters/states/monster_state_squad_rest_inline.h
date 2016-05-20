@@ -1,7 +1,7 @@
 #pragma once
 #include "ai_space.h"
-#include "level_graph.h"
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/level_graph.h"
+#include "xrAICore/Navigation/ai_object_location.h"
 #include "state_custom_action.h"
 #include "state_move_to_point.h"
 #include "restricted_object.h"
@@ -22,8 +22,8 @@
 TEMPLATE_SPECIALIZATION
 CStateMonsterSquadRestAbstract::CStateMonsterSquadRest(_Object *obj) : inherited(obj)
 {
-	add_state	(eStateSquad_Rest_Idle,				xr_new<CStateMonsterCustomAction<_Object> >	(obj));
-	add_state	(eStateSquad_Rest_WalkAroundLeader,	xr_new<CStateMonsterMoveToPoint<_Object> >	(obj));
+	add_state	(eStateSquad_Rest_Idle,				new CStateMonsterCustomAction<_Object>(obj));
+	add_state	(eStateSquad_Rest_WalkAroundLeader,	new CStateMonsterMoveToPoint<_Object>(obj));
 }
 
 TEMPLATE_SPECIALIZATION

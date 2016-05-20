@@ -44,7 +44,7 @@ BOOL CBreakableObject::net_Spawn(CSE_Abstract* DC)
 	R_ASSERT				(obj);
 	inherited::net_Spawn	(DC);
 	VERIFY(!CForm);
-	CForm = xr_new<CCF_Skeleton>(this);
+	CForm = new CCF_Skeleton(this);
 	// set bone id
 	R_ASSERT				(Visual()&&smart_cast<IKinematics*>(Visual()));
 //	IKinematics* K			= smart_cast<IKinematics*>(Visual());
@@ -76,7 +76,7 @@ void CBreakableObject::enable_notificate()
 	if(b_resived_damage)ProcessDamage();
 }
 
-//void CBreakableObject::Hit(float P,Fvector &dir, CObject* who,s16 element,
+//void CBreakableObject::Hit(float P,Fvector &dir, IGameObject* who,s16 element,
 //					   Fvector p_in_object_space, float impulse, ALife::EHitType hit_type)
 void	CBreakableObject::Hit					(SHit* pHDS)
 {

@@ -13,7 +13,7 @@
 #include "ai/stalker/ai_stalker.h"
 #include "restricted_object_obstacle.h"
 #include "level_path_manager.h"
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location.h"
 #include "detail_path_manager.h"
 #include "stalker_animation_manager.h"
 #include "doors_actor.h"
@@ -32,7 +32,7 @@ stalker_movement_manager_obstacles::stalker_movement_manager_obstacles	(CAI_Stal
 	m_last_fail_time				(0),
 	m_failed_to_build_path			(false)
 {
-	m_doors_actor					= xr_new<doors::actor>(*object);
+	m_doors_actor					= new doors::actor(*object);
 	m_static_obstacles.construct	(this, m_failed_to_build_path);
 	m_dynamic_obstacles.construct	(this, m_failed_to_build_path);
 }
@@ -52,7 +52,7 @@ void stalker_movement_manager_obstacles::Load	( LPCSTR section )
 CRestrictedObject *stalker_movement_manager_obstacles::create_restricted_object	()
 {
 	m_restricted_object				= 
-		xr_new<CRestrictedObjectObstacle>(
+		new CRestrictedObjectObstacle(
 			&object(),
 			m_static_obstacles.active_query(),
 			m_dynamic_obstacles.active_query()
@@ -210,7 +210,7 @@ const float &stalker_movement_manager_obstacles::prediction_speed	() const
 	return		(object().animation().target_speed());
 }
 
-void stalker_movement_manager_obstacles::remove_links				(CObject *object)
+void stalker_movement_manager_obstacles::remove_links				(IGameObject *object)
 {
 	inherited::remove_links			(object);
 	m_static_obstacles.remove_links	(object);

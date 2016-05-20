@@ -11,7 +11,8 @@
 
 #pragma warning(disable:4995)
 #pragma warning(disable:4267)
-#include "3rd party/ode/ode/src/joint.h"
+#include "Externals/ode/ode/src/joint.h"
+
 #pragma warning(default:4995)
 #pragma warning(default:4267)
 extern	class CPHWorld	*ph_world;
@@ -90,7 +91,7 @@ element_fracture CPHFracturesHolder::SplitFromEnd(CPHElement* element,u16 fractu
 	{	
 		if(new_element->m_fratures_holder==NULL)//create fractures holder if it was not created before
 		{
-			new_element->m_fratures_holder=xr_new<CPHFracturesHolder>();
+			new_element->m_fratures_holder=new CPHFracturesHolder();
 		}
 		PassEndFractures(fracture,new_element);
 	}
@@ -136,7 +137,7 @@ void CPHFracturesHolder::PassEndFractures(u16 from,CPHElement* dest)
 	{
 	
 	CPHFracturesHolder* &dest_fract_holder=dest->m_fratures_holder;
-	if(!dest_fract_holder) dest_fract_holder=xr_new<CPHFracturesHolder>();
+	if(!dest_fract_holder) dest_fract_holder=new CPHFracturesHolder();
 	//pass fractures not including end fracture
 	dest_fract_holder->m_fractures.insert(dest_fract_holder->m_fractures.end(),i_from+1,i_to);
 

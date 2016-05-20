@@ -199,7 +199,7 @@ void Detect()
     // Detect QPC Overhead
     QueryPerformanceFrequency((PLARGE_INTEGER)&qpc_freq);
     qpc_overhead = 0;
-    for (i = 0; i < 256; i++)
+    for (int i = 0; i < 256; i++)
     {
         start = QPC();
         qpc_overhead += QPC() - start - dummy;
@@ -292,11 +292,10 @@ void _initialize_cpu_thread()
 #define _MM_SET_DENORMALS_ZERO_MODE(mode) _mm_setcsr((_mm_getcsr() & ~_MM_DENORMALS_ZERO_MASK) | (mode))
 static BOOL _denormals_are_zero_supported = TRUE;
 extern void __cdecl _terminate();
-void debug_on_thread_spawn();
 
 void _initialize_cpu_thread()
 {
-    debug_on_thread_spawn();
+    xrDebug::OnThreadSpawn();
     if (!Core.PluginMode)
         FPU::m24r();
     if (CPU::ID.feature&_CPU_FEATURE_SSE)
@@ -365,9 +364,9 @@ void __cdecl thread_entry(void* _params)
 
 void thread_spawn(thread_t* entry, const char* name, unsigned stack, void* arglist)
 {
-    Debug._initialize(false);
+    xrDebug::Initialize(false);
 
-    THREAD_STARTUP* startup = xr_new<THREAD_STARTUP>();
+    THREAD_STARTUP* startup = new THREAD_STARTUP();
     startup->entry = entry;
     startup->name = (char*)name;
     startup->args = arglist;

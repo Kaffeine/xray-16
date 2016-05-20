@@ -18,7 +18,7 @@
 #include "movement_manager_space.h"
 #include "detail_path_manager_space.h"
 #include "EntityCondition.h"
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location.h"
 #include "stalker_velocity_holder.h"
 #include "stalker_velocity_collection.h"
 #include "stalker_animation_manager.h"
@@ -38,7 +38,7 @@ extern bool show_restrictions(CRestrictedObject *object);
 const float BAD_PATH_ANGLE			= PI_DIV_2 - PI_DIV_8;
 const float BAD_PATH_DISTANCE_CHECK	= 2.f;
 
-class sight_manager_enable_guard : private boost::noncopyable {
+class sight_manager_enable_guard : private Noncopyable {
 	CSightManager&		m_manager;
 	bool				m_value;
 
@@ -772,7 +772,7 @@ void stalker_movement_manager_base::set_level_dest_vertex	(u32 const& level_vert
 	m_target.cover_id					("");
 }
 
-void stalker_movement_manager_base::remove_links			(CObject *object)
+void stalker_movement_manager_base::remove_links			(IGameObject *object)
 {
 	m_last_query_object					= 0;
 }

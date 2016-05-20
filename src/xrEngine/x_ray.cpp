@@ -14,9 +14,8 @@
 #include "std_classes.h"
 #include "GameFont.h"
 #include "xrCDB/ISpatial.h"
-#include "CopyProtection.h"
-
 #include "xrSASH.h"
+#include "xrServerEntities/smart_cast.h"
 
 //---------------------------------------------------------------------
 
@@ -73,7 +72,7 @@ void _InitializeFont(CGameFont*& F, LPCSTR section, u32 flags)
     LPCSTR sh_name = pSettings->r_string(section, "shader");
     if (!F)
     {
-        F = xr_new<CGameFont>(sh_name, font_tex_name, flags);
+        F = new CGameFont(sh_name, font_tex_name, flags);
     }
     else
         F->Initialize(sh_name, font_tex_name);
@@ -179,7 +178,8 @@ void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
         //-----------------------------------------------------------
         g_pGamePersistent->PreStart(op_server);
         //-----------------------------------------------------------
-        g_pGameLevel = (IGame_Level*)NEW_INSTANCE(CLSID_GAME_LEVEL);
+        g_pGameLevel = dynamic_cast<IGame_Level*>(NEW_INSTANCE(CLSID_GAME_LEVEL));
+        R_ASSERT(g_pGameLevel);
         LoadBegin();
         g_pGamePersistent->Start(op_server);
         g_pGameLevel->net_Start(op_server, op_client);
@@ -226,7 +226,8 @@ void CApplication::OnEvent(EVENT E, u64 P1, u64 P2)
         Console->Hide();
         Device.Reset(false);
 
-        g_pGameLevel = (IGame_Level*)NEW_INSTANCE(CLSID_GAME_LEVEL);
+        g_pGameLevel = smart_cast<IGame_Level*>(NEW_INSTANCE(CLSID_GAME_LEVEL));
+        VERIFY(g_pGameLevel);
         shared_str server_options = g_pGameLevel->OpenDemoFile(demo_file);
 
         //-----------------------------------------------------------
@@ -258,8 +259,6 @@ void CApplication::LoadBegin()
 #endif
         phase_timer.Start();
         load_stage = 0;
-
-        CheckCopyProtection();
     }
 }
 
@@ -300,7 +299,6 @@ void CApplication::LoadDraw()
         load_draw_internal();
 
     Device.End();
-    CheckCopyProtection();
 }
 
 void CApplication::LoadTitleInt(LPCSTR str1, LPCSTR str2, LPCSTR str3)
@@ -425,8 +423,6 @@ void CApplication::Level_Set(u32 L)
 
     if (path[0])
         m_pRender->setLevelLogo(path);
-
-    CheckCopyProtection();
 }
 
 int CApplication::Level_ID(LPCSTR name, LPCSTR ver, bool bSet)

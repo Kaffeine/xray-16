@@ -34,41 +34,41 @@ dxRender_Visual*	CModelPool::Instance_Create(u32 type)
 	// Check types
 	switch (type) {
 	case MT_NORMAL:				// our base visual
-		V	= xr_new<Fvisual>				();
+		V	= new Fvisual				();
 		break;
 	case MT_HIERRARHY:
-		V	= xr_new<FHierrarhyVisual>		();
+		V	= new FHierrarhyVisual		();
 		break;
 	case MT_PROGRESSIVE:		// dynamic-resolution visual
-		V	= xr_new<FProgressive>			();
+		V	= new FProgressive			();
 		break;
 	case MT_SKELETON_ANIM:
-		V	= xr_new<CKinematicsAnimated>	();
+		V	= new CKinematicsAnimated	();
 		break;
 	case MT_SKELETON_RIGID:
-		V	= xr_new<CKinematics>			();
+		V	= new CKinematics			();
 		break;
 	case MT_SKELETON_GEOMDEF_PM:
-		V	= xr_new<CSkeletonX_PM>			();
+		V	= new CSkeletonX_PM			();
 		break;
 	case MT_SKELETON_GEOMDEF_ST:
-		V	= xr_new<CSkeletonX_ST>			();
+		V	= new CSkeletonX_ST			();
 		break;
 	case MT_PARTICLE_EFFECT:
-		V	= xr_new<PS::CParticleEffect>	();
+		V	= new PS::CParticleEffect	();
 		break;
 	case MT_PARTICLE_GROUP:
-		V	= xr_new<PS::CParticleGroup>	();
+		V	= new PS::CParticleGroup	();
 		break;
 #ifndef _EDITOR
 	case MT_LOD:
-		V	= xr_new<FLOD>					();
+		V	= new FLOD					();
 		break;
 	case MT_TREE_ST:
-		V	= xr_new<FTreeVisual_ST>		();
+		V	= new FTreeVisual_ST		();
 		break;
 	case MT_TREE_PM:
-		V	= xr_new<FTreeVisual_PM>		();
+		V	= new FTreeVisual_PM		();
 		break;
 #endif
 	default:
@@ -114,7 +114,7 @@ dxRender_Visual*	CModelPool::Instance_Load		(const char* N, BOOL allow_register)
 				Msg("!Can't find model file '%s'.",name);
                 return 0;
 #else            
-				Debug.fatal(DEBUG_INFO,"Can't find model file '%s'.",name);
+				xrDebug::Fatal(DEBUG_INFO,"Can't find model file '%s'.",name);
 #endif
 			}
 	} else {
@@ -199,7 +199,7 @@ CModelPool::CModelPool()
 	bLogging				= TRUE;
     bForceDiscard 			= FALSE;
     bAllowChildrenDuplicate	= TRUE; 
-	g_pMotionsContainer		= xr_new<motions_container>();
+	g_pMotionsContainer		= new motions_container();
 }
 
 CModelPool::~CModelPool()
@@ -460,7 +460,22 @@ void CModelPool::memory_stats		( u32& vb_mem_video, u32& vb_mem_system, u32& ib_
 
 		if( vis_ptr == NULL )
 			continue;
-#if !defined(USE_DX10) && !defined(USE_DX11)
+#if defined(USE_OGL)
+		GLint IB_size;
+		GLint VB_size;
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, vis_ptr->m_fast->p_rm_Indices);
+		CHK_GL(glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &IB_size));
+
+		ib_mem_video += IB_size;
+		ib_mem_system += IB_size;
+
+		glBindBuffer(GL_ARRAY_BUFFER, vis_ptr->m_fast->p_rm_Vertices);
+		CHK_GL(glGetBufferParameteriv(GL_ELEMENT_ARRAY_BUFFER, GL_BUFFER_SIZE, &VB_size));
+
+		vb_mem_video += VB_size;
+		vb_mem_system += VB_size;
+#elif !defined(USE_DX10) && !defined(USE_DX11)
 		D3DINDEXBUFFER_DESC IB_desc;
 		D3DVERTEXBUFFER_DESC VB_desc;
 
@@ -497,14 +512,7 @@ void CModelPool::memory_stats		( u32& vb_mem_video, u32& vb_mem_system, u32& ib_
 
 		vb_mem_video += IB_desc.ByteWidth;
 		vb_mem_system += IB_desc.ByteWidth;
-
 #endif
-
-
-
-
-
-
 	}
 } 
 

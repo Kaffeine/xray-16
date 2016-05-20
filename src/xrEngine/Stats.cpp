@@ -70,8 +70,7 @@ CStats::~CStats()
     xr_delete(statsFont);
 }
 
-
-static void DumpSpatialStatistics(CGameFont &font, IPerformanceAlert *alert, ISpatial_DB &db, float engineTotal)
+static void DumpSpatialStatistics(IGameFont &font, IPerformanceAlert *alert, ISpatial_DB &db, float engineTotal)
 {
 #ifdef DEBUG
     auto &stats = db.Stats;
@@ -85,21 +84,6 @@ static void DumpSpatialStatistics(CGameFont &font, IPerformanceAlert *alert, ISp
 #undef PPP
     stats.FrameStart();
 #endif
-}
-
-static void DumpColliderStatistics(CGameFont &font, IPerformanceAlert *alert)
-{
-    auto &stats = XRC.Stats;
-    stats.FrameEnd();
-    static float rayPs = 0;
-    static float boxPs = 0;
-    rayPs = 0.99f*rayPs + 0.01f*(stats.RayQuery.count/stats.RayQuery.result);
-    boxPs = 0.99f*boxPs + 0.01f*(stats.BoxQuery.count/stats.BoxQuery.result);
-    font.OutNext("XRC:");
-    font.OutNext("- ray:        %2.2fms, %d, %2.0fK", stats.RayQuery.result, stats.RayQuery.count, rayPs);
-    font.OutNext("- box:        %2.2fms, %d, %2.0fK", stats.BoxQuery.result, stats.BoxQuery.count, boxPs);
-    font.OutNext("- frustum:    %2.2fms, %d", stats.FrustumQuery.result, stats.FrustumQuery.count);
-    stats.FrameStart();
 }
 
 void CStats::Show()
@@ -123,7 +107,6 @@ void CStats::Show()
         font.SetColor(0xFFFF0000);
         font.OutSet(Device.dwWidth / 2.0f + (font.SizeOf_("--= tune =--") / 2.0f), Device.dwHeight / 2.0f);
         font.OutNext("--= tune =--");
-        font.OnRender();
         font.SetHeight(sz);
     }
     // Show them
@@ -142,7 +125,6 @@ void CStats::Show()
         g_pGamePersistent->DumpStatistics(font, alertPtr);
         DumpSpatialStatistics(font, alertPtr, *g_SpatialSpace, engineTotal);
         DumpSpatialStatistics(font, alertPtr, *g_SpatialSpacePhysic, engineTotal);
-        DumpColliderStatistics(font, alertPtr);
         if (physics_world())
             physics_world()->DumpStatistics(font, alertPtr);
         font.OutSet(200, 0);
@@ -161,7 +143,6 @@ void CStats::Show()
         font.OutNext("QPC: %u", CPU::qpc_counter);
         CPU::qpc_counter = 0;
 #endif
-        font.OnRender();
     }
     if (psDeviceFlags.test(rsCameraPos))
     {
@@ -170,7 +151,6 @@ void CStats::Show()
         font.SetColor(0xffffffff);
         font.Out(10, 600, "CAMERA POSITION:  [%3.2f,%3.2f,%3.2f]", VPUSH(Device.vCameraPosition));
         font.SetHeight(refHeight);
-        font.OnRender();
     }
 #ifdef DEBUG
     if (!g_bDisableRedText && errors.size())
@@ -179,16 +159,16 @@ void CStats::Show()
         font.OutSet(400, 0);
         for (u32 it = (u32)_max(int(0), (int)errors.size() - g_ErrorLineCount); it < errors.size(); it++)
             font.OutNext("%s", errors[it].c_str());
-        font.OnRender();
     }
 #endif
+    font.OnRender();
 }
 
 void CStats::OnDeviceCreate()
 {
     g_bDisableRedText = !!strstr(Core.Params, "-xclsx");
 #ifndef DEDICATED_SERVER
-    statsFont = xr_new<CGameFont>("stat_font", CGameFont::fsDeviceIndependent);
+    statsFont = new CGameFont("stat_font", CGameFont::fsDeviceIndependent);
 #endif
 #ifdef DEBUG
     if (!g_bDisableRedText)

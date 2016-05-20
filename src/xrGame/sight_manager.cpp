@@ -10,7 +10,7 @@
 #include "sight_manager.h"
 #include "ai/stalker/ai_stalker.h"
 #include "stalker_movement_manager_smart_cover.h"
-#include "profiler.h"
+#include "xrEngine/profiler.h"
 #include "aimers_weapon.h"
 #include "aimers_bone.h"
 #include "stalker_animation_manager.h"
@@ -138,7 +138,7 @@ void CSightManager::Exec_Look		(float time_delta)
 
 	//static CStatGraph* s_stats_graph	= 0;
 	//if ( !s_stats_graph ) {
-	//	s_stats_graph					= xr_new<CStatGraph>();
+	//	s_stats_graph					= new CStatGraph();
 	//	s_stats_graph->SetRect			(0, 1024-68, 1280, 68, 0xff000000, 0xff000000);
 	//	s_stats_graph->SetMinMax		(-PI, PI, 1000);
 	//	s_stats_graph->SetStyle			(CStatGraph::stBarLine);
@@ -217,7 +217,7 @@ void CSightManager::setup			(const CSightAction &sight_action)
 		return;
 
 	clear				();
-	add_action			(0,xr_new<CSightControlAction>(1.f,u32(-1),sight_action));
+	add_action			(0,new CSightControlAction(1.f,u32(-1),sight_action));
 }
 
 void CSightManager::update			()
@@ -261,7 +261,7 @@ void CSightManager::update			()
 	STOP_PROFILE
 }
 
-void CSightManager::remove_links					(CObject *object)
+void CSightManager::remove_links					(IGameObject *object)
 {
 	setup_actions::iterator	I = actions().begin();
 	setup_actions::iterator	E = actions().end();

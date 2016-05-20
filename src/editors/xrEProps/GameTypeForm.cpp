@@ -2,7 +2,7 @@
 #pragma hdrstop
 
 #include "GameTypeForm.h"
-#include "../../xrServerEntities/gametype_chooser.h"
+#include "xrServerEntities/gametype_chooser.h"
 //---------------------------------------------------------------------------
 #pragma package(smart_init)
 #pragma link "ExtBtn"
@@ -23,7 +23,7 @@ bool __fastcall TfmGameType::Run(const char* title, GameTypeChooser* data)
 
 bool gameTypeRun(const char* title, GameTypeChooser* data)
 {
-	fmGameType = xr_new<TfmGameType>((TComponent*)0);
+	fmGameType = new TfmGameType((TComponent*)0);
     bool res = fmGameType->Run(title, data);
     xr_delete(fmGameType);
     return res;

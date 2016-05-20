@@ -9,15 +9,16 @@
 #include "pch_script.h"
 #include "object_item_script.h"
 #include "object_factory.h"
+#include "xrScriptEngine/Functor.hpp"
 
 #ifndef NO_XR_GAME
 #	include "attachable_item.h"
 
-ObjectFactory::CLIENT_BASE_CLASS *CObjectItemScript::client_object	() const
+ObjectFactory::ClientObjectBaseClass *CObjectItemScript::client_object	() const
 {
-	ObjectFactory::CLIENT_SCRIPT_BASE_CLASS	*object;
+	ObjectFactory::ClientObjectBaseClass *object = nullptr;
 	try {
-		object	= luabind::object_cast<ObjectFactory::CLIENT_SCRIPT_BASE_CLASS*>(m_client_creator(),luabind::adopt(luabind::result));
+		object	= m_client_creator();
 	}
 	catch(...) {
 		return	(0);
@@ -28,41 +29,26 @@ ObjectFactory::CLIENT_BASE_CLASS *CObjectItemScript::client_object	() const
 
 #endif
 
-ObjectFactory::SERVER_BASE_CLASS *CObjectItemScript::server_object	(LPCSTR section) const
+ObjectFactory::ServerObjectBaseClass *CObjectItemScript::server_object	(LPCSTR section) const
 {
-	typedef ObjectFactory::SERVER_SCRIPT_BASE_CLASS		SERVER_SCRIPT_BASE_CLASS;
-	typedef ObjectFactory::SERVER_BASE_CLASS			SERVER_BASE_CLASS;
-	SERVER_SCRIPT_BASE_CLASS	*object;
+    ObjectFactory::ServerObjectBaseClass *object = nullptr;
 
 	try {
-		luabind::object	*instance = 0;
-		try {
-			instance	= xr_new<luabind::object>((luabind::object)(m_server_creator(section)));
-		}
-		catch(std::exception e) {
-			Msg			("Exception [%s] raised while creating server object from section [%s]", e.what(),section);
-			return		(0);
-		}
-		catch(...) {
-			Msg			("Exception raised while creating server object from section [%s]",section);
-			return		(0);
-		}
-		object			= luabind::object_cast<ObjectFactory::SERVER_SCRIPT_BASE_CLASS*>(*instance,luabind::adopt(luabind::result));
-		xr_delete		(instance);
+        object = m_server_creator(section);
 	}
 	catch(std::exception e) {
-		Msg				("Exception [%s] raised while casting and adopting script server object from section [%s]", e.what(),section);
-		return			(0);
+		Msg			("Exception [%s] raised while creating server object from section [%s]", e.what(),section);
+		return		(0);
 	}
 	catch(...) {
-		Msg				("Exception raised while creating script server object from section [%s]", section);
-		return			(0);
+		Msg			("Exception raised while creating server object from section [%s]",section);
+		return		(0);
 	}
 
 	R_ASSERT			(object);
-	SERVER_BASE_CLASS	*o = object->init();
-	R_ASSERT			(o);
-	return				(o);
+    object = object->init();
+	R_ASSERT			(object);
+	return				(object);
 }
 
 CObjectItemScript::CObjectItemScript	(

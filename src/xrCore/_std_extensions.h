@@ -323,8 +323,6 @@ inline int __cdecl xr_sprintf(char(&destination)[count], LPCSTR format_string, .
 }
 #endif // #ifndef MASTER_GOLD
 
-# pragma deprecated( strcpy, strcpy_s, sprintf, sprintf_s, strcat, strcat_s )
-
 template <int count>
 inline int xr_strcpy(char(&destination)[count], LPCSTR source)
 {
@@ -337,6 +335,14 @@ inline int xr_strcat(char(&destination)[count], LPCSTR source)
     return xr_strcat(destination, count, source);
 }
 #endif // #ifndef _EDITOR
+
+inline void MemFill32(void *dst, u32 value, size_t dstSize)
+{
+    u32 *ptr = static_cast<u32 *>(dst);
+    u32 *end = ptr+dstSize;
+    while (ptr!=end)
+        *ptr++ = value;
+}
 
 XRCORE_API char* timestamp(string64& dest);
 

@@ -13,7 +13,7 @@
 #include "debug_renderer.h"
 #include "ai_space.h"
 #include "cover_manager.h"
-#include "ai_object_location.h"
+#include "xrAICore/Navigation/ai_object_location.h"
 #include "smart_cover.h"
 #include "smart_cover_description.h"
 #include "smart_cover_loophole.h"
@@ -36,7 +36,7 @@ BOOL object::net_Spawn		(CSE_Abstract *server_entity)
 	if (!smart_cover->m_description.size())
 		Msg							("! smart cover %s has no description", smart_cover->name_replace());
 
-	CCF_Shape						*shape = xr_new<CCF_Shape>(this);
+	CCF_Shape						*shape = new CCF_Shape(this);
     SetCForm(shape);
 
 	typedef CShapeData::ShapeVec	ShapeVec;

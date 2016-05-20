@@ -382,7 +382,7 @@ void CTexture::Load		()
 	string_path			fn;
 	if (FS.exist(fn,"$game_textures$",*cName,".ogm")){
 		// AVI
-		pTheora		= xr_new<CTheoraSurface>();
+		pTheora		= new CTheoraSurface();
 		m_play_time	= 0xFFFFFFFF;
 
 		if (!pTheora->Load(fn)) {
@@ -431,7 +431,7 @@ void CTexture::Load		()
 	} else
 		if (FS.exist(fn,"$game_textures$",*cName,".avi")){
 			// AVI
-			pAVI = xr_new<CAviPlayerCustom>();
+			pAVI = new CAviPlayerCustom();
 
 			if (!pAVI->Load(fn)) {
 				xr_delete(pAVI);
@@ -585,6 +585,8 @@ void CTexture::desc_update	()
 		{
 			ID3DTexture2D*	T	= (ID3DTexture2D*)pSurface;
 			T->GetDesc(&desc);
+			m_width				= desc.Width;
+			m_height			= desc.Height;
 		}
 	}
 }

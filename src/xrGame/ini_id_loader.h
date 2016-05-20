@@ -122,7 +122,8 @@ CSINI_IdToIndex::~CIni_IdToIndex()
 TEMPLATE_SPECIALIZATION
 const typename ITEM_DATA* CSINI_IdToIndex::GetById (const T_ID& str_id, bool no_assert)
 {
-	for(T_VECTOR::iterator it = m_pItemDataVector->begin();
+    T_VECTOR::iterator it;
+	for(it = m_pItemDataVector->begin();
 		m_pItemDataVector->end() != it; it++)
 	{
 		if(!xr_strcmp((*it).id, str_id))
@@ -144,7 +145,7 @@ const typename ITEM_DATA* CSINI_IdToIndex::GetByIndex(T_INDEX index, bool no_ass
 	if((size_t)index>=m_pItemDataVector->size())
 	{
 		if(!no_assert)
-			Debug.fatal(DEBUG_INFO,"item by index not found in section %s, line %s", section_name, line_name);
+			xrDebug::Fatal(DEBUG_INFO,"item by index not found in section %s, line %s", section_name, line_name);
 		return NULL;
 	}
 	return &(m_pItemDataVector->at(index));
@@ -162,7 +163,7 @@ typename void	CSINI_IdToIndex::InitInternal ()
 	VERIFY(!m_pItemDataVector);
 	T_INIT::InitIdToIndex();
 	{
-		m_pItemDataVector = xr_new<T_VECTOR>();
+		m_pItemDataVector = new T_VECTOR();
 
 		VERIFY(section_name);
 		VERIFY(line_name);

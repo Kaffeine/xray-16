@@ -212,6 +212,7 @@ float CCar::FireDirDiff()
 	return 0.0f;
 }
 #include "script_game_object.h"
+#include "script_game_object_impl.h"
 #include "car_memory.h"
 #include "visual_memory_manager.h"
 
@@ -228,7 +229,7 @@ bool CCar::isObjectVisible			(CScriptGameObject* O_)
 			Msg("Attempt to call CCar::isObjectVisible method wihth passed NULL parameter");
 			return false;
 		}
-		CObject* O = &O_->object();
+		IGameObject* O = &O_->object();
 		Fvector dir_to_object;
 		Fvector to_point;
 		O->Center(to_point);

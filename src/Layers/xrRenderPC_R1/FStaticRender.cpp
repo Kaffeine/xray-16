@@ -89,11 +89,11 @@ void					CRender::create					()
 	m_bMakeAsyncSS				= false;
 
 //---------
-	Target						= xr_new<CRenderTarget>		();
+	Target						= new CRenderTarget		();
 //---------
 	//
-	Models						= xr_new<CModelPool>		();
-	L_Dynamic					= xr_new<CLightR_Manager>	();
+	Models						= new CModelPool		();
+	L_Dynamic					= new CLightR_Manager	();
 	PSLibrary.OnCreate			();
 //.	HWOCC.occq_create			(occq_size);
 
@@ -128,7 +128,7 @@ void					CRender::reset_end				()
 {
 	xrRender_apply_tf			();
 //.	HWOCC.occq_create			(occq_size);
-	Target						=	xr_new<CRenderTarget>	();
+	Target						=	new CRenderTarget	();
 	if (L_Projector)			L_Projector->invalidate		();
 
 	// Set this flag true to skip the first render frame,
@@ -142,7 +142,7 @@ void					CRender::OnFrame				()
 }
 
 // Implementation
-IRender_ObjectSpecific*	CRender::ros_create				(IRenderable* parent)					{ return xr_new<CROS_impl>();			}
+IRender_ObjectSpecific*	CRender::ros_create				(IRenderable* parent)					{ return new CROS_impl();			}
 void					CRender::ros_destroy			(IRender_ObjectSpecific* &p)			{ xr_delete(p);							}
 IRenderVisual*			CRender::model_Create			(LPCSTR name, IReader* data)			{ return Models->Create(name,data);		}
 IRenderVisual*			CRender::model_CreateChild		(LPCSTR name, IReader* data)			{ return Models->CreateChild(name,data);}
@@ -155,7 +155,7 @@ void					CRender::model_Delete			(IRenderVisual* &V, BOOL bDiscard)
 }
 IRender_DetailModel*	CRender::model_CreateDM			(IReader*F)
 {
-	CDetail*	D		= xr_new<CDetail> ();
+	CDetail*	D		= new CDetail ();
 	D->Load				(F);
 	return D;
 }
@@ -200,7 +200,7 @@ FSlideWindowItem*		CRender::getSWI					(int id)			{ VERIFY(id<int(SWIs.size()));
 
 IRender_Light*			CRender::light_create			()					{ return L_DB->Create();								}
 
-IRender_Glow*			CRender::glow_create			()					{ return xr_new<CGlow>();								}
+IRender_Glow*			CRender::glow_create			()					{ return new CGlow();								}
 
 void					CRender::flush					()					{ r_dsgraph_render_graph	(0);						}
 
@@ -266,7 +266,7 @@ void					CRender::set_Object				(IRenderable*		O )
 	VERIFY					(g_bRendering);
 	val_pObject				= O;		// NULL is OK, trust me :)
 	if (val_pObject)		{
-		VERIFY(dynamic_cast<CObject*>(O)||dynamic_cast<CPS_Instance*>(O));
+		VERIFY(dynamic_cast<IGameObject*>(O)||dynamic_cast<CPS_Instance*>(O));
 		if (O->GetRenderData().pROS) { VERIFY(dynamic_cast<CROS_impl*>(O->GetRenderData().pROS)); }
 	}
 	if (PHASE_NORMAL==phase)	{
@@ -288,7 +288,7 @@ void					CRender::apply_object			(IRenderable*		O )
 	if (0==O)			return	;
 	if (PHASE_NORMAL==phase	&& O->renderable_ROS())		{
 		CROS_impl& LT		= *((CROS_impl*)O->GetRenderData().pROS);
-		VERIFY(dynamic_cast<CObject*>(O)||dynamic_cast<CPS_Instance*>(O));
+		VERIFY(dynamic_cast<IGameObject*>(O)||dynamic_cast<CPS_Instance*>(O));
 		VERIFY(dynamic_cast<CROS_impl*>(O->GetRenderData().pROS));
 		float o_hemi		= 0.5f*LT.get_hemi						();
 		float o_sun			= 0.5f*LT.get_sun						();
@@ -317,7 +317,7 @@ IC		void			gm_SetNearer		(BOOL bNearer)
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 CRender::CRender	()
-:m_bFirstFrameAfterReset(false)
+:m_bFirstFrameAfterReset(false), Sectors_xrc("render")
 {
 }
 
@@ -445,7 +445,7 @@ void CRender::Calculate				()
 				if (lstRenderables.size())		uID_LTRACK	= uLastLTRACK%lstRenderables.size();
 
 				// update light-vis for current entity / actor
-				CObject*	O					= g_pGameLevel->CurrentViewEntity();
+				IGameObject*	O					= g_pGameLevel->CurrentViewEntity();
 				if (O)		{
 					CROS_impl*	R					= (CROS_impl*) O->ROS();
 					if (R)		R->update			(O);
@@ -655,11 +655,10 @@ void CRender::DumpStatistics(IGameFont &font, IPerformanceAlert *alert)
 {
     D3DXRenderBase::DumpStatistics(font, alert);
     HOM.DumpStatistics(font, alert);
+    Sectors_xrc.DumpStatistics(font, alert);
 }
 
 #pragma comment(lib,"d3dx9.lib")
-
-#include <boost/crc.hpp>
 
 static inline bool match_shader_id		( LPCSTR const debug_shader_id, LPCSTR const full_shader_id, FS_FileSet const& file_set, string_path& result );
 
@@ -879,16 +878,10 @@ HRESULT	CRender::shader_compile			(
 		IReader* file = FS.r_open(file_name);
 		if (file->length()>4)
 		{
-			u32 crc = 0;
-			crc = file->r_u32();
-
-			boost::crc_32_type		processor;
-			processor.process_block	( file->pointer(), ((char*)file->pointer()) + file->elapsed() );
-			u32 const real_crc		= processor.checksum( );
-
-			if ( real_crc == crc ) {
-				_result				= create_shader(pTarget, (DWORD*)file->pointer(), file->elapsed(), file_name, result, o.disasm);
-			}
+			u32 crc = file->r_u32();
+            u32 crcComp = crc32(file->pointer(), file->elapsed());
+            if (crcComp==crc)
+                _result = create_shader(pTarget, (DWORD*)file->pointer(), file->elapsed(), file_name, result, o.disasm);
 		}
 		file->close();
 	}
@@ -904,11 +897,7 @@ HRESULT	CRender::shader_compile			(
 		_result						= D3DXCompileShader((LPCSTR)pSrcData,SrcDataLen,defines,pInclude,pFunctionName,pTarget,Flags|D3DXSHADER_USE_LEGACY_D3DX9_31_DLL,&pShaderBuf,&pErrorBuf,&pConstants);
 		if (SUCCEEDED(_result)) {
 			IWriter* file = FS.w_open(file_name);
-
-			boost::crc_32_type		processor;
-			processor.process_block	( pShaderBuf->GetBufferPointer(), ((char*)pShaderBuf->GetBufferPointer()) + pShaderBuf->GetBufferSize() );
-			u32 const crc			= processor.checksum( );
-
+            u32 crc = crc32(pShaderBuf->GetBufferPointer(), pShaderBuf->GetBufferSize());
 			file->w_u32				(crc);
 			file->w					( pShaderBuf->GetBufferPointer(), (u32)pShaderBuf->GetBufferSize());
 			FS.w_close				(file);

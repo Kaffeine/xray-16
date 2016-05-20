@@ -17,7 +17,7 @@ void CCar::InitDebug()
 }
 void CCar::DbgSheduleUpdate()
 {
-	if(ph_dbg_draw_mask.test(phDbgDrawCarPlots)&&m_pPhysicsShell&&OwnerActor()&&static_cast<CObject*>(Owner())==Level().CurrentViewEntity())
+	if(ph_dbg_draw_mask.test(phDbgDrawCarPlots)&&m_pPhysicsShell&&OwnerActor()&&static_cast<IGameObject*>(Owner())==Level().CurrentViewEntity())
 	{
  		DbgCreatePlots();
 	}
@@ -71,7 +71,7 @@ void CCar::DbgCreatePlots()
 		}
 	}
 	//--------------------------------------
-	m_dbg_dynamic_plot	=xr_new<CStatGraph>();
+	m_dbg_dynamic_plot	=new CStatGraph();
 	m_dbg_dynamic_plot	->SetRect(0,y_pos,500,y_w,color_xrgb(255,255,255),color_xrgb(255,255,255));
 	m_dbg_dynamic_plot	->SetMinMax(Parabola(m_min_rpm),m_max_power,1000);
 	m_dbg_dynamic_plot	->AppendSubGraph(CStatGraph::stCurve);
@@ -105,7 +105,7 @@ void CCar::DBgClearPlots()
 void CCar::DbgUbdateCl()
 {
 	
-	if(m_pPhysicsShell&&OwnerActor()&&static_cast<CObject*>(Owner())==Level().CurrentViewEntity())
+	if(m_pPhysicsShell&&OwnerActor()&&static_cast<IGameObject*>(Owner())==Level().CurrentViewEntity())
 	{	
 		if(ph_dbg_draw_mask.test(phDbgDrawCarDynamics))
 		{

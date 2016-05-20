@@ -10,14 +10,14 @@
 #define SMART_COVER_OBJECT_H_INCLUDED
 
 #include "GameObject.h"
-#include <boost/noncopyable.hpp>
+#include "Common/Noncopyable.hpp"
 
 namespace smart_cover {
 	class cover;
 
 class object : 
 	public CGameObject,
-	private boost::noncopyable
+	private Noncopyable
 {
 private:
 	typedef CGameObject	inherited;
@@ -29,7 +29,7 @@ private:
 
 public:
 	virtual void		Load							(LPCSTR section);
-	virtual bool		feel_touch_on_contact			(CObject *)				{ return FALSE; }
+	virtual bool		feel_touch_on_contact			(IGameObject *)				{ return FALSE; }
 	virtual bool		use								(CGameObject* who_use)	{ return false; }
 	virtual BOOL		net_Spawn						(CSE_Abstract* DC);
 	virtual void		UpdateCL						();

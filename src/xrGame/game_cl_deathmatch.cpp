@@ -172,7 +172,7 @@ IBuyWnd* game_cl_Deathmatch::InitBuyMenu			(const shared_str& BasePriceSection, 
 
 	cl_TeamStruct *pTeamSect		= &TeamList[ModifyTeam(Team)];
 	
-	IBuyWnd* pMenu					= xr_new<BUY_WND_TYPE>();
+	IBuyWnd* pMenu					= new BUY_WND_TYPE();
 	pMenu->Init						(pTeamSect->caSection, BasePriceSection);
 	return							pMenu;
 };
@@ -186,7 +186,7 @@ CUISkinSelectorWnd* game_cl_Deathmatch::InitSkinMenu			(s16 Team)
 
 	cl_TeamStruct *pTeamSect		= &TeamList[ModifyTeam(Team)];	
 
-	CUISkinSelectorWnd* pMenu		= xr_new<CUISkinSelectorWnd>	((char*)pTeamSect->caSection.c_str(), Team);
+	CUISkinSelectorWnd* pMenu		= new CUISkinSelectorWnd	((char*)pTeamSect->caSection.c_str(), Team);
 	return							pMenu;
 };
 
@@ -203,7 +203,7 @@ void game_cl_Deathmatch::OnSkinMenuBack			()
 
 void game_cl_Deathmatch::OnSkinMenu_Ok			()
 {
-	CObject *l_pObj = Level().CurrentEntity();
+	IGameObject *l_pObj = Level().CurrentEntity();
 
 	CGameObject *l_pPlayer = smart_cast<CGameObject*>(l_pObj);
 	if(!l_pPlayer) return;
@@ -886,7 +886,7 @@ void game_cl_Deathmatch::OnVoteStart(NET_Packet& P)
 		m_game_ui->SetVoteMessage(VoteStr);
 		m_game_ui->SetVoteTimeResultMsg("");
 		if (!m_pVoteRespondWindow)
-            m_pVoteRespondWindow = xr_new<CUIVote>();
+            m_pVoteRespondWindow = new CUIVote();
 		m_pVoteRespondWindow->SetVoting(VoteStr);
 	};
 };
@@ -924,7 +924,7 @@ void game_cl_Deathmatch::GetMapEntities(xr_vector<SZoneMapEntityData>& dst)
 		game_PlayerState* ps = it->second;
 		u16 id = ps->GameID;
 		if (ps->testFlag(GAME_PLAYER_FLAG_VERY_VERY_DEAD)) continue;
-		CObject* pObject = Level().Objects.net_Find(id);
+		IGameObject* pObject = Level().Objects.net_Find(id);
 		if (!pObject) continue;
 		if (!pObject || !smart_cast<CActor*>(pObject)) continue;
 
@@ -957,7 +957,7 @@ void		game_cl_Deathmatch::OnRender				()
 			u16 id = ps->GameID;
 			if (ps->testFlag(GAME_PLAYER_FLAG_VERY_VERY_DEAD)) continue;
 			if (!ps->testFlag(GAME_PLAYER_FLAG_INVINCIBLE)) continue;
-			CObject* pObject = Level().Objects.net_Find(id);
+			IGameObject* pObject = Level().Objects.net_Find(id);
 			if (!pObject) continue;
 			if (!pObject || !smart_cast<CActor*>(pObject)) continue;
 			if (ps == local_player) continue;
@@ -1001,7 +1001,7 @@ void game_cl_Deathmatch::PlayParticleEffect(LPCSTR EffName, Fvector& pos)
 	GamePersistent().ps_needtoplay.push_back(ps);
 }
 
-void game_cl_Deathmatch::OnSpawn(CObject* pObj)
+void game_cl_Deathmatch::OnSpawn(IGameObject* pObj)
 {
 	inherited::OnSpawn(pObj);
 	if (!pObj) return;
@@ -1194,7 +1194,7 @@ void game_cl_Deathmatch::OnPlayerFlagsChanged(game_PlayerState* ps)
 		return;
 	}
 
-	CObject* pObject				= Level().Objects.net_Find(ps->GameID);
+	IGameObject* pObject				= Level().Objects.net_Find(ps->GameID);
 	if (!pObject)					return;
 
 	if (!smart_cast<CActor*>(pObject)) return;

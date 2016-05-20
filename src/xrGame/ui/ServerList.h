@@ -10,12 +10,12 @@
 #include "UI3tButton.h"
 #include "mixed_delegate.h"
 
-
 class CUIXml;
 class CGameSpy_Browser;
 class CUIMessageBoxEx;
 class CGameSpy_Browser;
 struct ServerInfo;
+struct GameInfo;
 
 #define LST_SERVER		0 
 #define LST_SRV_PROP	1
@@ -41,12 +41,12 @@ public:
 	bool	listen_servers;
 };
 
-class CServerList : public CUIWindow{
+class CServerList : public CUIWindow {
 public:
 					CServerList			();
 	virtual			~CServerList		();
 
-	virtual void 	Update				();
+	virtual void Update				();
 	virtual void 	SendMessage			(CUIWindow* pWnd, s16 msg, void* pData = NULL);
 			void 	InitFromXml			(CUIXml& xml_doc, LPCSTR path);
 			void 	InitHeader			();
@@ -65,7 +65,9 @@ public:
 			void	ShowServerInfo();			
 	virtual	void	RefreshList();
 
-			void	on_game_spy_browser_destroy	(CGameSpy_Browser* browser);
+private:
+    void xr_stdcall OnUpdate() { RefreshList(); }
+    void xr_stdcall OnBrowserDestroy(CGameSpy_Browser *browser);
 
 protected:
 			bool IsValidItem(ServerInfo& item);
@@ -76,6 +78,17 @@ protected:
 			void AfterAppear();
 			void BeforeDisapear();
 			void AfterDisappear();
+    void AddServerDetail(const GameInfo &info);
+    void AddBoolED(const char *keyName, bool value);
+    void AddBoolYN(const char *keyName, bool value);
+    void AddBoolKeyED(void *s, const char *keyName, int k);
+    void AddBoolKeyYN(void *s, const char *keyName, int k);
+    void AddIntKey(void *s, const char *keyName, int k);
+    void AddIntKeyN(void *s, float m, const char *keyName, const char *suffix, int k);
+    void AddTimeKey(void *s, const char *keyName, const char *format, const char *suffix, int k);
+    void AddString(const char *key, const char *value);
+    void AddStringSt(const char *key, const char *value);
+
 			void FillUpDetailedServerInfo();
 			void ClearDetailedServerInfo();
 
@@ -119,7 +132,7 @@ protected:
 		bool				m_busy;
 		SrvItem(float h)
 		{
-			m_ui_item			= xr_new<CUIListItemServer>(h);
+			m_ui_item			= new CUIListItemServer(h);
 			m_busy				= true;
 		}
 	};

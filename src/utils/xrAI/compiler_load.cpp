@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "compiler.h"
-#include "levelgamedef.h"
-#include "xrGame/level_graph.h"
+#include "Common/LevelGameDef.h"
+#include "xrAICore/Navigation/level_graph.h"
 #include "AIMapExport.h"
 
 IC	const Fvector vertex_position(const CLevelGraph::CPosition &Psrc, const Fbox &bb, const SAIParams &params)
@@ -57,7 +57,7 @@ void xrLoad(LPCSTR name, bool draft_mode)
 		// shaders
 		string_path				N;
 		FS.update_path			(N,"$game_data$","shaders_xrlc.xr");
-		g_shaders_xrlc			= xr_new<Shader_xrLC_LIB> ();
+		g_shaders_xrlc			= new Shader_xrLC_LIB ();
 		g_shaders_xrlc->Load	(N);
 
 		// Load CFORM

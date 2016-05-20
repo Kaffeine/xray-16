@@ -57,7 +57,7 @@ IBlender* CResourceManager::_GetBlender		(LPCSTR Name)
 		return 0;
 	}
 #endif
-	if (I==m_blenders.end())	{ Debug.fatal(DEBUG_INFO,"Shader '%s' not found in library.",Name); return 0; }
+	if (I==m_blenders.end())	{ xrDebug::Fatal(DEBUG_INFO,"Shader '%s' not found in library.",Name); return 0; }
 #endif
 	else					return I->second;
 }
@@ -134,7 +134,7 @@ ShaderElement* CResourceManager::_CreateElement			(ShaderElement& S)
 		if (S.equal(*(v_elements[it])))	return v_elements[it];
 
 	// Create _new_ entry
-	ShaderElement*	N		=	xr_new<ShaderElement>(S);
+	ShaderElement*	N		=	new ShaderElement(S);
 	N->dwFlags				|=	xr_resource_flagged::RF_REGISTERED;
 	v_elements.push_back	(N);
 	return N;
@@ -230,7 +230,7 @@ Shader*	CResourceManager::_cpp_Create	(IBlender* B, LPCSTR s_shader, LPCSTR s_te
 		if (S.equal(v_shaders[it]))	return v_shaders[it];
 
 	// Create _new_ entry
-	Shader*		N			=	xr_new<Shader>(S);
+	Shader*		N			=	new Shader(S);
 	N->dwFlags				|=	xr_resource_flagged::RF_REGISTERED;
 	v_shaders.push_back		(N);
 	return N;
@@ -417,7 +417,7 @@ void	CResourceManager::_DumpMemoryUsage		()
 void	CResourceManager::Evict()
 {
 	//	TODO: DX10: check if we really need this method
-#if !defined(USE_DX10) && !defined(USE_DX11)
+#if !defined(USE_DX10) && !defined(USE_DX11) && !defined(USE_OGL)
 	CHK_DX	(HW.pDevice->EvictManagedResources());
 #endif	//	USE_DX10
 }

@@ -189,7 +189,7 @@ void CInventory::Take(CGameObject *pObj, bool bNotActivate, bool strict_placemen
 
 	if( CurrentGameUI() )
 	{
-		CObject* pActor_owner = smart_cast<CObject*>(m_pOwner);
+		IGameObject* pActor_owner = smart_cast<IGameObject*>(m_pOwner);
 
 		if (Level().CurrentViewEntity() == pActor_owner)
 		{
@@ -283,7 +283,7 @@ bool CInventory::DropItem(CGameObject *pObj, bool just_before_destroy, bool dont
 
 	if( CurrentGameUI() )
 	{
-		CObject* pActor_owner = smart_cast<CObject*>(m_pOwner);
+		IGameObject* pActor_owner = smart_cast<IGameObject*>(m_pOwner);
 
 		if (Level().CurrentViewEntity() == pActor_owner)
 			CurrentGameUI()->OnInventoryAction(pIItem, GE_OWNERSHIP_REJECT);
@@ -762,7 +762,7 @@ void CInventory::Update()
 	{
 		if(m_iActiveSlot!=m_iNextActiveSlot)
 		{
-			CObject* pActor_owner = smart_cast<CObject*>(m_pOwner);
+			IGameObject* pActor_owner = smart_cast<IGameObject*>(m_pOwner);
 			if (Level().CurrentViewEntity() == pActor_owner)
 			{
 				if(	(m_iNextActiveSlot!=NO_ACTIVE_SLOT) && 
@@ -825,7 +825,7 @@ void CInventory::UpdateDropTasks()
 			UpdateDropItem		(itm);
 	}
 
-	for(i = 0; i < 2; ++i)	
+	for(u16 i = 0; i < 2; ++i)	
 	{
 		TIItemContainer &list			= i?m_ruck:m_belt;
 		TIItemContainer::iterator it	= list.begin();
@@ -1197,8 +1197,8 @@ bool CInventory::CanTakeItem(CInventoryItem *inventory_item) const
 	if (inventory_item->object().getDestroy()) return false;
 
 	if(!inventory_item->CanTake()) return false;
-
-	for(TIItemContainer::const_iterator it = m_all.begin(); it != m_all.end(); it++)
+    TIItemContainer::const_iterator it;
+	for(it = m_all.begin(); it != m_all.end(); it++)
 		if((*it)->object().ID() == inventory_item->object().ID()) break;
 	VERIFY3(it == m_all.end(), "item already exists in inventory",*inventory_item->object().cName());
 

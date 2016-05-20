@@ -7,7 +7,7 @@
 #include "xrPhysics/extendedgeom.h"
 
 #include "Include/xrRender/Kinematics.h"
-#include <boost/noncopyable.hpp>
+#include "Common/Noncopyable.hpp"
 ///////////////////////////////////////////////////////////////////////////////////////
 #include "PhysicsShellHolder.h"
 
@@ -129,7 +129,7 @@ void imotion_position::state_start( )
 	update_callback.motion = this;
 	struct get_controled_blend: 
 		public IterateBlendsCallback,
-		private boost::noncopyable
+		private Noncopyable
 		
 	{
 		CBlend					*blend;
@@ -378,8 +378,8 @@ float imotion_position::advance_animation( float dt, IKinematicsAnimated& KA )
 }
 
 #ifdef	DEBUG
-void DBG_DrawBones( CObject &O );
-void DBG_PhysBones( CObject &O );
+void DBG_DrawBones( IGameObject &O );
+void DBG_PhysBones( IGameObject &O );
 void collide_anim_dbg_draw( CPhysicsShell	*shell, float dt )
 {
 	VERIFY( shell );
@@ -469,7 +469,7 @@ public:
 static void save_blends( buffer_vector<sblend_save>& buffer, IKinematicsAnimated& KA )
 {
 	buffer.clear();
-	struct scbl: public IterateBlendsCallback, private boost::noncopyable
+	struct scbl: public IterateBlendsCallback, private Noncopyable
 	{
 		buffer_vector<sblend_save>& _buffer;
 		scbl( buffer_vector<sblend_save>& bf ): _buffer( bf ){}

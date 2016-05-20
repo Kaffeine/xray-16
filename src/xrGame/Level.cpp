@@ -19,7 +19,7 @@
 #include "xrScriptEngine/script_engine.hpp"
 #include "team_base_zone.h"
 #include "infoportion.h"
-#include "patrol_path_storage.h"
+#include "xrAICore/Navigation/PatrolPath/patrol_path_storage.h"
 #include "date_time.h"
 #include "space_restriction_manager.h"
 #include "seniority_hierarchy_holder.h"
@@ -27,7 +27,7 @@
 #include "client_spawn_manager.h"
 #include "autosave_manager.h"
 #include "ClimableObject.h"
-#include "level_graph.h"
+#include "xrAICore/Navigation/level_graph.h"
 #include "mt_config.h"
 #include "phcommander.h"
 #include "map_manager.h"
@@ -56,6 +56,7 @@
 #include "PhysicObject.h"
 #include "PHDebug.h"
 #include "debug_text_tree.h"
+#include "LevelGraphDebugRender.hpp"
 #endif
 
 ENGINE_API bool g_dedicated_server;
@@ -72,36 +73,37 @@ CLevel::CLevel() :
 #endif
 {
     g_bDebugEvents = strstr(Core.Params, "-debug_ge") != nullptr;
-    game_events = xr_new<NET_Queue_Event>();
+    game_events = new NET_Queue_Event();
     eChangeRP = Engine.Event.Handler_Attach("LEVEL:ChangeRP", this);
     eDemoPlay = Engine.Event.Handler_Attach("LEVEL:PlayDEMO", this);
     eChangeTrack = Engine.Event.Handler_Attach("LEVEL:PlayMusic", this);
     eEnvironment = Engine.Event.Handler_Attach("LEVEL:Environment", this);
     eEntitySpawn = Engine.Event.Handler_Attach("LEVEL:spawn", this);
-    m_pBulletManager = xr_new<CBulletManager>();
+    m_pBulletManager = new CBulletManager();
     if (!g_dedicated_server)
     {
-        m_map_manager = xr_new<CMapManager>();
-        m_game_task_manager = xr_new<CGameTaskManager>();
+        m_map_manager = new CMapManager();
+        m_game_task_manager = new CGameTaskManager();
     }
     m_dwDeltaUpdate = u32(fixed_step*1000);
-    m_seniority_hierarchy_holder = xr_new<CSeniorityHierarchyHolder>();
+    m_seniority_hierarchy_holder = new CSeniorityHierarchyHolder();
     if (!g_dedicated_server)
     {
-        m_level_sound_manager = xr_new<CLevelSoundManager>();
-        m_space_restriction_manager = xr_new<CSpaceRestrictionManager>();
-        m_client_spawn_manager = xr_new<CClientSpawnManager>();
-        m_autosave_manager = xr_new<CAutosaveManager>();
+        m_level_sound_manager = new CLevelSoundManager();
+        m_space_restriction_manager = new CSpaceRestrictionManager();
+        m_client_spawn_manager = new CClientSpawnManager();
+        m_autosave_manager = new CAutosaveManager();
 #ifdef DEBUG
-        m_debug_renderer = xr_new<CDebugRenderer>();
-        m_level_debug = xr_new<CLevelDebug>();
+        m_debug_renderer = new CDebugRenderer();
+        levelGraphDebugRender = new LevelGraphDebugRender();
+        m_level_debug = new CLevelDebug();
 #endif
     }
-    m_ph_commander = xr_new<CPHCommander>();
-    m_ph_commander_scripts = xr_new<CPHCommander>();
+    m_ph_commander = new CPHCommander();
+    m_ph_commander_scripts = new CPHCommander();
     pObjects4CrPr.clear();
     pActors4CrPr.clear();
-    g_player_hud = xr_new<player_hud>();
+    g_player_hud = new player_hud();
     g_player_hud->load_default();
     Msg("%s", Core.Params);
 }
@@ -144,6 +146,7 @@ CLevel::~CLevel()
     xr_delete(m_client_spawn_manager);
     xr_delete(m_autosave_manager);
 #ifdef DEBUG
+    xr_delete(levelGraphDebugRender);
     xr_delete(m_debug_renderer);
 #endif
     if (!g_dedicated_server)
@@ -246,7 +249,7 @@ bool g_bDebugEvents = false;
 void CLevel::cl_Process_Event(u16 dest, u16 type, NET_Packet& P)
 {
     // Msg("--- event[%d] for [%d]",type,dest);
-    CObject* O = Objects.net_Find(dest);
+    IGameObject* O = Objects.net_Find(dest);
     if (0 == O)
     {
 #ifdef DEBUG
@@ -277,7 +280,7 @@ void CLevel::cl_Process_Event(u16 dest, u16 type, NET_Packet& P)
         u16 id = P.r_u16();
         P.r_seek(pos);
         bool ok = true;
-        CObject* D = Objects.net_Find(id);
+        IGameObject* D = Objects.net_Find(id);
         if (0 == D)
         {
 #ifndef MASTER_GOLD
@@ -535,7 +538,7 @@ void CLevel::OnFrame()
 #ifdef DEBUG
                 if (!pStatGraphR)
                 {
-                    pStatGraphR = xr_new<CStatGraph>();
+                    pStatGraphR = new CStatGraph();
                     pStatGraphR->SetRect(50, 700, 300, 68, 0xff000000, 0xff000000);
                     //m_stat_graph->SetGrid(0, 0.0f, 10, 1.0f, 0xff808080, 0xffffffff);
                     pStatGraphR->SetMinMax(0.0f, 65536.0f, 1000);
@@ -628,7 +631,7 @@ void CLevel::OnRender()
 #endif
 #ifdef DEBUG
     if (ai().get_level_graph())
-        ai().level_graph().render();
+        levelGraphDebugRender->Render(ai().game_graph(), ai().level_graph());
 #ifdef DEBUG_PRECISE_PATH
     test_precise_path();
 #endif
@@ -639,7 +642,7 @@ void CLevel::OnRender()
     {
         for (u32 I = 0; I < Level().Objects.o_count(); I++)
         {
-            CObject* _O = Level().Objects.o_get_by_iterator(I);
+            IGameObject* _O = Level().Objects.o_get_by_iterator(I);
             CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(_O);
             if (stalker)
                 stalker->OnRender();
@@ -708,7 +711,7 @@ void CLevel::OnRender()
     {
         for (u32 I = 0; I < Level().Objects.o_count(); I++)
         {
-            CObject* object = Objects.o_get_by_iterator(I);
+            IGameObject* object = Objects.o_get_by_iterator(I);
             CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(object);
             if (!stalker)
                 continue;
@@ -721,7 +724,7 @@ void CLevel::OnRender()
     {
         for (u32 I = 0; I < Level().Objects.o_count(); I++)
         {
-            CObject* object = Objects.o_get_by_iterator(I);
+            IGameObject* object = Objects.o_get_by_iterator(I);
             CAI_Stalker* stalker = smart_cast<CAI_Stalker*>(object);
             if (!stalker)
                 continue;
@@ -748,7 +751,7 @@ void CLevel::OnEvent(EVENT E, u64 P1, u64 /**P2/**/)
         string_path RealName;
         xr_strcpy(RealName, name);
         xr_strcat(RealName, ".xrdemo");
-        Cameras().AddCamEffector(xr_new<CDemoPlay>(RealName, 1.3f, 0));
+        Cameras().AddCamEffector(new CDemoPlay(RealName, 1.3f, 0));
     }
     else if (E == eChangeTrack && P1)
     {
@@ -931,7 +934,7 @@ void CLevel::PhisStepsCallback(u32 Time0, u32 Time1)
     //#pragma todo("Oles to all: highly inefficient and slow!!!")
     //fixed (Andy)
     /*
-    for (xr_vector<CObject*>::iterator O=Level().Objects.objects.begin(); O!=Level().Objects.objects.end(); ++O)
+    for (xr_vector<IGameObject*>::iterator O=Level().Objects.objects.begin(); O!=Level().Objects.objects.end(); ++O)
     {
     if( smart_cast<CActor*>((*O)){
     CActor* pActor = smart_cast<CActor*>(*O);
@@ -1059,12 +1062,12 @@ u32	GameID()
 
 CZoneList* CLevel::create_hud_zones_list()
 {
-    hud_zones_list = xr_new<CZoneList>();
+    hud_zones_list = new CZoneList();
     hud_zones_list->clear();
     return hud_zones_list;
 }
 
-bool CZoneList::feel_touch_contact(CObject* O)
+bool CZoneList::feel_touch_contact(IGameObject* O)
 {
     TypesMapIt it = m_TypesMap.find(O->cNameSect());
     bool res = (it != m_TypesMap.end());

@@ -23,7 +23,7 @@
 #ifdef XRGAME_EXPORTS
 #   include "alife_time_manager.h"
 #   include "ef_storage.h"
-#   include "game_graph.h"
+#   include "xrAICore/Navigation/game_graph.h"
 #   include "ai_space.h"
 #   include "alife_group_registry.h"
 #   include "alife_simulator.h"
@@ -1110,13 +1110,13 @@ bool CSE_ALifeCreatureAbstract::can_switch_offline  () const
     return                      (inherited::can_switch_offline() && (get_health() > 0.f));
 }
 
-IC  void CSE_ALifeCreatureAbstract::set_health  (float const health_value)
+void CSE_ALifeCreatureAbstract::set_health  (float const health_value)
 {
     VERIFY( !((get_killer_id() != u16(-1)) && (health_value > 0.f)) );
     fHealth = health_value;
 }
 
-IC  void CSE_ALifeCreatureAbstract::set_killer_id   (ALife::_OBJECT_ID const killer_id)
+void CSE_ALifeCreatureAbstract::set_killer_id   (ALife::_OBJECT_ID const killer_id)
 {
     m_killer_id = killer_id;
 }
@@ -1193,7 +1193,7 @@ CSE_ALifeMonsterAbstract::~CSE_ALifeMonsterAbstract()
 
 CALifeMonsterBrain *CSE_ALifeMonsterAbstract::create_brain  ()
 {
-    return                      (xr_new<CALifeMonsterBrain>(this));
+    return                      (new CALifeMonsterBrain(this));
 }
 
 CSE_Abstract *CSE_ALifeMonsterAbstract::init            ()
@@ -1992,7 +1992,7 @@ CSE_ALifeHumanAbstract::~CSE_ALifeHumanAbstract()
 
 CALifeMonsterBrain *CSE_ALifeHumanAbstract::create_brain    ()
 {
-    m_brain                     = xr_new<CALifeHumanBrain>(this);
+    m_brain                     = new CALifeHumanBrain(this);
     return                      (m_brain);
 }
 
@@ -2139,7 +2139,7 @@ CSE_Abstract *CSE_ALifeOnlineOfflineGroup::init             ()
     inherited2::init            ();
 
 #ifdef XRGAME_EXPORTS
-    m_brain                     = xr_new<CALifeOnlineOfflineGroupBrain>(this);
+    m_brain                     = new CALifeOnlineOfflineGroupBrain(this);
 #endif
 
     VERIFY                      (m_members.empty());

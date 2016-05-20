@@ -56,7 +56,7 @@ void CAgentMemberManager::add					(CEntity *member)
 
 	iterator					I = std::find_if(m_members.begin(),m_members.end(), CMemberPredicate(stalker));
 	VERIFY						(I == m_members.end());
-	m_members.push_back			(xr_new<CMemberOrder>(stalker));
+	m_members.push_back			(new CMemberOrder(stalker));
 }
 
 void CAgentMemberManager::remove				(CEntity *member)
@@ -82,7 +82,7 @@ void CAgentMemberManager::update				()
 {
 }
 
-void CAgentMemberManager::remove_links			(CObject *object)
+void CAgentMemberManager::remove_links			(IGameObject *object)
 {
 	MEMBER_STORAGE::iterator	I = m_members.begin();
 	MEMBER_STORAGE::iterator	E = m_members.end();

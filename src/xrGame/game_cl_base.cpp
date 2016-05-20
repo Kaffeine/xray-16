@@ -31,7 +31,7 @@ game_cl_GameState::game_cl_GameState()
 	m_u16VotingEnabled			= 0;
 	m_bServerControlHits		= true;
 
-	m_WeaponUsageStatistic		= xr_new<WeaponUsageStatistic>();
+	m_WeaponUsageStatistic		= new WeaponUsageStatistic();
 }
 
 game_cl_GameState::~game_cl_GameState()
@@ -292,7 +292,7 @@ void	game_cl_GameState::OnGameMessage	(NET_Packet& P)
 
 game_PlayerState* game_cl_GameState::lookat_player()
 {
-	CObject* current_entity = Level().CurrentEntity();
+	IGameObject* current_entity = Level().CurrentEntity();
 	if (current_entity)
 	{
 		return GetPlayerByGameID(current_entity->ID());
@@ -419,7 +419,7 @@ void				game_cl_GameState::OnSwitchPhase			(u32 old_phase, u32 new_phase)
 
 void game_cl_GameState::SendPickUpEvent(u16 ID_who, u16 ID_what)
 {
-	CObject* O		= Level().Objects.net_Find	(ID_what);
+	IGameObject* O		= Level().Objects.net_Find	(ID_what);
 	Level().m_feel_deny.feel_touch_deny			(O, 1000);
 
 	NET_Packet		P;

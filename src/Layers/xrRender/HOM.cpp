@@ -28,7 +28,7 @@ void __stdcall	CHOM::MT_RENDER()
 // Construction/Destruction
 //////////////////////////////////////////////////////////////////////
 
-CHOM::CHOM()
+CHOM::CHOM() : xrc("HOM")
 {
 	bEnabled		= FALSE;
 	m_pModel		= 0;
@@ -114,7 +114,7 @@ void CHOM::Load			()
 	}
 
 	// Create AABB-tree
-	m_pModel			= xr_new<CDB::MODEL> ();
+	m_pModel			= new CDB::MODEL ();
 	m_pModel->build		(CL.getV(),int(CL.getVS()),CL.getT(),int(CL.getTS()));
 	bEnabled			= TRUE;
 	S->close			();
@@ -341,6 +341,7 @@ void CHOM::DumpStatistics(IGameFont &font, IPerformanceAlert *alert)
     font.OutNext("- frustum:    %u", stats.FrustumTriangleCount);
     font.OutNext("- total:      %d", m_pModel ? m_pModel->get_tris_count() : 0);
     stats.FrameStart();
+    xrc.DumpStatistics(font, alert);
 }
 
 #ifdef DEBUG
