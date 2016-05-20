@@ -3,6 +3,7 @@ cmake_minimum_required(VERSION 2.8.7)
 
 add_definitions(-std=c++11)
 add_definitions(-D_MT)
+add_definitions(-D_CPPUNWIND)
 
 #find_package(Lua51 REQUIRED)
 
