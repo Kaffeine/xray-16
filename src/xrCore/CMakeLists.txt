@@ -22,7 +22,7 @@ SET(SOURCES
     dump_string.cpp
 #    file_stream_reader.cpp
     log.cpp
-    lzo_compressor.cpp
+#    lzo_compressor.cpp
     memory_allocation_stats.cpp
     memory_monitor.cpp
 #    memory_usage.cpp
