@@ -52,6 +52,17 @@ typedef unsigned int UINT;
 typedef unsigned short WORD;
 typedef unsigned long DWORD;
 
+typedef long LONG;
+
+typedef struct _EXCEPTION_POINTERS {
+} EXCEPTION_POINTERS, *PEXCEPTION_POINTERS;
+
+#if defined(XR_X64)
+ typedef s64 INT_PTR;
+#else
+ typedef s32 INT_PTR;
+#endif
+
 typedef void* HMODULE;
 typedef void* LPVOID;
 
