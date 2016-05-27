@@ -1,6 +1,5 @@
 #pragma once
 
-#include "xrCore/Platform.h"
 #include "xrEngine/Engine.h"
 #include "xrCDB/Frustum.h"
 #include "vis_common.h"
