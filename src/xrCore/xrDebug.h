@@ -40,7 +40,7 @@ public:
     using OutOfMemoryCallbackFunc = void (*)();
     using CrashHandler = void (*)();
     using DialogHandler = void (*)(bool);
-    using UnhandledExceptionFilter = LONG (WINAPI *)(EXCEPTION_POINTERS *exPtrs);
+    using UnhandledExceptionFilter = long (WINAPI *)(EXCEPTION_POINTERS *exPtrs);
 
 private:
     static UnhandledExceptionFilter PrevFilter;
@@ -81,7 +81,7 @@ private:
     static void FormatLastError(char *buffer, const size_t &bufferSize);
     static size_t BuildStackTrace(EXCEPTION_POINTERS *exPtrs, char *buffer, size_t capacity, size_t lineCapacity);
     static void SetupExceptionHandler(const bool &dedicated);
-    static LONG WINAPI UnhandledFilter(EXCEPTION_POINTERS *exPtrs);
+    static long WINAPI UnhandledFilter(EXCEPTION_POINTERS *exPtrs);
     static void WINAPI PreErrorHandler(INT_PTR);
     static void SaveMiniDump(EXCEPTION_POINTERS *exPtrs);
 };

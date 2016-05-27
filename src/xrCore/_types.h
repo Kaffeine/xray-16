@@ -52,8 +52,6 @@ typedef unsigned int UINT;
 typedef unsigned short WORD;
 typedef unsigned long DWORD;
 
-typedef long LONG;
-
 typedef struct _EXCEPTION_POINTERS {
 } EXCEPTION_POINTERS, *PEXCEPTION_POINTERS;
 
